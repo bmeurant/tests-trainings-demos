@@ -37,6 +37,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>discovery-server</module>
   </modules>
 
 </project>
