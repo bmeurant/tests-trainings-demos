@@ -38,6 +38,7 @@
 
   <modules>
     <module>discovery-server</module>
+    <module>product-service</module>
   </modules>
 
 </project>
