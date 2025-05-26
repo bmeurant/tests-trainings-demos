@@ -3,6 +3,8 @@ package io.bmeurant.microservices.spring.productservice.controller;
 import io.bmeurant.microservices.spring.productservice.model.Product;
 import io.bmeurant.microservices.spring.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -30,7 +33,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Product getProductById(@PathVariable Long id) {
+    public Product getProductById(@PathVariable("id") Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
