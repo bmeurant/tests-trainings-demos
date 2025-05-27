@@ -5,6 +5,7 @@ import io.bmeurant.microservices.spring.productservice.repository.ProductReposit
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,15 @@ public class ProductController {
     public Product getProductById(@PathVariable("id") Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
+    @Value("${product-service.message}")
+    private String messageFromConfigServer;
+
+    @GetMapping("/message")
+    @ResponseStatus(HttpStatus.OK)
+    public String getMessage() {
+        return messageFromConfigServer;
     }
 
     @RestController
