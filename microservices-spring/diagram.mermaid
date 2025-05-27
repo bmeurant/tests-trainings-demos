@@ -1,0 +1,52 @@
+graph TD
+    subgraph Client Interaction
+        User(User/Client Browser)
+    end
+
+    subgraph API Gateway
+        API_Gateway(API Gateway <br> Spring Cloud Gateway)
+    end
+
+
+    subgraph Core Microservices
+        Product_Service(Product Service <br> Spring Boot)
+        Order_Service(Order Service <br> Spring Boot)
+    end
+
+    subgraph Service Infrastructure
+        Eureka_Server(Eureka Server <br> Discovery)
+        Config_Server(Config Server <br> Centralized Config)
+        Zipkin_Server(Zipkin Server <br> Distributed Tracing)
+        Git_Config_Repo(Git Config Repo)
+    end
+
+    User -- HTTP/S Requests --> API_Gateway
+
+    API_Gateway -- Registers & Discovers --> Eureka_Server
+    API_Gateway -- Fetches config --> Config_Server
+    API_Gateway -- Routes requests (Load Balanced) --> Product_Service
+    API_Gateway -- Routes requests (Load Balanced) --> Order_Service
+    API_Gateway -- Sends Traces --> Zipkin_Server
+
+    Product_Service -- Registers & Discovers --> Eureka_Server
+    Product_Service -- Fetches config --> Config_Server
+    Product_Service -- Sends Traces --> Zipkin_Server
+
+    Order_Service -- Registers & Discovers --> Eureka_Server
+    Order_Service -- Fetches config --> Config_Server
+    Order_Service -- Sends Traces --> Zipkin_Server
+    Order_Service -- Feign Call (Load Balanced) --> Product_Service
+
+    Config_Server -- Reads from --> Git_Config_Repo
+    Config_Server -- Registers & Discovers --> Eureka_Server
+    Config_Server -- Sends Traces --> Zipkin_Server
+
+    Eureka_Server -- Sends Traces --> Zipkin_Server
+
+    style Eureka_Server fill:#ADD8E6,stroke:#333,stroke-width:2px
+    style Config_Server fill:#90EE90,stroke:#333,stroke-width:2px
+    style API_Gateway fill:#FFD700,stroke:#333,stroke-width:2px
+    style Product_Service fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style Order_Service fill:#DDA0DD,stroke:#333,stroke-width:2px
+    style Zipkin_Server fill:#B0E0E6,stroke:#333,stroke-width:2px
+    style Git_Config_Repo fill:#F5DEB3,stroke:#333,stroke-width:2px
