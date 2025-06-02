@@ -10,8 +10,6 @@ import java.util.function.Predicate;
 public class LambdaExpressions {
 
     public static void main(String[] args) {
-        System.out.println("--- Java 8: Lambda Expressions ---");
-
         System.out.println("\n+++ Example 1: Basic Lambda for a custom functional interface +++\n");
         basicLambdas();
 
