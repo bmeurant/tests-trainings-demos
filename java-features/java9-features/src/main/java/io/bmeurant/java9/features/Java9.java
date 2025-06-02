@@ -5,5 +5,9 @@ public class Java9 {
 
         System.out.println("\n--- Java 9: Private Interface Methods---\n");
         PrivateInterfaceMethods.main(args);
+
+        System.out.println("\n--- Java 9: Optional API Improvements ---\n");
+        OptionalImprovements.main(args);
+
     }
 }
