@@ -8,5 +8,8 @@ public class Java8 {
 
         System.out.println("\n--- Java 8: Stream API ---");
         StreamAPI.main(args);
+
+        System.out.println("\n--- Java 8: Default and Static Interface Methods ---");
+        DefaultAndStaticInterfaceMethods.main(args);
     }
 }
