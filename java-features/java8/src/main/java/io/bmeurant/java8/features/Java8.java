@@ -1,4 +1,4 @@
-package io.bmeurant.java.features.java8;
+package io.bmeurant.java8.features;
 
 public class Java8 {
     public static void main(String[] args) {

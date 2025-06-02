@@ -1,4 +1,4 @@
-package io.bmeurant.java.features.java8;
+package io.bmeurant.java8.features;
 
 import java.util.ArrayList;
 import java.util.Collections;
