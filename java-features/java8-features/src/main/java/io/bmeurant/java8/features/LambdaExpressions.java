@@ -95,15 +95,15 @@ public class LambdaExpressions {
         System.out.println("Predicate - Is 8 even? " + isEven.test(8));
     }
 
-    private static void basicLambdas() {
-        // Define a simple custom functional interface
-        // A functional interface is an interface with a single abstract method.
-        // The @FunctionalInterface annotation is optional but recommended for clarity and compiler checks.
-        @FunctionalInterface
-        interface MySimpleCalculator {
-            int operate(int a, int b);
-        }
+    // Define a simple custom functional interface
+    // A functional interface is an interface with a single abstract method.
+    // The @FunctionalInterface annotation is optional but recommended for clarity and compiler checks.
+    @FunctionalInterface
+    interface MySimpleCalculator {
+        int operate(int a, int b);
+    }
 
+    private static void basicLambdas() {
         // Implement the interface using a lambda expression for addition
         MySimpleCalculator adder = (a, b) -> a + b;
         System.out.println("Lambda (Addition): 10 + 5 = " + adder.operate(10, 5));
