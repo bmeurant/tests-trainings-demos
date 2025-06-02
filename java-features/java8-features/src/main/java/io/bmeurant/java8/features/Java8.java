@@ -11,5 +11,9 @@ public class Java8 {
 
         System.out.println("\n--- Java 8: Default and Static Interface Methods ---");
         DefaultAndStaticInterfaceMethods.main(args);
+
+        System.out.println("\n--- Java 8: Optional API ---");
+        OptionalAPI.main(args);
+
     }
 }
