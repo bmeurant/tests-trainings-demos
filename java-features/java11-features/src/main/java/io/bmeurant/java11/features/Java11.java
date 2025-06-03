@@ -10,5 +10,9 @@ public class Java11 {
 
         System.out.println("\n--- Java 11: Collection.toArray() Improvements ---");
         CollectionToArrayImprovements.main(args);
+
+        System.out.println("\n--- Java 11: Files.readString() & writeString() ---");
+        FilesReadWriteString.main(args);
+
     }
 }
