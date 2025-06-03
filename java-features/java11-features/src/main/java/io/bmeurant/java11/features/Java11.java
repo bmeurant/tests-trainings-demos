@@ -17,5 +17,8 @@ public class Java11 {
         System.out.println("\n--- Java 11: HTTP Client API (Standard) ---");
         HttpClientAPI.main(args);
 
+        System.out.println("\n--- Java 11: Nest-Based Access Control ---");
+        NestBasedAccessControl.main(args);
+
     }
 }
