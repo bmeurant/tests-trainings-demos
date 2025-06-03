@@ -16,7 +16,7 @@ public class OptionalImprovements {
         Optional<String> userNotFound = getUserNameById(2);
 
         // --- Example: isEmpty() (Java 11+) ---
-        System.out.println("\n--- isEmpty() ---");
+        System.out.println("\n+++ isEmpty() +++\n");
         System.out.println("userFound.isEmpty(): " + userFound.isEmpty());       // false
         System.out.println("userNotFound.isEmpty(): " + userNotFound.isEmpty()); // true
 

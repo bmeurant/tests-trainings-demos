@@ -7,5 +7,8 @@ public class Java11 {
 
         System.out.println("\n--- Java 11: Optional API Improvements ---");
         OptionalImprovements.main(args);
+
+        System.out.println("\n--- Java 11: Collection.toArray() Improvements ---");
+        CollectionToArrayImprovements.main(args);
     }
 }
