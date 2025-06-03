@@ -7,5 +7,8 @@ public class Java16 {
 
         System.out.println("\n--- Java 16: Pattern Matching for instanceof ---");
         PatternMatchingInstanceof.main(args);
+
+        System.out.println("\n--- Java 16: Strong Encapsulation ---");
+        StrongEncapsulation.main(args);
     }
 }
