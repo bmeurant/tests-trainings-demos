@@ -20,5 +20,8 @@ public class Java11 {
         System.out.println("\n--- Java 11: Nest-Based Access Control ---");
         NestBasedAccessControl.main(args);
 
+        System.out.println("\n--- Java 11: Local-Variable Syntax for Lambda Parameters (var) ---");
+        LambdaVarParameters.main(args);
+
     }
 }
