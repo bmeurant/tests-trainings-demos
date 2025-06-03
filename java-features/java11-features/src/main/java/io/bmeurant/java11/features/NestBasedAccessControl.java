@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class NestBasedAccessControl {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         // Demonstrate a simple nested class
         OuterClass outer = new OuterClass();
@@ -18,23 +18,25 @@ public class NestBasedAccessControl {
         inner.callPrivateMethodOfOuter();
         inner.accessPrivateFieldOfOuter();
 
-        // --- Reflection API additions related to Nests ---
-        System.out.println("\n--- Reflection API for Nests ---");
+        System.out.println("\n+++ Reflection API for Nests +++");
 
         Class<?> outerClass = OuterClass.class;
         Class<?> innerClass = OuterClass.InnerClass.class;
 
-        // 1. isNestmateOf(Class<?> c)
+        System.out.println("\n+++ Example 1: isNestmateOf(Class<?> c) +++\n");
+
         System.out.println("Is OuterClass a nestmate of InnerClass? " + outerClass.isNestmateOf(innerClass));
         System.out.println("Is InnerClass a nestmate of OuterClass? " + innerClass.isNestmateOf(outerClass));
         System.out.println("Is OuterClass a nestmate of String? " + outerClass.isNestmateOf(String.class));
 
-        // 2. getNestHost()
+        System.out.println("\n+++ Example 2: getNestHost() +++\n");
+
         System.out.println("Nest host of OuterClass: " + outerClass.getNestHost().getName());
         System.out.println("Nest host of InnerClass: " + innerClass.getNestHost().getName());
         // For a top-level class, getNestHost() returns itself. For nested classes, it returns the top-level class.
 
-        // 3. getNestMembers()
+        System.out.println("\n+++ Example 2: getNestMembers() +++\n");
+
         // Returns a Set of Class objects that are part of the same nest.
         Set<String> outerNestMembers = Arrays.stream(outerClass.getNestMembers())
                 .map(Class::getName)
