@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.bmeurant.java18.features","l":"Java18"},{"p":"io.bmeurant.java18.features","l":"SnippetDoc"},{"p":"io.bmeurant.java18.features","l":"UTF8ByDefault"}];updateSearchResults();
