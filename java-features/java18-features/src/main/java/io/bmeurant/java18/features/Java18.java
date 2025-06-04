@@ -10,5 +10,7 @@ public class Java18 {
         System.out.println("\n--- Java 18: Code Snippets in Java API Documentation (JEP 413) ---\n");
         SnippetDoc.main(args);
 
+        System.out.println("\n--- Java 18: Deprecate Finalizers (JEP 421) ---\n");
+        FinalizersDeprecated.main(args);
     }
 }
