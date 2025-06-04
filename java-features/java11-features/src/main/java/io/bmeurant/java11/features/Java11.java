@@ -14,13 +14,13 @@ public class Java11 {
         System.out.println("\n--- Java 11: Files.readString() & writeString() ---");
         FilesReadWriteString.main(args);
 
-        System.out.println("\n--- Java 11: HTTP Client API (Standard) ---");
+        System.out.println("\n--- Java 11: HTTP Client API (JEP 321) ---");
         HttpClientAPI.main(args);
 
-        System.out.println("\n--- Java 11: Nest-Based Access Control ---");
+        System.out.println("\n--- Java 11: Nest-Based Access Control (JEP 181) ---");
         NestBasedAccessControl.main(args);
 
-        System.out.println("\n--- Java 11: Local-Variable Syntax for Lambda Parameters (var) ---");
+        System.out.println("\n--- Java 11: Local-Variable Syntax for Lambda Parameters (var) (JEP 323) ---");
         LambdaVarParameters.main(args);
 
     }
