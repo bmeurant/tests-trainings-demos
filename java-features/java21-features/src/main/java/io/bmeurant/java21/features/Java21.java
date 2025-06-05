@@ -7,5 +7,8 @@ public class Java21 {
 
         System.out.println("\n--- Java 21: Virtual Threads (JEP 411) ---");
         PatternMatchingForSwitch.main(args);
+
+        System.out.println("\n--- Java 21: Record Patterns Comparison (JEP 440) ---");
+        RecordPatterns.main(args);
     }
 }
