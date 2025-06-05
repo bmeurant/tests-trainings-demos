@@ -10,5 +10,8 @@ public class Java21 {
 
         System.out.println("\n--- Java 21: Record Patterns Comparison (JEP 440) ---");
         RecordPatterns.main(args);
+
+        System.out.println("\n--- Java 21: Sequenced Collections Comparison (JEP 431) ---");
+        SequencedCollections.main(args);
     }
 }
