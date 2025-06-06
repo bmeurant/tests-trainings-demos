@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.bmeurant.java23.features","l":"Java23"},{"p":"io.bmeurant.java23.features","l":"MarkdownDocumentationComments"}];updateSearchResults();
