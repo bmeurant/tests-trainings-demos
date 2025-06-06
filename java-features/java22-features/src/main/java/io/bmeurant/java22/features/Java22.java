@@ -7,5 +7,8 @@ public class Java22 {
 
         System.out.println("\n--- Java 22: Foreign Function & Memory API (JEP 454) ---");
         FFMApi.main(args);
+
+        System.out.println("\n--- Java 22: Superforemen (JEP 447) - GA ---");
+        Superforemen.main(args);
     }
 }
