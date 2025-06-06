@@ -13,5 +13,8 @@ public class Java21 {
 
         System.out.println("\n--- Java 21: Sequenced Collections Comparison (JEP 431) ---");
         SequencedCollections.main(args);
+
+        System.out.println("\n--- Java 21: Key Encapsulation Mechanism API (JEP 435) - GA ---");
+        KeyEncapsulationMechanismAPI.main(args);
     }
 }
