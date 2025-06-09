@@ -10,7 +10,7 @@
 docker run hello-world
 ```
 
-** Result:**
+** Expected:**
 
 ```text
 Hello from Docker!
@@ -23,7 +23,7 @@ This message shows that your installation appears to be working correctly.
 docker compose version
 ```
 
-** Result:**
+** Expected:**
 
 ```text
 Docker Compose version v2.36.2
@@ -48,7 +48,7 @@ Kustomize Version: v5.6.0
 minikube version
 ```
 
-** Result:**
+** Expected:**
 
 ```text
 minikube version: v1.36.0
@@ -61,7 +61,7 @@ commit: f8f52f5de11fc6ad8244afac475e1d0f96841df1-dirty
 helm version
 ```
 
-** Result:**
+** Expected:**
 
 ```text
 version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5cf68ec1f8", GitTreeState:"clean", GoVersion:"go1.24.3"}
@@ -72,24 +72,93 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
 **Build and run a simple docker image**
 
 - build docker image
-- bind port 5000 to 8080
-- ``docker run`` to run docker image
-- navigate to http://localhost:8080
-- ``docker stop`` to stop the container
-- ``docker rm`` to delete the container
 
+  ```bash
+  docker build -t my-flask-app:latest .
+  ```
+  
+- check the image
+
+  ```bash
+  docker images
+  ```
+  **Expected:**
+
+  ```text
+  REPOSITORY                                TAG        IMAGE ID       CREATED          SIZE
+  my-flask-app                              latest     0f640016ee1e   25 minutes ago   129MB
+  ```
+  
+- run the docker image with port bindings
+
+  ```bash
+  docker run -p 8080:5000 --name my-flask-test-container my-flask-app:latest
+  ```
+  
+  **Expected:**
+
+  ```text
+  Failed to connect to Redis at localhost:6379. Error: Error 111 connecting to localhost:6379. Connection refused.
+  * Serving Flask app 'app'
+  * Debug mode: off
+    WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+  * Running on all addresses (0.0.0.0)
+  * Running on http://127.0.0.1:5000
+  * Running on http://10.10.0.3:5000
+  Press CTRL+C to quit
+    ```
+
+- navigate to http://localhost:8080
+
+  **Expected:**
+
+  ```html
+  Hello from containerized application! (Redis not connected)
+  ```
+  
+  ```text
+  10.10.0.1 - - [09/Jun/2025 22:09:37] "GET /hello HTTP/1.1" 500 -
+  10.10.0.1 - - [09/Jun/2025 22:09:37] "GET /favicon.ico HTTP/1.1" 404 -
+  ```
+
+- stop and Remove the container
+
+  ```bash
+  docker stop my-flask-test-container
+  docker rm my-flask-test-container
+  ```
+  
 # 3. Simple docker compose
 
-**Run a simple docker compose**
+- launch the Application with Docker Compose
 
-```bash
-docker compose up -d
-```
+  ```bash
+  docker compose up -d
+  ```
+  
+  **Expected:**
 
-- navigate to http://localhost:8080 and refresh the page
-- see the increased number of requests
-- ``dcker compose stop`` to stop the containers
-- ``docker compose down`` to remove containers and networks
+  ```text
+  ✔ web                                  Built                                                                                                          0.0s
+  ✔ Network containers-basics_default    Created                                                                                                        0.0s
+  ✔ Container containers-basics-redis-1  Started                                                                                                        0.4s
+  ✔ Container containers-basics-web-1    Started                                                                                                        0.5s
+  ```
+
+- navigate to http://localhost:8080 and refresh the page, see the increased number of requests
+- stop containers and networks
+
+    ```bash
+    docker compose down
+    ```
+  
+    **Expected:**
+
+    ```text
+    ✔ Container containers-basics-web-1    Removed                                                                                                       10.3s
+    ✔ Container containers-basics-redis-1  Removed                                                                                                        0.3s
+    ✔ Network containers-basics_default    Removed                                                                                                        0.1s
+    ```
 
 # 4. Orchestration with Minikube
 
