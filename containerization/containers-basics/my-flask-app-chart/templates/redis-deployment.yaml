@@ -1,0 +1,28 @@
+# redis-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  # Name of the Redis deployment, prefixed by the Helm release name
+  name: {{ .Release.Name }}-redis-deployment
+  labels:
+    app: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+spec:
+  # Number of Redis replicas, obtained from values.yaml
+  replicas: {{ .Values.redis.replicaCount }}
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis-container
+          # Redis Docker image for Redis and tag obtained from values.yaml
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          ports:
+            - containerPort: 6379

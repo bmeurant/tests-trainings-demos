@@ -1,0 +1,31 @@
+# flask-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-flask-app-deployment # Prefix name with release name for uniqueness
+  labels:
+    app: flask-app
+    app.kubernetes.io/instance: {{ .Release.Name }} # Standard Helm label for release identification
+spec:
+  replicas: {{ .Values.flaskApp.replicaCount }} # Get replica count from values.yaml
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app-container
+          image: "{{ .Values.flaskApp.image.repository }}:{{ .Values.flaskApp.image.tag }}" # Image and tag from values.yaml
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: {{ .Release.Name }}-redis-service # Reference Redis service using release name
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"

@@ -1,0 +1,18 @@
+# my-flask-app-chart/values.yaml
+# Default values for my-flask-app-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+flaskApp:
+  replicaCount: 2 # Default number of Flask app replicas
+  image:
+    repository: my-flask-app # Default Docker image name for Flask app
+    tag: latest # Default Docker image tag for Flask app
+  service:
+    type: LoadBalancer # Default Service type for Flask app (LoadBalancer for Minikube)
+
+redis:
+  replicaCount: 1 # Default number of Redis replicas
+  image:
+    repository: redis # Default Docker image name for Redis
+    tag: latest # Default Docker image tag for Redis

@@ -1,0 +1,16 @@
+# redis-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-redis-service
+  labels:
+    app: redis
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP

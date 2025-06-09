@@ -240,4 +240,123 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8h
     No resources found in default namespace.
     ```
+
+# 4. Orchestration with Helm
+
+- install the Helm chart
+
+  ```bash
+  helm install my-app-release ./my-flask-app-chart
+  ```
   
+  **Expected:**
+
+  ```text
+  NAME: my-app-release
+  LAST DEPLOYED: Tue Jun 10 01:00:09 2025
+  NAMESPACE: default
+  STATUS: deployed
+  REVISION: 1
+  TEST SUITE: None
+  ```
+  
+  ```bash
+  helm list
+  kubectl get all -l app.kubernetes.io/instance=my-app-release
+  ```
+  
+  ```text
+  NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                           APP VERSION
+  my-app-release  default         1               2025-06-10 01:16:23.239290437 +0200 CEST        deployed        my-flask-app-chart-0.1.0        1.16.0     
+  NAME                                       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+  service/my-app-release-flask-app-service   LoadBalancer   10.98.132.51     <pending>     80:30192/TCP   28s
+  service/my-app-release-redis-service       ClusterIP      10.100.219.237   <none>        6379/TCP       28s
+  
+  NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/my-app-release-flask-app-deployment   2/2     2            2           28s
+  deployment.apps/my-app-release-redis-deployment       1/1     1            1           28
+  ```
+
+- Upgrade the Helm Chart (scaling)
+
+    ```bash
+    helm upgrade my-app-release ./my-flask-app-chart --set flaskApp.replicaCount=3
+    ```
+    
+    **Expected:**
+    
+    ```text
+    Release "my-app-release" has been upgraded. Happy Helming!
+    NAME: my-app-release
+    LAST DEPLOYED: Tue Jun 10 01:07:43 2025
+    NAMESPACE: default
+    STATUS: deployed
+    REVISION: 2
+    TEST SUITE: None
+    ```
+    ```bash
+    helm list
+    kubectl get all -l app.kubernetes.io/instance=my-app-release
+    ```
+
+  ```text
+  NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+  my-app-release  default         6               2025-06-10 01:22:28.87395545 +0200 CEST deployed        my-flask-app-chart-0.1.0        1.16.0     
+  NAME                                       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+  service/my-app-release-flask-app-service   LoadBalancer   10.98.132.51     <pending>     80:30192/TCP   6m8s
+  service/my-app-release-redis-service       ClusterIP      10.100.219.237   <none>        6379/TCP       6m8s
+  
+  NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/my-app-release-flask-app-deployment   3/3     3            3           6m8s
+  deployment.apps/my-app-release-redis-deployment       1/1     1            1           6m8s
+  ```
+
+- rollback a Helm Chart
+
+    ```bash
+    helm rollback my-app-release 1
+    ```
+    
+    **Expected:**
+    
+    ```text
+    Rollback was a success! Happy Helming!
+    ```
+    
+    ```bash
+    helm list
+    kubectl get all -l app.kubernetes.io/instance=my-app-release
+    ```
+
+  ```text
+  NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+  my-app-release  default         7               2025-06-10 01:24:00.6256686 +0200 CEST  deployed        my-flask-app-chart-0.1.0        1.16.0     
+  NAME                                       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+  service/my-app-release-flask-app-service   LoadBalancer   10.98.132.51     <pending>     80:30192/TCP   7m43s
+  service/my-app-release-redis-service       ClusterIP      10.100.219.237   <none>        6379/TCP       7m43s
+  
+  NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/my-app-release-flask-app-deployment   2/2     2            2           7m43s
+  deployment.apps/my-app-release-redis-deployment       1/1     1            1           7m43s
+  ```
+- uninstall the Helm Chart
+
+  ```bash
+  helm uninstall my-app-release
+  ```
+    
+  **Expected:**
+    
+  ```text
+  release "my-app-release" uninstalled
+  ```
+    
+  ```bash
+  helm list
+  kubectl get all -l app.kubernetes.io/instance=my-app-release
+  ```
+
+  ```text
+  NAME    NAMESPACE       REVISION        UPDATED STATUS  CHART   APP VERSION
+  No resources found in default namespace.
+  ```

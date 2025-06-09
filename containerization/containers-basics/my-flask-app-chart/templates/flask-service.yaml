@@ -1,0 +1,16 @@
+# flask-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-flask-app-service
+  labels:
+    app: flask-app
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: {{ .Values.flaskApp.service.type }} # Service type from values.yaml (LoadBalancer for Minikube)
