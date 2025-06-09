@@ -1,0 +1,32 @@
+# flask-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app-deployment
+  labels:
+    app: flask-app
+spec:
+  replicas: 2 # Desired number of Pod replicas for the Flask application
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app-container
+          # Important: imagePullPolicy set to Never or IfNotPresent
+          # to prevent Kubernetes from trying to pull the image from a remote registry
+          image: my-flask-app:latest
+          imagePullPolicy: Never # Crucial for local images with minikube docker-env
+          ports:
+            - containerPort: 5000
+          env: # Environment variables for the Flask container
+            - name: REDIS_HOST
+              value: redis-service # References the Redis Service name in Kubernetes
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
