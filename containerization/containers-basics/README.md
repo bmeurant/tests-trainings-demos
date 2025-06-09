@@ -66,3 +66,12 @@ helm version
 ```text
 version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5cf68ec1f8", GitTreeState:"clean", GoVersion:"go1.24.3"}
 ```
+
+# 2. Simple docker image
+
+**Build and run a simple docker image**
+
+- build docker image
+- bind port 5000 to 8080
+- run docker image
+- navigate to http://localhost:8080
