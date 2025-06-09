@@ -1,0 +1,19 @@
+# docker-compose.yml
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  web: # Our Flask application service
+    build: . # Build the image from the Dockerfile in the current directory (context is project root)
+    ports:
+      - "8080:5000" # Map host port 8080 to container port 5000
+    environment: # Environment variables passed to the container
+      - REDIS_HOST=redis # The hostname for Redis, which is the service name in Docker Compose's internal network
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    depends_on: # Ensure redis service starts before web. This only guarantees start order, not readiness.
+      - redis
+
+  redis: # Our Redis database service
+    image: "redis:latest" # Use the official Redis image from Docker Hub
+    expose: # Expose port 6379 for internal container communication (not to host machine)
+      - "6379"

@@ -73,5 +73,20 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
 
 - build docker image
 - bind port 5000 to 8080
-- run docker image
+- ``docker run`` to run docker image
 - navigate to http://localhost:8080
+- ``docker stop`` to stop the container
+- ``docker rm`` to delete the container
+
+# 3. Simple docker compose
+
+**Run a simple docker compose**
+
+```bash
+docker compose up -d
+```
+
+- navigate to http://localhost:8080 and refresh the page
+- see the increased number of requests
+- ``dcker compose stop`` to stop the containers
+- ``docker compose down`` to remove containers and networks
