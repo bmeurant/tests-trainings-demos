@@ -814,3 +814,59 @@
   my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         7          129m
   my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         2          129m
   ```
+  
+# 8. Rollback Helm Chart
+
+- check revision history
+
+  ```bash
+  helm history my-todo-app
+  ```
+
+  **Expected output:**
+
+  ```text
+  REVISION        UPDATED                         STATUS          CHART                   APP VERSION     DESCRIPTION     
+  1               Tue Jun 10 19:24:41 2025        superseded      todo-api-chart-0.1.0    1.0.0           Install complete
+  2               Tue Jun 10 21:25:38 2025        deployed        todo-api-chart-0.1.0    1.0.0           Upgrade complete
+  ```
+  
+- rollback to previous revision
+
+  ```bash
+  helm rollback my-todo-app 1
+  ```
+  
+  **Expected output:**
+    
+  ```text
+  Rollback was a success! Happy Helming!
+  ```
+  
+- verify HPA
+
+  ```bash
+  kubectl get hpa -l app.kubernetes.io/instance=my-todo-app
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  NAME                             REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         5         2          133m
+  ```
+  
+- verify rollback
+
+  ```bash
+  helm history my-todo-app
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  REVISION        UPDATED                         STATUS          CHART                   APP VERSION     DESCRIPTION     
+  1               Tue Jun 10 19:24:41 2025        superseded      todo-api-chart-0.1.0    1.0.0           Install complete
+  2               Tue Jun 10 21:25:38 2025        superseded      todo-api-chart-0.1.0    1.0.0           Upgrade complete
+  3               Tue Jun 10 21:37:50 2025        deployed        todo-api-chart-0.1.0    1.0.0           Rollback to 1  
+  ```
