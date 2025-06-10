@@ -870,3 +870,59 @@
   2               Tue Jun 10 21:25:38 2025        superseded      todo-api-chart-0.1.0    1.0.0           Upgrade complete
   3               Tue Jun 10 21:37:50 2025        deployed        todo-api-chart-0.1.0    1.0.0           Rollback to 1  
   ```
+  
+# 9. Clean up
+
+- delete the Helm release
+
+  ```bash
+  helm uninstall my-todo-app
+  ```
+
+  **Expected output:**
+
+  ```text
+  release "my-todo-app" uninstalled
+  ```
+  
+- verify 
+
+  ```bash
+  helm list
+  kubectl get all -l app.kubernetes.io/instance=my-todo-app
+  kubectl get hpa -l app.kubernetes.io/instance=my-todo-app
+  ```
+
+  **Expected output:**
+
+  ```text
+  NAME    NAMESPACE       REVISION        UPDATED STATUS  CHART   APP VERSION
+  No resources found in default namespace.
+  No resources found in default namespace.
+  ```
+  
+- delete db secret
+
+  ```bash
+  kubectl delete secret todo-db-credentials
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  secret "todo-db-credentials" deleted
+  ```
+  
+- stop minikube
+
+  ```bash
+  minikube stop
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  ✋  Stopping node "minikube"  ...
+  🛑  Powering off "minikube" via SSH ...
+  🛑  1 node stopped.
+  ```
