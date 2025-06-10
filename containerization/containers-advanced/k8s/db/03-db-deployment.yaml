@@ -1,0 +1,56 @@
+# 03-db-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: todo_db
+            - name: POSTGRES_USER
+              value: user
+            # Reference the database password from a Kubernetes Secret.
+            # This is a secure way to pass sensitive information to containers.
+            # The Secret 'db-credentials' must exist before this Pod starts.
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials # Name of the Secret object
+                  key: db_password # Key within the Secret that holds the password
+          volumeMounts:
+            # Mount the Persistent Volume Claim (PVC) to store DB data.
+            # This ensures data persists even if the Pod is restarted or moved to another node.
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+            # Mount the init script. Will run only on first mount to an empty directory.
+            - name: db-init-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        # Define a volume that references the Persistent Volume Claim.
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc # Name of the PVC defined below
+        # Define a volume from a ConfigMap for the init script.
+        # ConfigMaps are used for non-sensitive configuration data.
+        - name: db-init-script
+          configMap:
+            name: postgres-init-script # Name of the ConfigMap
+            items:
+              - key: init.sql # Key within the ConfigMap
+                path: init.sql # Path relative to mountPath where the content will be written

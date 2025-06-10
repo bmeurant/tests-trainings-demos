@@ -1,0 +1,12 @@
+# 02-db-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim # Request for a Persistent Volume (PV) storage
+metadata:
+  name: postgres-pvc # Name of the PVC. Referenced by the Deployment.
+spec:
+  accessModes:
+    - ReadWriteOnce # This volume can be mounted as read-write by a single node.
+    # For Minikube, this is sufficient. In production, consider ReadWriteMany for shared storage.
+  resources:
+    requests:
+      storage: 1Gi # Request 1 Gigabyte of storage.

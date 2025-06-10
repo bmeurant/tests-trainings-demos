@@ -211,3 +211,300 @@
     ✔ Volume "containers-advanced_db_data"      Removed                                                                                                                                          0.0s
     ✔ Network containers-advanced_app_network   Removed                                                                                                                                          0.0s
     ```
+  
+# 4. Secrets and autoscalling management with Kubernetes
+
+- ensure minikube is running and Docker configured
+
+  ```bash
+  minikube start --driver=docker
+  eval $(minikube docker-env) # CRUCIAL pour que Minikube utilise votre image locale !
+  docker build -t todo-api:latest . # Rebuild your image if you haven't after eval
+  ```
+
+- create and deploy and configmap from sql initialization script
+
+  ```bash
+  kubectl create configmap postgres-init-script --from-file=db-init-scripts/init.sql 
+  ```
+  
+  **Expected output:**
+
+  ```text
+  configmap/postgres-init-script created
+  ```
+  
+- deploy db services with Kubernetes
+
+  ```bash
+  kubectl apply -f k8s/db
+  ```
+  
+  **Expected output:**
+    
+  ```text
+  secret/db-credentials created
+  persistentvolumeclaim/postgres-pvc created
+  deployment.apps/postgres-db created
+  service/postgres-db-service created
+  ```
+
+- check the status of the deployment
+  
+  ```bash
+  kubectl get deployments
+  kubectl get services
+  kubectl get pods
+  kubectl get configmaps
+  kubectl get pvc
+  kubectl get secrets
+  ```
+  
+  **Expected output:**
+    
+  ```text
+  NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+  postgres-db   1/1     1            1           24s
+  
+  NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+  kubernetes            ClusterIP   10.96.0.1       <none>        443/TCP    21h
+  postgres-db-service   ClusterIP   10.97.184.151   <none>        5432/TCP   24s
+  
+  NAME                           READY   STATUS    RESTARTS   AGE
+  postgres-db-676bf5457f-2mjrd   1/1     Running   0          24s
+  
+  NAME                   DATA   AGE
+  kube-root-ca.crt       1      21h
+  postgres-init-script   1      52s
+  
+  NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+  postgres-pvc   Bound    pvc-78ce787a-3812-4a0b-91e9-ad8909296130   1Gi        RWO            standard       <unset>                 25s
+  
+  NAME             TYPE     DATA   AGE
+  db-credentials   Opaque   1      25s
+  ```
+
+- deploy api services with Kubernetes
+
+  ```bash
+  kubectl apply -f k8s/api
+  ```
+
+  **Expected output:**
+
+  ```text
+  deployment.apps/todo-api-deployment created
+  service/todo-api-service created
+  ```
+
+- check the status of the deployment
+
+  ```bash
+  kubectl get deployments
+  kubectl get services
+  ```
+
+  **Expected output:**
+
+  ```text
+  NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+  postgres-db           1/1     1            1           3m19s
+  todo-api-deployment   1/1     1            1           52s
+  
+  NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+  kubernetes            ClusterIP   10.96.0.1       <none>        443/TCP    22h
+  postgres-db-service   ClusterIP   10.111.107.28   <none>        5432/TCP   3m20s
+  todo-api-service      ClusterIP   10.105.0.64     <none>        80/TCP     53s
+  ```
+ 
+- make API accessible from outside the cluster
+
+  ```bash
+  kubectl port-forward service/todo-api-service 8000:80
+  ```
+
+  **Expected output:**
+
+  ```text
+  Forwarding from 127.0.0.1:8000 -> 8000
+  Forwarding from [::1]:8000 -> 8000
+  ```
+  
+  Let this terminal open
+
+- Access the API from yur browser: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+  **Expected output:**
+
+  You should see the FastAPI Swagger UI with the endpoints available
+
+- use endpoints to create some tasks (``POST /tasks``) and list them (``GET /tasks``)
+
+  **Expected output:**
+
+  ```json
+  [
+    {
+      "title": "Learn Docker Compose Advanced",
+      "description": "Deep dive into volumes and networks",
+      "completed": true,
+      "id": 1
+    },
+    {
+      "title": "Master Multi-stage Builds",
+      "description": "Reduce image size significantly",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "task-1",
+      "description": "task-1",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "title": "task-2",
+      "description": "task-2",
+      "completed": true,
+      "id": 4
+    }
+  ]
+  ```
+
+- stop forwarding with ``Ctrl+C``
+- delete pod to simulate a restart or a relocation
+
+  ```bash
+  kubectl delete pod -l app=todo-api
+  ```
+
+  **Expected output:**
+
+  ```text
+  pod "todo-api-deployment-688b588b98-rfxzm" deleted
+  ```
+
+- wait for the pod to be automatically recreated, check with ``kubectl get pods``
+- relaunch port-forwarding
+
+  ```bash
+  kubectl port-forward service/todo-api-service 8000:80
+  ```
+
+- go to [http://localhost:8000/docs](http://localhost:8000/docs)
+- list tasks (``GET /tasks``)
+
+  **Expected output:**
+
+  Tasks are still there, even after stopping and starting the services
+
+  ```json
+  [
+    {
+      "title": "Learn Docker Compose Advanced",
+      "description": "Deep dive into volumes and networks",
+      "completed": true,
+      "id": 1
+    },
+    {
+      "title": "Master Multi-stage Builds",
+      "description": "Reduce image size significantly",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "task-1",
+      "description": "task-1",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "title": "task-2",
+      "description": "task-2",
+      "completed": true,
+      "id": 4
+    }
+  ]
+  ```  
+
+- enable metrics server
+
+  ```bash
+  minikube addons enable metrics-server
+  ```
+
+  **Expected output:**
+
+  ```text
+  The 'metrics-server' addon is enabled
+  ```
+  
+- apply HPA
+
+  ```bash
+  kubectl apply -f k8s/hpa
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  horizontalpodautoscaler.autoscaling/todo-api-hpa created
+  ```
+
+- check HPA & pods status
+
+  ```bash
+  kubectl get hpa
+  kubectl get pods
+  ```
+  
+  **Expected output:**
+    
+  ```text
+  NAME           REFERENCE                        TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%   2         5         2          6m16s
+  
+  NAME                                   READY   STATUS    RESTARTS   AGE
+  postgres-db-676bf5457f-2dzbf           1/1     Running   0          23m
+  todo-api-deployment-688b588b98-mkfx5   1/1     Running   0          6m1s
+  todo-api-deployment-688b588b98-r5pq4   1/1     Running   0          12m
+  ``
+  
+- install a load testing tool
+
+  ```bash
+  sudo apt install apache2-utils
+  ```
+
+- relaunch port-forwarding
+
+  ```bash
+  kubectl port-forward service/todo-api-service 8000:80
+  ```
+- run load test
+
+  ```bash
+  ab -n 10000 -c 50 http://localhost:8000/tasks/
+  ```
+
+- watch the HPA scale up the number of pods
+
+  ```bash
+  kubectl get hpa -w
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  NAME           REFERENCE                        TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%   2         5         2          61m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 139%/50%   2         5         2          63m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 139%/50%   2         5         4          63m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 139%/50%   2         5         5          63m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 242%/50%   2         5         5          64m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 96%/50%    2         5         5          65m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 6%/50%     2         5         5          66m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%     2         5         5          67m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%     2         5         5          70m
+  todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%     2         5         2          71m
+  ```

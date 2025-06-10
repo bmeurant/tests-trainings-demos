@@ -1,0 +1,44 @@
+# 01-api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-api-deployment
+  labels:
+    app: todo-api
+spec:
+  replicas: 1 # Start with 1 replica for initial testing without HPA
+  selector:
+    matchLabels:
+      app: todo-api
+  template:
+    metadata:
+      labels:
+        app: todo-api
+    spec:
+      containers:
+        - name: todo-api-container
+          image: todo-api:latest
+          imagePullPolicy: Never # Crucial for local images with Minikube
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: postgres-db-service
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: db_password
+            - name: DB_NAME
+              value: todo_db
+          resources: # REQUIRED for HPA to function based on CPU/Memory
+            requests:
+              cpu: "100m" # Request 100 millicores (0.1 CPU core)
+              memory: "128Mi" # Request 128 MiB
+            limits: # Optional but recommended: set upper limits
+              cpu: "500m" # Max 500 millicores
+              memory: "512Mi" # Max 512 MiB

@@ -1,0 +1,15 @@
+# 02-api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-api-service
+  labels:
+    app: todo-api
+spec:
+  selector:
+    app: todo-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
