@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
+from typing import Optional, List # <-- ADDED for Python 3.9 type hints
 import os
 import time
 import logging
@@ -40,13 +41,15 @@ class Task(Base):
 # --- Pydantic Schemas for FastAPI Request/Response Validation ---
 class TaskBase(BaseModel):
     title: str
-    description: str | None = None
+    # CORRECTION: Use typing.Optional for Python 3.9 compatibility (equivalent to str | None in 3.10+)
+    description: Optional[str] = None # <-- CORRECTED LINE
     completed: bool = False
 
 class TaskCreate(TaskBase):
     pass
 
-class Task(TaskBase):
+# Renamed to TaskSchema to avoid conflict with SQLAlchemy Task model
+class TaskSchema(TaskBase): # <-- RENAMED CLASS
     id: int
     class Config:
         from_attributes = True # updated from orm_mode=True in newer Pydantic versions
@@ -86,37 +89,40 @@ async def startup_db_client():
                 # In a real application, you might want to raise an exception or exit here
                 # For this example, we'll let the app start but it won't be functional.
                 break
-    else:
+    else: # This 'else' block executes if the loop completes without a 'return'
         logger.critical("Failed to connect to the database after multiple retries.")
 
 
 # --- API Endpoints ---
-@app.post("/tasks/", response_model=Task)
+@app.post("/tasks/", response_model=TaskSchema) # <-- CHANGED to TaskSchema
 def create_task(task: TaskCreate, db: Session = Depends(get_db)):
-    db_task = Task(**task.dict())
+    # Create a new Task instance based on SQLAlchemy model
+    # Use task.model_dump() instead of task.dict() for Pydantic v2+ compatibility
+    db_task = Task(**task.model_dump())
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
     return db_task
 
-@app.get("/tasks/", response_model=list[Task])
+@app.get("/tasks/", response_model=List[TaskSchema]) # <-- CHANGED to List[TaskSchema]
 def read_tasks(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     tasks = db.query(Task).offset(skip).limit(limit).all()
     return tasks
 
-@app.get("/tasks/{task_id}", response_model=Task)
+@app.get("/tasks/{task_id}", response_model=TaskSchema) # <-- CHANGED to TaskSchema
 def read_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
-@app.put("/tasks/{task_id}", response_model=Task)
+@app.put("/tasks/{task_id}", response_model=TaskSchema) # <-- CHANGED to TaskSchema
 def update_task(task_id: int, task: TaskCreate, db: Session = Depends(get_db)):
     db_task = db.query(Task).filter(Task.id == task_id).first()
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    for key, value in task.dict(exclude_unset=True).items():
+    # Use task.model_dump(exclude_unset=True) for Pydantic v2+ compatibility
+    for key, value in task.model_dump(exclude_unset=True).items(): # <-- CORRECTED LINE
         setattr(db_task, key, value)
     db.commit()
     db.refresh(db_task)

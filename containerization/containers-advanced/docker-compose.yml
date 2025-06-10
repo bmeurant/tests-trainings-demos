@@ -1,0 +1,47 @@
+# docker-compose.yml
+services:
+  todo-api:
+    build:
+      context: . # Build context is the root directory (where Dockerfile is)
+      dockerfile: Dockerfile # Specify the Dockerfile to use
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
+    environment:
+      - DB_HOST=db # Hostname for the database service within the Docker network
+      - DB_PORT=5432
+      - DB_USER=user
+      - DB_PASSWORD=password # For local dev, hardcoded. In K8s, this will be a Secret.
+      - DB_NAME=todo_db
+    depends_on:
+      - db # Ensures 'db' service starts before 'todo-api' (startup order only)
+    networks:
+      - app_network # Connects 'todo-api' to our custom network
+
+  db:
+    image: "postgres:14-alpine" # Use a lightweight PostgreSQL image
+    environment:
+      - POSTGRES_DB=todo_db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      # Named volume for persistent database data.
+      # The data will survive if the 'db' container is removed/recreated.
+      - db_data:/var/lib/postgresql/data
+      # Mount a custom initialization script.
+      # This script will be run automatically by Postgres when the container starts for the first time.
+      # It's a common pattern to initialize schemas or seed data.
+      - ./db-init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432" # Expose DB port to host for direct access/debugging (optional, but useful)
+    networks:
+      - app_network # Connects 'db' to our custom network
+
+volumes:
+  # Define the named volume. Docker manages its lifecycle.
+  db_data:
+
+networks:
+  # Define a custom bridge network.
+  # This provides an isolated network segment for our application services.
+  app_network:
+    driver: bridge # Default driver for user-defined networks

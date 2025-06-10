@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # --- Production Stage ---
 # This stage uses a much smaller base image, only containing what's necessary to run the app.
 # It copies artifacts (installed dependencies) from the 'builder' stage.
-FROM python:3.9-slim-buster AS production
+FROM python:3.9-slim-bookworm AS production
 
 # Set environment variables for the application
 ENV PYTHONUNBUFFERED 1
@@ -38,6 +38,11 @@ WORKDIR /app
 # This is the magic of multi-stage builds: we copy only the compiled/installed artifacts.
 # /usr/local/lib/python3.9/site-packages is where pip installs packages in this base image.
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+
+# *** NEW LINE ADDED HERE ***
+# Copy the Python executables (like uvicorn, pip, etc.) from the builder stage.
+# These are usually located in /usr/local/bin.
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 # Copy the application code.
 COPY main.py .
