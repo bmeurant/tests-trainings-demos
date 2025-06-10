@@ -724,3 +724,93 @@
     }
   ]
   ```
+
+# 7. Autoscalling with HPA & Helm
+
+- watch HPA status
+
+  ```bash
+  # Terminal 1: Watch HPA status
+  kubectl get hpa -w
+  ```
+  
+- watch API Pods
+
+  ```bash
+  # Terminal 2: Watch API pods
+  kubectl get pods -l app.kubernetes.io/instance=my-todo-app,app.kubernetes.io/component=api -w
+  ```
+
+- run load test
+
+  ```bash
+  ab -n 10000 -c 50 http://todo.local/tasks/
+  ```
+  
+  **Expected output:**
+
+  ```text
+  NAME                             REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         5         2          104m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 302%/50%   2         5         2          107m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 302%/50%   2         5         4          107m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 302%/50%   2         5         5          108m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 107%/50%   2         5         5          108m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 432%/50%   2         5         5          111m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 437%/50%   2         5         5          112m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 409%/50%   2         5         5          113m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         5         5          114m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         5         5          119m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         5         2          119m
+  ```
+
+- change maxReplicas and upgrade the Helm release
+
+  ```bash
+  helm upgrade my-todo-app ./todo-api-chart --set hpa.maxReplicas=7
+  ```
+
+  **Expected output:**
+
+  ```text
+  Release "my-todo-app" has been upgraded. Happy Helming!
+  NAME: my-todo-app
+  LAST DEPLOYED: Tue Jun 10 21:25:38 2025
+  NAMESPACE: default
+  STATUS: deployed
+  REVISION: 2
+  ```
+  
+- verify the upgrade
+
+  ```bash
+  kubectl get hpa -l app.kubernetes.io/instance=my-todo-app
+  ```
+
+  **Expected output:**
+
+  ```text
+  NAME                             REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         7         2          1m
+  ```
+
+- run load test
+
+  ```bash
+  ab -n 10000 -c 50 http://todo.local/tasks/
+  ```
+
+  **Expected output:**
+
+  ```text
+  NAME                             REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         7         2          121m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 343%/50%   2         7         2          122m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 343%/50%   2         7         4          122m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 343%/50%   2         7         7          123m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 71%/50%    2         7         7          123m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         7          124m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         7          128m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         7          129m
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%     2         7         2          129m
+  ```
