@@ -1,0 +1,17 @@
+# todo-api-chart/templates/api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-api-service
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+spec:
+  selector:
+    {{- include "todo-api-chart.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 8000
+  type: {{ .Values.service.type }}

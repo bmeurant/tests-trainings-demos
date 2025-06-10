@@ -1,0 +1,19 @@
+# todo-api-chart/templates/db-init-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-postgres-init-script
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS tasks (
+                                         id SERIAL PRIMARY KEY,
+                                         title VARCHAR(255) NOT NULL,
+        description TEXT,
+        completed BOOLEAN DEFAULT FALSE
+        );
+    INSERT INTO tasks (id, title, description, completed) VALUES
+                                                              (1, 'Deploy with Helm', 'Use Helm for package management', TRUE),
+                                                              (2, 'Test Helm Rollback', 'Verify previous version restoration', FALSE)
+        ON CONFLICT (id) DO NOTHING;

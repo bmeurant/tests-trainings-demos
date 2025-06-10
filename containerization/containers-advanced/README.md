@@ -561,12 +561,166 @@
 
 - go to [http://todo.local/docs](http://todo.local/docs)
 
-# 6. Clean up
-
-- clean
+- clean up
 
   ```bash
   minikube stop
   minikube delete
   docker image rm todo-api:latest
+  ```
+  
+# 6. Application deployment & management with Helm
+
+- create and start minikube cluster
+
+  ```bash
+  minikube start --driver=docker
+  eval $(minikube docker-env) # Allows Minikube to use local Docker images
+  minikube addons enable ingress # Enable Ingress addon if not already
+  minikube addons enable metrics-server # Enable Metrics Server addon (ESSENTIAL for HPA)
+  docker build -t todo-api:latest . # Rebuild your image if you haven't after eval
+  ```
+  
+- launch minikube tunnel (and keep it open)
+
+  ```bash
+  minikube tunnel
+  ```
+
+  **Expected output:**
+
+  ```text
+  ✅  Tunnel successfully started
+  📌  NOTE: Please do not close this terminal as this process must stay alive for the tunnel to be accessible ...
+  ```
+  
+- create a kubernetes secret for DB password
+
+  ```bash
+  # Define your DB password (replace "your_secret_password" with a strong password)
+  DB_PASSWORD="password"
+  
+  # Create the Kubernetes Secret (base64 encode the password)
+  kubectl create secret generic todo-db-credentials \
+  --from-literal=db_password=$(echo -n "$DB_PASSWORD" | base64)
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  secret/todo-db-credentials created
+  ```
+  
+  ```bash
+  # Verify the secret was created (optional, for checking only, do not log real secrets)
+  # kubectl get secret todo-db-credentials -o yaml
+  ```
+
+  **Expected output:**
+
+  ```yaml
+  apiVersion: v1
+  data:
+  db_password: Y0dGemMzZHZjbVE9
+  kind: Secret
+  metadata:
+  creationTimestamp: "2025-06-10T15:34:40Z"
+  name: todo-db-credentials
+  namespace: default
+  resourceVersion: "1014"
+  uid: 4faa5590-589d-49e5-89b1-1b6a4ad1fca8
+  type: Opaque
+  ```
+
+- install app
+
+  ```bash
+  helm install my-todo-app ./todo-api-chart
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  NAME: my-todo-app
+  LAST DEPLOYED: Tue Jun 10 19:24:41 2025
+  NAMESPACE: default
+  STATUS: deployed
+  REVISION: 1
+  ```
+  
+- verify deployment
+
+  ```bash
+  helm list
+  kubectl get all -l app.kubernetes.io/instance=my-todo-app
+  kubectl get hpa -l app.kubernetes.io/instance=my-todo-app
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
+  my-todo-app     default         1               2025-06-10 19:24:41.219342405 +0200 CEST        deployed        todo-api-chart-0.1.0    1.0.0      
+  
+  NAME                                                             READY   STATUS    RESTARTS   AGE
+  pod/my-todo-app-todo-api-chart-api-deployment-77f97d54c4-2vcdm   1/1     Running   0          2m7s
+  pod/my-todo-app-todo-api-chart-api-deployment-77f97d54c4-sxm9l   1/1     Running   0          2m7s
+  pod/my-todo-app-todo-api-chart-postgres-db-79f9cd7c9c-46v8p      1/1     Running   0          2m7s
+  
+  NAME                                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+  service/my-todo-app-todo-api-chart-api-service           ClusterIP   10.107.47.61    <none>        80/TCP     2m7s
+  service/my-todo-app-todo-api-chart-postgres-db-service   ClusterIP   10.102.74.226   <none>        5432/TCP   2m7s
+  
+  NAME                                                        READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/my-todo-app-todo-api-chart-api-deployment   2/2     2            2           2m7s
+  deployment.apps/my-todo-app-todo-api-chart-postgres-db      1/1     1            1           2m7s
+  
+  NAME                                                                   DESIRED   CURRENT   READY   AGE
+  replicaset.apps/my-todo-app-todo-api-chart-api-deployment-77f97d54c4   2         2         2       2m7s
+  replicaset.apps/my-todo-app-todo-api-chart-postgres-db-79f9cd7c9c      1         1         1       2m7s
+  
+  NAME                                                                 REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  horizontalpodautoscaler.autoscaling/my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         5         2          2m7s
+  
+  NAME                             REFERENCE                                              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+  my-todo-app-todo-api-chart-hpa   Deployment/my-todo-app-todo-api-chart-api-deployment   cpu: 2%/50%   2         5         2          2m8s
+  ```
+  
+- Access the API from yur browser: [http://todo.local/docs](http://todo.local/docs)
+
+  **Expected output:**
+  
+  You should see the FastAPI Swagger UI with the endpoints available
+
+- use endpoints to create some tasks (``POST /tasks``) and list them (``GET /tasks``)
+
+  **Expected output:**
+
+  ```json
+  [
+    {
+      "title": "Learn Docker Compose Advanced",
+      "description": "Deep dive into volumes and networks",
+      "completed": true,
+      "id": 1
+    },
+    {
+      "title": "Master Multi-stage Builds",
+      "description": "Reduce image size significantly",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "task-1",
+      "description": "task-1",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "title": "task-2",
+      "description": "task-2",
+      "completed": true,
+      "id": 4
+    }
+  ]
   ```

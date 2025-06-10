@@ -1,0 +1,13 @@
+# todo-api-chart/templates/db-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-postgres-pvc
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.db.persistence.storageSize }}

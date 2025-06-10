@@ -1,0 +1,23 @@
+# todo-api-chart/templates/hpa.yaml
+{{- if .Values.hpa.enabled -}} # <-- Conditional rendering
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-hpa
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "todo-api-chart.fullname" . }}-api-deployment # Target the API deployment
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+{{- end }}

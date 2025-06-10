@@ -1,0 +1,37 @@
+# todo-api-chart/values.yaml
+replicaCount: 2 # Default number of replicas for the API (HPA will override this if enabled)
+image:
+  repository: todo-api
+  tag: latest
+  pullPolicy: Never # Important for local images with Minikube
+
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP # Initially ClusterIP, we will use Ingress
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: "todo.local" # <--- This must match your hosts file entry
+  paths:
+    - path: /
+      pathType: Prefix
+
+db:
+  image: postgres:14-alpine
+  name: todo_db
+  user: user
+  port: 5432
+  persistence:
+    enabled: true
+    storageSize: 1Gi
+
+hpa: # Horizontal Pod Autoscaler configuration
+  enabled: true # Set to true to enable HPA
+  minReplicas: 2 # Minimum number of API pods
+  maxReplicas: 5 # Maximum number of API pods
+  targetCPUUtilizationPercentage: 50 # Target CPU utilization (in %)

@@ -1,0 +1,17 @@
+# todo-api-chart/templates/db-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-postgres-db-service
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  selector:
+    {{- include "todo-api-chart.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+  ports:
+    - protocol: TCP
+      port: {{ .Values.db.port }}
+      targetPort: {{ .Values.db.port }}
+  type: ClusterIP

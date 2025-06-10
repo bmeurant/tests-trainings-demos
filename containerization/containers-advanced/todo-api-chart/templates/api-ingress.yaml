@@ -1,0 +1,30 @@
+# todo-api-chart/templates/api-ingress.yaml
+{{- if .Values.ingress.enabled -}} # <-- Conditional rendering
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "todo-api-chart.fullname" . }}-ingress
+  labels:
+    {{- include "todo-api-chart.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }} # <-- Conditional block for annotations
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }} # <-- Conditional for ingressClassName
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host }} # <-- Uses the 'host' from values.yaml
+      http:
+        paths:
+          {{- range .Values.ingress.paths }} # <-- Loop through paths
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "todo-api-chart.fullname" $ }}-api-service
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end }}
+{{- end }}
