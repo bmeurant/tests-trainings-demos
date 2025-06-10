@@ -1,0 +1,21 @@
+# 09-api-ingress.yaml
+apiVersion: networking.k8s.io/v1 # API group and version for Ingress objects
+kind: Ingress # Type of Kubernetes object: Ingress.
+metadata:
+  name: todo-api-ingress
+  annotations:
+    # This annotation tells Nginx Ingress Controller to rewrite the path.
+    # Useful if your app expects requests at the root '/' but Ingress routes '/api'.
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: todo.local # Define a hostname for external access. You will map this to Minikube's IP in your hosts file.
+      http:
+        paths:
+          - path: / # The path to match incoming requests. All paths here.
+            pathType: Prefix # Matches paths starting with '/'. Other options: Exact, ImplementationSpecific.
+            backend: # Where to route the traffic
+              service:
+                name: todo-api-service # Name of the Kubernetes Service to route to
+                port:
+                  number: 80 # Port of the Service to route to

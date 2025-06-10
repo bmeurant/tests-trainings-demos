@@ -508,3 +508,65 @@
   todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%     2         5         5          70m
   todo-api-hpa   Deployment/todo-api-deployment   cpu: 2%/50%     2         5         2          71m
   ```
+
+# 5. External access with Kubernetes Ingress
+
+- activate ingress
+
+  ```bash
+  minikube addons enable ingress
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  The 'ingress' addon is enabled
+  ```
+  
+- deploy ingress
+
+  ```bash
+  kubectl apply -f k8s/ingress
+  ```
+  
+  **Expected output:**
+  
+  ```text
+  ingress.networking.k8s.io/todo-api-ingress created
+  ```
+  
+- configure `/etc/hosts` to access the API via `todo-api.local`
+
+  ```bash
+  echo "$(minikube ip) todo.local" | sudo tee -a /etc/hosts
+  ```
+  
+- launch minikube tunnel (and keep it open)
+
+    ```bash
+    minikube tunnel
+    ```
+  
+- test in console
+
+  ```bash
+  curl -L http://todo.local/tasks
+  ```
+    
+  **Expected output:**
+  
+  ```json
+  [{"title":"Learn Docker Compose Advanced","description":"Deep dive into volumes and networks","completed":true,"id":1},{"title":"Master Multi-stage Builds","description":"Reduce image size significantly","completed":false,"id":2},{"title":"task-1","description":"task-1","completed":false,"id":3},{"title":"task-2","description":"task-2","completed":true,"id":4}]
+  ```
+
+- go to [http://todo.local/docs](http://todo.local/docs)
+
+# 6. Clean up
+
+- clean
+
+  ```bash
+  minikube stop
+  minikube delete
+  docker image rm todo-api:latest
+  ```

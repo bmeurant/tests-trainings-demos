@@ -236,7 +236,7 @@
 
   ```text
   NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-  my-app-release  default         6               2025-06-10 01:22:28.87395545 +0200 CEST deployed        my-flask-app-chart-0.1.0        1.16.0     
+  my-app-release  default         2               2025-06-10 01:22:28.87395545 +0200 CEST deployed        my-flask-app-chart-0.1.0        1.16.0     
   NAME                                       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
   service/my-app-release-flask-app-service   LoadBalancer   10.98.132.51     <pending>     80:30192/TCP   6m8s
   service/my-app-release-redis-service       ClusterIP      10.100.219.237   <none>        6379/TCP       6m8s
@@ -265,7 +265,7 @@
 
   ```text
   NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-  my-app-release  default         7               2025-06-10 01:24:00.6256686 +0200 CEST  deployed        my-flask-app-chart-0.1.0        1.16.0     
+  my-app-release  default         3               2025-06-10 01:24:00.6256686 +0200 CEST  deployed        my-flask-app-chart-0.1.0        1.16.0     
   NAME                                       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
   service/my-app-release-flask-app-service   LoadBalancer   10.98.132.51     <pending>     80:30192/TCP   7m43s
   service/my-app-release-redis-service       ClusterIP      10.100.219.237   <none>        6379/TCP       7m43s
