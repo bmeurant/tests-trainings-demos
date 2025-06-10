@@ -1,71 +1,6 @@
-# 1. Install tools
+# 1. Prerequisites
 
-[script](./tools/install.sh)
-
-## Verify installation
-
-### Docker
-
-```bash
-docker run hello-world
-```
-
-** Expected:**
-
-```text
-Hello from Docker!
-This message shows that your installation appears to be working correctly.
-```
-
-### Docker Compose
-
-```bash
-docker compose version
-```
-
-** Expected:**
-
-```text
-Docker Compose version v2.36.2
-```
-
-### Kubernetes
-
-```bash
-kubectl version --client
-```
-
-** Result:**
-
-```text
-Client Version: v1.33.1
-Kustomize Version: v5.6.0
-```
-
-### Minikube
-
-```bash
-minikube version
-```
-
-** Expected:**
-
-```text
-minikube version: v1.36.0
-commit: f8f52f5de11fc6ad8244afac475e1d0f96841df1-dirty
-```
-
-### Helm
-
-```bash
-helm version
-```
-
-** Expected:**
-
-```text
-version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5cf68ec1f8", GitTreeState:"clean", GoVersion:"go1.24.3"}
-```
+[Install tools](../README.md)
 
 # 2. Simple docker image
 
@@ -82,7 +17,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
   ```bash
   docker images
   ```
-  **Expected:**
+  **Expected output:**
 
   ```text
   REPOSITORY                                TAG        IMAGE ID       CREATED          SIZE
@@ -95,7 +30,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
   docker run -p 8080:5000 --name my-flask-test-container my-flask-app:latest
   ```
   
-  **Expected:**
+  **Expected output:**
 
   ```text
   Failed to connect to Redis at localhost:6379. Error: Error 111 connecting to localhost:6379. Connection refused.
@@ -110,7 +45,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
 
 - navigate to http://localhost:8080
 
-  **Expected:**
+  **Expected output:**
 
   ```html
   Hello from containerized application! (Redis not connected)
@@ -136,7 +71,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
   docker compose up -d
   ```
   
-  **Expected:**
+  **Expected output:**
 
   ```text
   ✔ web                                  Built                                                                                                          0.0s
@@ -152,7 +87,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     docker compose down
     ```
   
-    **Expected:**
+    **Expected output:**
 
     ```text
     ✔ Container containers-basics-web-1    Removed                                                                                                       10.3s
@@ -189,7 +124,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     kubectl get services
     kubectl get pods
     ```
-  **Expected:**
+  **Expected output:**
 
   ```text
   NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
@@ -210,7 +145,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     minikube service flask-app-service --url
     ```
     
-    **Expected:**
+    **Expected output:**
     
     ```text
     http://127.0.0.1:37363
@@ -232,7 +167,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     kubectl get pods
     ```
   
-    **Expected:**
+    **Expected output:**
 
     ```text
     No resources found in default namespace.
@@ -249,7 +184,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
   helm install my-app-release ./my-flask-app-chart
   ```
   
-  **Expected:**
+  **Expected output:**
 
   ```text
   NAME: my-app-release
@@ -283,7 +218,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     helm upgrade my-app-release ./my-flask-app-chart --set flaskApp.replicaCount=3
     ```
     
-    **Expected:**
+    **Expected output:**
     
     ```text
     Release "my-app-release" has been upgraded. Happy Helming!
@@ -317,7 +252,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
     helm rollback my-app-release 1
     ```
     
-    **Expected:**
+    **Expected output:**
     
     ```text
     Rollback was a success! Happy Helming!
@@ -345,7 +280,7 @@ version.BuildInfo{Version:"v3.18.2", GitCommit:"04cad4610054e5d546aa5c5d9c1b1d5c
   helm uninstall my-app-release
   ```
     
-  **Expected:**
+  **Expected output:**
     
   ```text
   release "my-app-release" uninstalled
