@@ -1,0 +1,25 @@
+# Dockerfile.no-multistage
+# This Dockerfile will result in a larger image size because it includes build dependencies.
+FROM python:3.9
+
+# Set environment variables for non-interactive commands
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory
+WORKDIR /app
+
+# Copy all application files and requirements
+COPY requirements.txt ./
+COPY main.py .
+
+# Install Python dependencies.
+# --no-cache-dir: Reduces image size by not storing pip's cache.
+# --upgrade pip: Ensures pip itself is up-to-date.
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Expose the port on which the FastAPI application will listen.
+EXPOSE 8000
+
+# Define the command to run the application when the container starts.
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
