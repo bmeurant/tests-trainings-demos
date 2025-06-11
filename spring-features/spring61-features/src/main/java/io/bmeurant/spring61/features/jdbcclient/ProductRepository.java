@@ -25,6 +25,17 @@ public class ProductRepository {
         this.jdbcClient = jdbcClient;
     }
 
+    // THIS IS JUST FOR DEMOSTRATION, DO NOT USE IN PRODUCTION FOR DDL
+    void createProductsTable() {
+        jdbcClient.sql("""
+                CREATE TABLE products (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    price DOUBLE NOT NULL
+                )
+                """).update();
+    }
+
     /**
      * Finds all products.
      *
