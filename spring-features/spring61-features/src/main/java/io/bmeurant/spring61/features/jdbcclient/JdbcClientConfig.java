@@ -12,5 +12,5 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "io.bmeurant.spring61.features.jdbcclient")
 // Scans for @Component, @Service, @Repository, etc.
 public class JdbcClientConfig {
-    // No other beans needed for this demo besides the AppProperties.
+    // No other beans needed for this demo
 }
