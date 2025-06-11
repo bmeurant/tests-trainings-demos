@@ -1,4 +1,4 @@
-package io.bmeurant.java61.features.records;
+package io.bmeurant.spring61.features.records;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

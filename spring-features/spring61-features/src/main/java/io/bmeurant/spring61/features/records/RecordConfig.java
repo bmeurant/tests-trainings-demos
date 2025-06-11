@@ -1,4 +1,4 @@
-package io.bmeurant.java61.features.records;
+package io.bmeurant.spring61.features.records;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
