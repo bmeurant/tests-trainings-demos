@@ -1,0 +1,4 @@
+| Topic                  | Description                           | Old Practice | New Practice                             | Test / Class Example                                                                                   |
+|------------------------|---------------------------------------|--------------|------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| ⚙️ Java 17+ required   | Requires JDK 17 minimum               | Java 8/11    | Java 17+                                 |                                                                                                        |
+| ✅ Annotation-only mode | XML is no longer officially supported | `.xml` files | `@Configuration`, `@ComponentScan`, etc. | [`ApplicationConfig.java`](./src/main/java/io/bmeurant/spring6/features/config/ApplicationConfig.java) |
