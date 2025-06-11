@@ -1,6 +1,5 @@
-package io.bmeurant.spring6.features.service;
+package io.bmeurant.spring6.features.jakarta;
 
-import io.bmeurant.spring6.features.config.ApplicationConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;

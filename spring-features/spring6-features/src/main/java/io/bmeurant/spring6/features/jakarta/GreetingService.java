@@ -1,4 +1,4 @@
-package io.bmeurant.spring6.features.service;
+package io.bmeurant.spring6.features.jakarta;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
