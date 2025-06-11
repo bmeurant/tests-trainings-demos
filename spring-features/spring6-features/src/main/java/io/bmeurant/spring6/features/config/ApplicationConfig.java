@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * It tells Spring to scan the specified package for components annotated with @Component, @Service, etc.
  */
 @Configuration
-@ComponentScan("io.bmeurant.spring6.features.config")
+@ComponentScan("io.bmeurant.spring6.features.service")
 public class ApplicationConfig {
     // No explicit bean definitions here: components will be auto-detected.
 }
