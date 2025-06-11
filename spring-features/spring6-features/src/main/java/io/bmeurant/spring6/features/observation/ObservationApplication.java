@@ -1,4 +1,4 @@
-package io.bmeurant.spring61.features.observation;
+package io.bmeurant.spring6.features.observation;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

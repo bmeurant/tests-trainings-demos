@@ -1,4 +1,4 @@
-package io.bmeurant.spring61.features.observation;
+package io.bmeurant.spring6.features.observation;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;

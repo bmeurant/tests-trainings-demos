@@ -1,4 +1,4 @@
-package io.bmeurant.spring61.features.observation;
+package io.bmeurant.spring6.features.observation;
 
 import brave.Tracing;
 import brave.sampler.Sampler;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * Manually sets up the ObservationRegistry and a Brave Tracer.
  */
 @Configuration
-@ComponentScan(basePackages = "io.bmeurant.spring61.features.observation")
+@ComponentScan(basePackages = "io.bmeurant.spring6.features.observation")
 public class ObservationConfig {
 
     /**
