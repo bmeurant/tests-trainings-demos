@@ -1,5 +1,6 @@
 package io.bmeurant.spring60.features;
 
+import io.bmeurant.spring60.features.jakarta.JakartaValidationRunner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,11 @@ public class MainApplication {
         // Create a Spring application context based on annotation configuration
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainApplication.class)) {
             logger.info("Spring Application Context initialized successfully.");
-            // No features to demonstrate yet, just the basic context.
+
+            logger.info("--- Demonstration of Jakarta EE Migration (javax -> jakarta) ---");
+            JakartaValidationRunner jakartaValidationRunner = context.getBean(JakartaValidationRunner.class);
+            jakartaValidationRunner.runValidationDemo();
+            Thread.sleep(100); // Give time for logs to appear
         }
         logger.info("Spring Framework 6.0 Features Demo Application Finished.");
     }
