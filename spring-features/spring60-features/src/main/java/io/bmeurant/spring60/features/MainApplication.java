@@ -11,7 +11,8 @@ import java.util.logging.Logger;
  * Main application class to demonstrate Spring Framework 6.0 features.
  * This sets up a pure Spring Framework context without Spring Boot auto-configuration.
  */
-@Configuration // Marks this class as a source of bean definitions
+@Configuration(proxyBeanMethods = false)
+// Marks this class as a source of bean definitions, disable proxying for native compatibility
 @ComponentScan("io.bmeurant.spring60.features") // Scans for Spring components within this package
 public class MainApplication {
 

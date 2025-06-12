@@ -1,0 +1,279 @@
+[
+{
+  "name":"[Ljava.lang.Class;"
+},
+{
+  "name":"[Ljava.lang.String;"
+},
+{
+  "name":"[Lorg.springframework.core.annotation.AnnotationAttributes;"
+},
+{
+  "name":"[Lorg.springframework.util.ConcurrentReferenceHashMap$Segment;"
+},
+{
+  "name":"ch.qos.logback.classic.Logger"
+},
+{
+  "name":"com.sun.el.ExpressionFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"io.bmeurant.spring60.features.MainApplication",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"io.bmeurant.spring60.features.jakarta.JakartaValidationRunner",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["io.bmeurant.spring60.features.jakarta.JakartaValidationService"] }]
+},
+{
+  "name":"io.bmeurant.spring60.features.jakarta.JakartaValidationService",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"io.bmeurant.spring60.features.jakarta.UserForm",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"jakarta.annotation$ManagedBean"
+},
+{
+  "name":"jakarta.annotation$PostConstruct"
+},
+{
+  "name":"jakarta.annotation.ManagedBean"
+},
+{
+  "name":"jakarta.annotation.PostConstruct"
+},
+{
+  "name":"jakarta.inject$Inject"
+},
+{
+  "name":"jakarta.inject$Named"
+},
+{
+  "name":"jakarta.inject$Provider"
+},
+{
+  "name":"jakarta.inject$Qualifier"
+},
+{
+  "name":"jakarta.inject.Inject"
+},
+{
+  "name":"jakarta.inject.Named"
+},
+{
+  "name":"jakarta.inject.Provider"
+},
+{
+  "name":"jakarta.inject.Qualifier"
+},
+{
+  "name":"jakarta.persistence$EntityManagerFactory"
+},
+{
+  "name":"jakarta.persistence.EntityManagerFactory"
+},
+{
+  "name":"jakarta.persistence.Persistence"
+},
+{
+  "name":"jakarta.validation.constraints.Email",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"flags","parameterTypes":[] }, {"name":"groups","parameterTypes":[] }, {"name":"message","parameterTypes":[] }, {"name":"payload","parameterTypes":[] }, {"name":"regexp","parameterTypes":[] }]
+},
+{
+  "name":"jakarta.validation.constraints.NotBlank",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"groups","parameterTypes":[] }, {"name":"message","parameterTypes":[] }, {"name":"payload","parameterTypes":[] }]
+},
+{
+  "name":"jakarta.validation.constraints.Size",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"groups","parameterTypes":[] }, {"name":"max","parameterTypes":[] }, {"name":"message","parameterTypes":[] }, {"name":"min","parameterTypes":[] }, {"name":"payload","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Class",
+  "methods":[{"name":"getModule","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Module",
+  "methods":[{"name":"isNamed","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"java.lang.annotation.Documented",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.annotation.Repeatable",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.annotation.Retention",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.annotation.Target",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicBoolean",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"javafx.beans.value.ObservableValue"
+},
+{
+  "name":"javax.annotation$PostConstruct"
+},
+{
+  "name":"javax.annotation.PostConstruct"
+},
+{
+  "name":"javax.inject$Inject"
+},
+{
+  "name":"javax.inject.Inject"
+},
+{
+  "name":"javax.money.MonetaryAmount"
+},
+{
+  "name":"kotlin$Metadata"
+},
+{
+  "name":"kotlin.Metadata"
+},
+{
+  "name":"kotlin.reflect.full$KClasses"
+},
+{
+  "name":"kotlin.reflect.full.KClasses"
+},
+{
+  "name":"org.apache.log4j.LogManager"
+},
+{
+  "name":"org.apache.logging.log4j.Logger"
+},
+{
+  "name":"org.apache.logging.log4j.spi.ExtendedLogger"
+},
+{
+  "name":"org.apache.logging.slf4j.SLF4JProvider"
+},
+{
+  "name":"org.eclipse.core.runtime$FileLocator"
+},
+{
+  "name":"org.eclipse.core.runtime.FileLocator"
+},
+{
+  "name":"org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.validator.internal.constraintvalidators.bv.NotBlankValidator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.validator.internal.constraintvalidators.bv.size.SizeValidatorForCharSequence",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Log_$logger",
+  "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Log_$logger_en"
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Log_$logger_en_GB"
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Messages_$bundle",
+  "fields":[{"name":"INSTANCE"}]
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Messages_$bundle_en"
+},
+{
+  "name":"org.hibernate.validator.internal.util.logging.Messages_$bundle_en_GB"
+},
+{
+  "name":"org.jboss.logmanager.LogManager"
+},
+{
+  "name":"org.joda.time.ReadableInstant"
+},
+{
+  "name":"org.slf4j.Logger"
+},
+{
+  "name":"org.slf4j.spi.LocationAwareLogger"
+},
+{
+  "name":"org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.context.annotation.AnnotationScopeMetadataResolver",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.context.annotation.ComponentScan",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.context.annotation.Configuration",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.context.annotation.ConfigurationClassPostProcessor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.context.event.DefaultEventListenerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.context.event.EventListenerMethodProcessor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.core.annotation.AliasFor",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.stereotype.Component",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.stereotype.Indexed",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.stereotype.Service",
+  "queryAllDeclaredMethods":true
+}
+]

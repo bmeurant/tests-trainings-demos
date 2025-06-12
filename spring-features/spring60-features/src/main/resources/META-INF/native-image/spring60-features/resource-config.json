@@ -1,0 +1,19 @@
+{
+  "resources":{
+  "includes":[{
+    "pattern":"\\QMETA-INF/services/jakarta.validation.spi.ValidationProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/spring.factories\\E"
+  }, {
+    "pattern":"\\Qio/bmeurant/spring60/features/\\E"
+  }, {
+    "pattern":"\\Qio/bmeurant/spring60/features/jakarta/JakartaValidationRunner.class\\E"
+  }, {
+    "pattern":"\\Qio/bmeurant/spring60/features/jakarta/JakartaValidationService.class\\E"
+  }, {
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt67b/uprops.icu\\E"
+  }, {
+    "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
+  }]},
+  "bundles":[]
+}
