@@ -3,6 +3,7 @@ package io.bmeurant.spring60.features;
 import io.bmeurant.spring60.features.httpinterface.HttpInterfaceRunner;
 import io.bmeurant.spring60.features.jakarta.JakartaValidationRunner;
 import io.bmeurant.spring60.features.logging.LoggingRunner;
+import io.bmeurant.spring60.features.observability.ObservabilityRunner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,11 @@ public class MainApplication {
             logger.info("\n--- Demonstration of New Logging Infrastructure ---");
             LoggingRunner logDemoService = context.getBean(LoggingRunner.class);
             logDemoService.performLoggingOperations();
+
+            // --- Demonstration of Observability (Micrometer Integration) via a dedicated runner ---
+            logger.info("Triggering Observability Demos...");
+            ObservabilityRunner observabilityRunner = context.getBean(ObservabilityRunner.class);
+            observabilityRunner.runObservabilityDemos();
         }
         logger.info("Spring Framework 6.0 Features Demo Application Finished.");
     }
