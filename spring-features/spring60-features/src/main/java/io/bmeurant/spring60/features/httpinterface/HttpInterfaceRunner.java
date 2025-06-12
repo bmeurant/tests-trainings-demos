@@ -27,7 +27,7 @@ public class HttpInterfaceRunner {
      * Runs the HTTP Interface demonstration by making sample API calls.
      * This method is now called explicitly from MainApplication.
      */
-    public void runHttpInterfaceDemo() {
+    public void runHttpInterfaceDemo() throws InterruptedException {
         logger.info("Calling HTTP Interface demo...");
 
         // Example: Get a post by ID
@@ -42,6 +42,8 @@ public class HttpInterfaceRunner {
                 .doOnNext(created -> logger.info("Created Post: " + created))
                 .doOnError(error -> logger.severe("Error creating post: " + error.getMessage()))
                 .block();
+
+        Thread.sleep(2000); // Give time for async HTTP calls
     }
 
     /**

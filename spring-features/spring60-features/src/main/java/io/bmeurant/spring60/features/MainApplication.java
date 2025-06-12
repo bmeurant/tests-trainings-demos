@@ -2,6 +2,7 @@ package io.bmeurant.spring60.features;
 
 import io.bmeurant.spring60.features.httpinterface.HttpInterfaceRunner;
 import io.bmeurant.spring60.features.jakarta.JakartaValidationRunner;
+import io.bmeurant.spring60.features.logging.LoggingRunner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -29,13 +30,16 @@ public class MainApplication {
             logger.info("--- Demonstration of Jakarta EE Migration (javax -> jakarta) ---");
             JakartaValidationRunner jakartaValidationRunner = context.getBean(JakartaValidationRunner.class);
             jakartaValidationRunner.runValidationDemo();
-            Thread.sleep(100); // Give time for logs to appear
 
             // --- Demoing HTTP Interfaces (for declarative clients) ---
             logger.info("\n--- Demonstration of HTTP Interfaces ---");
             HttpInterfaceRunner httpInterfaceRunner = context.getBean(HttpInterfaceRunner.class);
             httpInterfaceRunner.runHttpInterfaceDemo();
-            Thread.sleep(2000); // Give time for async HTTP calls
+
+            // --- Demoing Logging Infrastructure ---
+            logger.info("\n--- Demonstration of New Logging Infrastructure ---");
+            LoggingRunner logDemoService = context.getBean(LoggingRunner.class);
+            logDemoService.performLoggingOperations();
         }
         logger.info("Spring Framework 6.0 Features Demo Application Finished.");
     }
