@@ -1,5 +1,6 @@
 package io.bmeurant.spring60.features;
 
+import io.bmeurant.spring60.features.httpinterface.HttpInterfaceRunner;
 import io.bmeurant.spring60.features.jakarta.JakartaValidationRunner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +30,12 @@ public class MainApplication {
             JakartaValidationRunner jakartaValidationRunner = context.getBean(JakartaValidationRunner.class);
             jakartaValidationRunner.runValidationDemo();
             Thread.sleep(100); // Give time for logs to appear
+
+            // --- Demoing HTTP Interfaces (for declarative clients) ---
+            logger.info("\n--- Demonstration of HTTP Interfaces ---");
+            HttpInterfaceRunner httpInterfaceRunner = context.getBean(HttpInterfaceRunner.class);
+            httpInterfaceRunner.runHttpInterfaceDemo();
+            Thread.sleep(2000); // Give time for async HTTP calls
         }
         logger.info("Spring Framework 6.0 Features Demo Application Finished.");
     }
