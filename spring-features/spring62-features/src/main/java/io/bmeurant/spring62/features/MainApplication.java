@@ -2,6 +2,7 @@ package io.bmeurant.spring62.features;
 
 import io.bmeurant.spring62.features.autowiring.AutowiringRunner;
 import io.bmeurant.spring62.features.fallback.FallbackRunner;
+import io.bmeurant.spring62.features.spel.SpelRunner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.logging.Logger;
@@ -26,6 +27,12 @@ public class MainApplication {
             logger.info("\n--- Demonstration of @Fallback Annotation (Spring Framework 6.2) ---");
             FallbackRunner fallbackRunner = context.getBean(FallbackRunner.class);
             fallbackRunner.runDemo();
+            Thread.sleep(100); // Give some time for logs to settle
+
+            // --- Demonstration of Spring Expression Language (SpEL) Improvements ---
+            logger.info("\n--- Demonstration of Spring Expression Language (SpEL) Improvements (Spring Framework 6.2) ---");
+            SpelRunner spelRunner = context.getBean(SpelRunner.class);
+            spelRunner.runDemo();
             Thread.sleep(100); // Give some time for logs to settle
 
             logger.info("Spring Framework 6.2 Features Demo Application Finished.");
