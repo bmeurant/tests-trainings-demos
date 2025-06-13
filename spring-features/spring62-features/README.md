@@ -1,3 +1,4 @@
-| Topic      | New Feature                                               | Test / Class Example                                                                                |
-|------------|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| Autowiring | Improved interaction between `@Qualifier` and `@Priority` | [`AutowirinRunner`](./src/main/java/io/bmeurant/spring62/features/autowiring/AutowiringRunner.java) |
+| Topic                               | New Feature                                               | Test / Class Example                                                                                |
+|-------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| Autowiring                          | Improved interaction between `@Qualifier` and `@Priority` | [`AutowirinRunner`](./src/main/java/io/bmeurant/spring62/features/autowiring/AutowiringRunner.java) |
+| @Fallback (new injection mechanism) | `@Fallback` to define alternative injection candidates    | [`FallbackRunner`](./src/main/java/io/bmeurant/spring62/features/fallback/FallbackRunner.java)      |
