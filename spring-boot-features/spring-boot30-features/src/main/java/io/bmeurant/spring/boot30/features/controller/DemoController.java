@@ -2,12 +2,11 @@ package io.bmeurant.spring.boot30.features.controller;
 
 import io.bmeurant.spring.boot30.features.model.Product;
 import io.bmeurant.spring.boot30.features.repository.ProductRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,7 +24,7 @@ public class DemoController {
 
     @GetMapping("/hello")
     public String sayHello() {
-        return "Hello from Spring Boot 2.7.18!";
+        return "Hello from Spring Boot 3.0.13!";
     }
 
     @GetMapping("/products")
