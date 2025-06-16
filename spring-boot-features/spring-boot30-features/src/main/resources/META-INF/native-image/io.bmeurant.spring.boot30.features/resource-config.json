@@ -1,0 +1,7 @@
+{
+  "resources": [
+    {
+      "pattern": "\\Qkeystore.p12\\E"
+    }
+  ]
+}

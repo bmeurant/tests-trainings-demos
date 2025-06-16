@@ -7,6 +7,14 @@
 # Compiled class file
 *.class
 
+# Target directories
+target/
+
+# Mvn binaries
+.mvn/
+mvnw
+mvnw.cmd
+
 # Log file
 *.log
 
