@@ -56,4 +56,10 @@ public class DemoController {
         log.info("Finished long operation - Thread: {}", Thread.currentThread().getName());
         return "Long operation completed with Virtual Thread in Spring Boot 3.1.12!";
     }
+
+    @GetMapping("/check-thread")
+    public ResponseEntity<String> checkThread() {
+        Thread thread = Thread.currentThread();
+        return ResponseEntity.ok("Thread: " + thread + " | isVirtual=" + thread.isVirtual());
+    }
 }

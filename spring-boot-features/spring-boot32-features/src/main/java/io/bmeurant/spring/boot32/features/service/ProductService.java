@@ -3,7 +3,6 @@ package io.bmeurant.spring.boot32.features.service;
 import io.bmeurant.spring.boot32.features.model.Product;
 import io.bmeurant.spring.boot32.features.repository.ProductRepository;
 import io.micrometer.observation.annotation.Observed;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
