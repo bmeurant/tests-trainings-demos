@@ -1,4 +1,4 @@
-package io.meurant.spring.boot31.features.authorization;
+package io.bmeurant.spring.boot31.features.authorization;
 
 import io.bmeurant.spring.boot31.features.SpringBoot31Application;
 import io.bmeurant.spring.boot31.features.config.AuthorizationServerConfig;

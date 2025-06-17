@@ -1,0 +1,12 @@
+# spring-boot-features-tutorial/spring-boot31-features/compose.yaml
+services:
+  redis-db: # This is the service name that Spring Boot will detect
+    image: redis:7-alpine # Lightweight Redis image
+    ports:
+      - "6379:6379" # Maps container port to host port (optional but useful for debugging)
+    volumes:
+      - redis-data:/data # Persistent volume for Redis data
+
+volumes: # Docker volume declaration
+  redis-data:
+    driver: local
