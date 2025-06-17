@@ -1,10 +1,13 @@
 package io.bmeurant.spring.boot32.features.controller;
 
 import io.bmeurant.spring.boot32.features.model.Product;
+import io.bmeurant.spring.boot32.features.restclient.TodoService;
 import io.bmeurant.spring.boot32.features.service.ProductService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +19,12 @@ public class DemoController {
 
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
-    private final ProductService productService; // Use ProductService
+    private final ProductService productService;
+    private final TodoService todoService;
 
-    public DemoController(ProductService productService) {
+    public DemoController(ProductService productService, TodoService todoService) {
         this.productService = productService;
+        this.todoService = todoService;
     }
 
     @PostConstruct
@@ -61,5 +66,17 @@ public class DemoController {
     public ResponseEntity<String> checkThread() {
         Thread thread = Thread.currentThread();
         return ResponseEntity.ok("Thread: " + thread + " | isVirtual=" + thread.isVirtual());
+    }
+
+    /**
+     * New endpoint to fetch a Todo item from an external API using RestClient.
+     * Access via: GET /api/v1/todos/{id} (e.g., /api/v1/todos/1)
+     * Observability is automatically applied due to @Observed.
+     */
+    @GetMapping("/todos/{id}")
+    @Observed(name = "todo.fetch", contextualName = "todo-api")
+    public TodoService.Todo getTodo(@PathVariable Long id) {
+        log.info("Get todo by ID endpoint called: {}", id);
+        return todoService.getTodoById(id);
     }
 }
