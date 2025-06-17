@@ -33,7 +33,7 @@ public class DemoController {
     @GetMapping("/hello")
     public String sayHello() {
         log.info("Received request for /api/v1/hello"); // Log with trace context
-        return "Hello from Spring Boot 3.0.13!";
+        return "Hello from Spring Boot 3.1.13!";
     }
 
     @GetMapping("/products")
