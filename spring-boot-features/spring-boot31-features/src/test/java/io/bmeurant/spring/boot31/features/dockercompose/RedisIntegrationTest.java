@@ -18,13 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration test for Redis connectivity using Spring Boot's Docker Compose support.
- * This test will use the 'test' profile to activate our application-test.properties.
  */
 @SpringBootTest
 @Testcontainers
 class RedisIntegrationTest {
 
-    @SuppressWarnings("rawtypes")
     public static DockerComposeContainer<?> composeContainer =
             new DockerComposeContainer<>(new File("./compose.yaml")) // Path to your compose file
                     .withExposedService("redis-db", 6379, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(60)));

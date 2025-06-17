@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Observed(name = "productService")
@@ -33,5 +34,9 @@ public class ProductService {
     public Product addProduct(Product product) {
         log.info("ProductService: Adding product: {}", product.getName());
         return productRepository.save(product);
+    }
+
+    public Optional<Product> getProductById(long l) {
+        return productRepository.findById(l);
     }
 }
