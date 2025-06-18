@@ -27,11 +27,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
-                <version>1.32.0-alpha</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
