@@ -41,6 +41,12 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Pinned by Jules to force version (added at top) -->
+        <dependency>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
+            <version>1.32.0-alpha</version>
+        </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-spring-boot-starter</artifactId>
