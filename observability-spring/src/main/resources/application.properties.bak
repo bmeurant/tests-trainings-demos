@@ -16,8 +16,8 @@ otel.service.name=observability-spring
 
 # OTLP Exporter configuration (common endpoint for traces, metrics, logs)
 # This sends to the OTel Collector, which then routes to Jaeger, Prometheus, Grafana
-otel.exporter.otlp.endpoint=http://localhost:4318
-otel.exporter.otlp.protocol=http/protobuf
+otel.exporter.otlp.endpoint=http://localhost:4317
+#otel.exporter.otlp.protocol=http/protobuf
 
 # Traces configuration
 otel.traces.exporter=otlp # Export traces using OTLP
