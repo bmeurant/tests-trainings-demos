@@ -168,6 +168,8 @@ docker compose logs -f grafana
 ```
 
 ## Running the Load Test Script
+
+Note: The script needs to be executed from the correct path. You can either navigate into the `scripts/` directory first, or run it using its relative path from the project root (`observability-spring/`).
 To generate some sample data and see the observability tools in action, run the load testing script.
 Ensure the Spring Boot application is running before executing this script.
 

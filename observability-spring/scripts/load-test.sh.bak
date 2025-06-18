@@ -29,7 +29,7 @@ random_price() {
 
 # Function to generate a random quantity for products
 random_quantity() {
-    echo $(( (RANDOM % 50) + 1 ))
+    echo \$(( ( RANDOM % 50 ) + 1 ))
 }
 
 # Store IDs of created products
