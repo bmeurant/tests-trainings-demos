@@ -1,0 +1,2 @@
+VERIFICATION_ERROR: opentelemetry-bom version is NOT set to 1.38.0 or not found.
+VERIFICATION_ERROR: opentelemetry-spring-boot-starter still has an explicit version.
