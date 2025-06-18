@@ -37,7 +37,7 @@ declare -a product_ids
 
 # Create some initial products to work with
 echo "Creating initial products..."
-for i in \$(seq 1 5); do
+for i in $(seq 1 5); do
     name="InitialProduct_\$(random_string)"
     price=\$(random_price)
     quantity=\$(random_quantity)
