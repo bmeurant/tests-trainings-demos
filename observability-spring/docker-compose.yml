@@ -9,11 +9,13 @@ services:
     ports:
       - "4317:4317"  # OTLP gRPC
       - "4318:4318"  # OTLP HTTP (used by Spring Boot app for traces, metrics, logs)
+      - "8888:8888" # Prometheus metrics (from collector itself)
       - "8889:8889"  # Prometheus scraping endpoint from collector
     networks:
       - observability-net
     depends_on:
       - jaeger
+      - grafana
 
   prometheus:
     image: prom/prometheus:v2.48.1 # Specify a recent version
@@ -34,11 +36,29 @@ services:
     ports:
       - "16686:16686" # Jaeger UI
       - "14250:14250" # Collector (gRPC) - used by OTel collector
-      # - "14268:14268" # Collector (HTTP) - if needed directly
+      - "9411:9411"   # Jaeger's Zipkin HTTP receiver
     networks:
       - observability-net
     environment:
-      - COLLECTOR_OTLP_ENABLED=true # Enable OTLP receiver in Jaeger itself (alternative to sending from OTel Collector)
+      COLLECTOR_ZIPKIN_HTTP_PORT: "9411" # Re-trying the specific HTTP port variable
+
+      # Agent configuration (within all-in-one)
+      # Tell the agent to send *native Jaeger traces* to its collector's native gRPC port
+      AGENT_COLLECTOR_GRPC_HOST_PORT: "localhost:14250" # Changed to localhost as it's internal
+      # Tell the agent to send *OTLP traces* to its collector's OTLP gRPC port
+      AGENT_COLLECTOR_OTLP_HOST_GRPC: "localhost:4317" # Explicitly tell agent to use this
+      AGENT_COLLECTOR_OTLP_HOST_HTTP: "localhost:4318" # Explicitly tell agent to use this
+
+      # Collector configuration (within all-in-one)
+      # Ensure the Collector part listens on the correct ports
+      COLLECTOR_OTLP_GRPC_HOST_PORT: "4317"
+      COLLECTOR_OTLP_HTTP_HOST_PORT: "4318"
+      COLLECTOR_GRPC_HOST_PORT: "14250" # Explicitly define for the collector
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:16686" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   grafana:
     image: grafana/grafana:10.2.2 # Specify a recent version supporting OTLP log ingestion
