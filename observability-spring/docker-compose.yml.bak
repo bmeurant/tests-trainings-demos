@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   otel-collector:
@@ -14,6 +15,7 @@ services:
       - observability-net
     depends_on:
       - jaeger
+      - grafana # For OTLP log export
 
   prometheus:
     image: prom/prometheus:v2.48.1 # Specify a recent version
@@ -27,6 +29,8 @@ services:
       - "9090:9090"
     networks:
       - observability-net
+    depends_on:
+      - otel-collector
 
   jaeger:
     image: jaegertracing/all-in-one:1.53 # Specify a recent version
@@ -61,6 +65,7 @@ services:
       # The OTel documentation suggests Grafana's OTLP endpoint is typically the main Grafana endpoint + /otlp
       # So, if Grafana is at http://grafana:3000, the OTLP log endpoint would be http://grafana:3000/otlp
       # Let's adjust the OTel collector config for Grafana logs to use port 3000.
+    depends_on:
       - prometheus
       # - loki # if loki was used
 

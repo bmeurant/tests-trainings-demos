@@ -83,11 +83,11 @@ This will generate a JAR file in the `target/` directory (e.g., `target/observab
 ### 3. Start the Observability Stack
 Use Docker Compose to start all the observability tools (OTel Collector, Jaeger, Prometheus, Grafana).
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 - `-d` runs the containers in detached mode (in the background).
-- To see the logs of the containers: `docker compose logs -f`
-- To see specific service logs: `docker compose logs -f <service_name>` (e.g., `otel-collector`)
+- To see the logs of the containers: `docker-compose logs -f`
+- To see specific service logs: `docker-compose logs -f <service_name>` (e.g., `otel-collector`)
 
 ### 4. Run the Spring Boot Application
 Once the observability stack is running, you can start the Spring Boot application.
@@ -161,10 +161,10 @@ You can also view the raw console output (which includes structured logs with tr
 # (Check the console where you ran it)
 
 # Logs from Docker containers
-docker compose logs -f otel-collector
-docker compose logs -f jaeger
-docker compose logs -f prometheus
-docker compose logs -f grafana
+docker-compose logs -f otel-collector
+docker-compose logs -f jaeger
+docker-compose logs -f prometheus
+docker-compose logs -f grafana
 ```
 
 ## Running the Load Test Script
@@ -193,10 +193,10 @@ If you ran the application from your terminal, stop it using `Ctrl+C`.
 ### 2. Stop the Observability Stack
 Shut down and remove the Docker containers:
 ```bash
-docker compose down
+docker-compose down
 ```
 - This stops and removes containers, networks, and default volumes.
-- If you used named volumes for persistent storage (e.g., for Grafana) and want to remove them, you might need an additional `docker compose down -v`.
+- If you used named volumes for persistent storage (e.g., for Grafana) and want to remove them, you might need an additional `docker-compose down -v`.
 
 ## Troubleshooting / Notes
 - **Port Conflicts**: If any of the default ports (8080, 9090, 16686, 3000, 4317, 4318, 8889) are already in use on your system, you may need to adjust the `ports` configuration in `docker-compose.yml` and/or `application.properties`.
