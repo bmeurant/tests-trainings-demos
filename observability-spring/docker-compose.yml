@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.90.1 # Specify a recent version
+    container_name: otel-collector
+    command: ["--config=/etc/otel/otel-collector-config.yml"]
+    volumes:
+      - ./config/otel/otel-collector-config.yml:/etc/otel/otel-collector-config.yml:ro
+    ports:
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP (used by Spring Boot app for traces, metrics, logs)
+      - "8889:8889"  # Prometheus scraping endpoint from collector
+    networks:
+      - observability-net
+    depends_on:
+      - jaeger
+      - grafana # For OTLP log export
+
+  prometheus:
+    image: prom/prometheus:v2.48.1 # Specify a recent version
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle' # Allows hot reloading of config via API call
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - observability-net
+    depends_on:
+      - otel-collector
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.53 # Specify a recent version
+    container_name: jaeger
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "14250:14250" # Collector (gRPC) - used by OTel collector
+      # - "14268:14268" # Collector (HTTP) - if needed directly
+    networks:
+      - observability-net
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true # Enable OTLP receiver in Jaeger itself (alternative to sending from OTel Collector)
+
+  grafana:
+    image: grafana/grafana:10.2.2 # Specify a recent version supporting OTLP log ingestion
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      # - grafana-storage:/var/lib/grafana # Optional: persist Grafana data
+    networks:
+      - observability-net
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      # Enable OTLP log ingestion if required by feature flag for the specific Grafana version
+      # For Grafana 10.2+, OTLP logs are generally available. The OTel collector sends to http://grafana:4318/otlp
+      # Ensure Grafana's internal HTTP server listens on 4318 for OTLP or adjust collector.
+      # Grafana's default HTTP port is 3000. OTLP ingestion might be on a different internal path/port or main port.
+      # The OTel documentation suggests Grafana's OTLP endpoint is typically the main Grafana endpoint + /otlp
+      # So, if Grafana is at http://grafana:3000, the OTLP log endpoint would be http://grafana:3000/otlp
+      # Let's adjust the OTel collector config for Grafana logs to use port 3000.
+    depends_on:
+      - prometheus
+      # - loki # if loki was used
+
+# Optional: Loki for logs (if not sending logs directly to Grafana via OTLP)
+#  loki:
+#    image: grafana/loki:2.9.2
+#    container_name: loki
+#    ports:
+#      - "3100:3100" # Loki API
+#    command: -config.file=/etc/loki/local-config.yaml
+#    networks:
+#      - observability-net
+#    # volumes:
+#    #   - ./config/loki/local-config.yaml:/etc/loki/local-config.yaml:ro # If custom Loki config needed
+
+# Define a network for services to communicate
+networks:
+  observability-net:
+    driver: bridge
+
+# Optional: Define a volume for Grafana storage
+# volumes:
+#  grafana-storage:

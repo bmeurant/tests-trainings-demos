@@ -1,0 +1,29 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+
+  # Grafana can receive logs via OTLP directly.
+  # This datasource is implicitly available if Grafana's feature flag for OTLP is enabled.
+  # For Grafana versions supporting OTLP natively (usually 9.x+),
+  # you configure Grafana itself to listen for OTLP logs.
+  # The otel-collector will send logs to Grafana's OTLP endpoint.
+  # No explicit Loki datasource needed here if using OTLP direct to Grafana.
+
+  # If you were using Loki:
+  # - name: Loki
+  #   type: loki
+  #   access: proxy
+  #   url: http://loki:3100
+  #   editable: true
+  #   jsonData:
+  #     derivedFields:
+  #       - datasourceUid: 'Prometheus' # Link to Prometheus datasource
+  #         matcherRegex: 'traceID=(\w+)'
+  #         name: 'TraceID'
+  #         url: '\${__value.raw}'
