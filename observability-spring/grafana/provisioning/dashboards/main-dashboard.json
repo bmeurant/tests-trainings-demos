@@ -50,12 +50,12 @@
       "type": "timeseries",
       "id": 1,
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
-      "datasource": "\${DS_PROMETHEUS}",
+      "datasource": "${DS_PROMETHEUS}",
       "targets": [
         {
           "expr": "sum(rate(http_server_requests_seconds_count{service_name=\"observability-spring\"}[5m])) by (uri, method, outcome, status)",
           "legendFormat": "{{uri}} - {{method}} - {{status}}",
-          "datasource": "\${DS_PROMETHEUS}"
+          "datasource": "${DS_PROMETHEUS}"
         }
       ],
       "fieldConfig": {
@@ -74,12 +74,12 @@
       "type": "timeseries",
       "id": 2,
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "datasource": "\${DS_PROMETHEUS}",
+      "datasource": "${DS_PROMETHEUS}",
       "targets": [
         {
           "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{service_name=\"observability-spring\"}[5m])) by (le, uri, method))",
           "legendFormat": "{{uri}} - {{method}} P95",
-          "datasource": "\${DS_PROMETHEUS}"
+          "datasource": "${DS_PROMETHEUS}"
         }
       ],
       "fieldConfig": {
@@ -99,12 +99,12 @@
       "type": "timeseries",
       "id": 3,
       "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
-      "datasource": "\${DS_PROMETHEUS}",
+      "datasource": "${DS_PROMETHEUS}",
       "targets": [
         {
           "expr": "sum(jvm_memory_used_bytes{area=\"heap\", service_name=\"observability-spring\"}) by (id)",
           "legendFormat": "Heap {{id}}",
-          "datasource": "\${DS_PROMETHEUS}"
+          "datasource": "${DS_PROMETHEUS}"
         }
       ],
       "fieldConfig": {
@@ -124,17 +124,17 @@
       "type": "timeseries",
       "id": 4,
       "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
-      "datasource": "\${DS_PROMETHEUS}",
+      "datasource": "${DS_PROMETHEUS}",
       "targets": [
         {
           "expr": "process_cpu_usage{service_name=\"observability-spring\"}",
           "legendFormat": "Process CPU",
-          "datasource": "\${DS_PROMETHEUS}"
+          "datasource": "${DS_PROMETHEUS}"
         },
         {
           "expr": "system_cpu_usage{service_name=\"observability-spring\"}",
           "legendFormat": "System CPU",
-          "datasource": "\${DS_PROMETHEUS}"
+          "datasource": "${DS_PROMETHEUS}"
         }
       ],
       "fieldConfig": {
@@ -163,7 +163,7 @@
           "expr": "{service_name=\"observability-spring\"}",
           "datasource": {
              "type": "datasource",
-             "uid": "\${DS_PROMETHEUS}"
+             "uid": "${DS_PROMETHEUS}"
           }
         }
       ],
