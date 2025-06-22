@@ -5,3 +5,5 @@
 | Asynchronous Iteration       | Support for `for await...of` to consume async iterables                            | [`asyncIteration`](./features/asyncIteration.js)         |
 | RegExp Named Capture Groups  | Named capturing in regex using `(?<name>...)` and back-referencing via `$<name>`   | [`regExpNamedCapture`](./features/regExpNamedCapture.js) |
 | RegExp Lookbehind Assertions | Support for lookbehind assertions using `(?<=...)` and `(?<!...)`                  | [`regExpLookbehind`](./features/regExpLookbehind.js)     |
+| RegExp `s` (dotAll) flag     | Enables dot (`.`) in regex to match newline characters (`\n`, `\r`, etc.)          | [`regExpDotAll`](./features/regExpDotAll.js)             |
+
