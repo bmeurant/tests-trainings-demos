@@ -7,5 +7,5 @@
 | Optional `catch` binding           | `catch` block can now omit the error variable                                        | [`optionalCatchBinding`](features/optionalCatchBinding.js)         |
 | `Symbol.prototype.description`     | Direct access to a symbol’s description via a `.description` getter                  | [`symbolDescription`](features/symbolDescription.js)               |
 | Well-formed JSON `Stringify`       | `JSON.stringify` now handles lone surrogates correctly to produce well-formed UTF-8  | [`jsonWellFormed`](features/jsonWellFormed.js)                     |
- | Stable `Array.prototype.sort()`    | Sort order is now guaranteed to be stable (equal items retain relative order)        | [`arraySortStable`](features/arraySortStable.js)                   |
- | Function `toString()` revision     | `Function.prototype.toString()` returns source with original formatting and comments | [`functionToStringRevision`](features/functionToStringRevision.js) |
+| Stable `Array.prototype.sort()`    | Sort order is now guaranteed to be stable (equal items retain relative order)        | [`arraySortStable`](features/arraySortStable.js)                   |
+| Function `toString()` revision     | `Function.prototype.toString()` returns source with original formatting and comments | [`functionToStringRevision`](features/functionToStringRevision.js) |
