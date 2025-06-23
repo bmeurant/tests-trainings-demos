@@ -1,4 +1,4 @@
-// es2018/features/regExpUnicodeProperties.js
+// es2018-features/features/regExpUnicodeProperties.js
 const assert = require('assert');
 
 function runRegExpUnicodePropertiesDemo() {

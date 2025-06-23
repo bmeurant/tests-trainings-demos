@@ -1,4 +1,4 @@
-// es2018/features/regExpLookbehind.js
+// es2018-features/features/regExpLookbehind.js
 const assert = require('assert');
 
 function runRegExpLookbehindDemo() {

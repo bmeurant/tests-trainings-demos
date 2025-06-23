@@ -1,4 +1,4 @@
-// es2018/features/objectSpreadRest.js
+// es2018-features/features/objectSpreadRest.js
 // Demonstrating Object Spread and Rest Properties in ES2018
 
 'use strict';

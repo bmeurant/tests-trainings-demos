@@ -1,4 +1,4 @@
-// es2018/features/asyncIteration.js
+// es2018-features/features/asyncIteration.js
 const assert = require('assert');
 
 /**

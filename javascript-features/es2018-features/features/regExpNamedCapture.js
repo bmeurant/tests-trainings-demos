@@ -1,4 +1,4 @@
-// es2018/features/regExpNamedCapture.js
+// es2018-features/features/regExpNamedCapture.js
 const assert = require('assert');
 
 function runRegExpNamedCaptureDemo() {

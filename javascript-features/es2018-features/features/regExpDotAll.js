@@ -1,4 +1,4 @@
-// es2018/features/regExpDotAll.js
+// es2018-features/features/regExpDotAll.js
 const assert = require('assert');
 
 function runRegExpDotAllDemo() {

@@ -1,4 +1,4 @@
-// es2018/features/promiseFinally.js
+// es2018-features/features/promiseFinally.js
 const assert = require('assert');
 
 function simulateAsyncTask(shouldSucceed) {

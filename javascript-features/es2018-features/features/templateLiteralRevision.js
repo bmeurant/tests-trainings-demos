@@ -1,4 +1,4 @@
-// es2018/features/templateLiteralRevision.js
+// es2018-features/features/templateLiteralRevision.js
 const assert = require('assert');
 
 function runTemplateLiteralRevisionDemo() {
