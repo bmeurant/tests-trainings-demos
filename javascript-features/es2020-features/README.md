@@ -1,10 +1,11 @@
-| Topic                         | New Feature                                                                                    | Test / Class Example                                 |
-|-------------------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| BigInt                        | Native support for arbitrarily large integers using the `n` suffix (e.g. `123n`)               | [`bigInt`](features/bigInt.js)                       |
-| Optional chaining (`?.`)      | Short-circuits property access or function calls if part of the chain is `null` or `undefined` | [`optionalChaining`](features/optionalChaining.js)   |
-| `nullish coalescing` (`??`)   | Returns right-hand operand only if left-hand is `null` or `undefined`                          | [`nullishCoalescing`](features/nullishCoalescing.js) |
-| Dynamic `import()`            | Allows loading ES modules dynamically at runtime                                               | [`dynamicImport`](features/dynamicImport.js)         |
-| `Promise.allSettled()`        | Returns results of all promises (fulfilled or rejected) without failing fast                   | [`promiseAllSettled`](features/promiseAllSettled.js) |
-| `globalThis`                  | Standardized global object reference (`window`, `global`, etc.) across all environments        | [`globalThis`](features/globalThis.js)               |
-| `String.prototype.matchAll()` | Returns all matches including capturing groups from a regex                                    | [`stringMatchAll`](features/stringMatchAll.js)       |
-| `import.meta`                 | Provides metadata about the current ES module (e.g. URL, env info)                             | [`importMeta`](features/importMeta.mjs)              |
+| Topic                          | New Feature                                                                                    | Test / Class Example                                 |
+|--------------------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| BigInt                         | Native support for arbitrarily large integers using the `n` suffix (e.g. `123n`)               | [`bigInt`](features/bigInt.js)                       |
+| Optional chaining (`?.`)       | Short-circuits property access or function calls if part of the chain is `null` or `undefined` | [`optionalChaining`](features/optionalChaining.js)   |
+| `nullish coalescing` (`??`)    | Returns right-hand operand only if left-hand is `null` or `undefined`                          | [`nullishCoalescing`](features/nullishCoalescing.js) |
+| Dynamic `import()`             | Allows loading ES modules dynamically at runtime                                               | [`dynamicImport`](features/dynamicImport.js)         |
+| `Promise.allSettled()`         | Returns results of all promises (fulfilled or rejected) without failing fast                   | [`promiseAllSettled`](features/promiseAllSettled.js) |
+| `globalThis`                   | Standardized global object reference (`window`, `global`, etc.) across all environments        | [`globalThis`](features/globalThis.js)               |
+| `String.prototype.matchAll()`  | Returns all matches including capturing groups from a regex                                    | [`stringMatchAll`](features/stringMatchAll.js)       |
+| `import.meta`                  | Provides metadata about the current ES module (e.g. URL, env info)                             | [`importMeta`](features/importMeta.mjs)              |
+| `for-in` order specification   | Property enumeration order for `for-in` loops is now defined                                   | [`forInOrder`](features/forInOrder.js)               |
