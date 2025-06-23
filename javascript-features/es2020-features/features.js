@@ -10,7 +10,7 @@ console.log(`======================================================\n`);
 
 try {
     const featureFiles = fs.readdirSync(featuresDir)
-        .filter(file => file.endsWith('.js') && !file.endsWith('.test.js')) // Ensure it's a JS file and not a test file if any were left
+        .filter(file => (file.endsWith('.js') || file.endsWith('.mjs')) && !file.endsWith('.test.js')) // Ensure it's a JS file and not a test file if any were left
         .sort(); // Sort to ensure consistent order
 
     if (featureFiles.length === 0) {
