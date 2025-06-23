@@ -2,4 +2,5 @@
 |-----------------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------|
 | BigInt                      | Native support for arbitrarily large integers using the `n` suffix (e.g. `123n`)               | [`bigInt`](features/bigInt.js)                       |
 | Optional chaining (`?.`)    | Short-circuits property access or function calls if part of the chain is `null` or `undefined` | [`optionalChaining`](features/optionalChaining.js)   |
- | `nullish coalescing` (`??`) | Returns right-hand operand only if left-hand is `null` or `undefined`                          | [`nullishCoalescing`](features/nullishCoalescing.js) |
+| `nullish coalescing` (`??`) | Returns right-hand operand only if left-hand is `null` or `undefined`                          | [`nullishCoalescing`](features/nullishCoalescing.js) |
+| Dynamic `import()`          | Allows loading ES modules dynamically at runtime                                               | [`dynamicImport`](features/dynamicImport.js)         |
