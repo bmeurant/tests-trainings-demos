@@ -5,3 +5,4 @@
 | `Object.fromEntries()`           | Creates an object from key-value pairs (inverse of `Object.entries()`) | [`objectFromEntries`](features/objectFromEntries.js)       |
 | `String.prototype.trimStart/End` | New methods to trim whitespace from the start/end of a string          | [`stringTrim`](features/stringTrim.js)                     |
 | Optional `catch` binding         | `catch` block can now omit the error variable                          | [`optionalCatchBinding`](features/optionalCatchBinding.js) |
+| `Symbol.prototype.description`   | Direct access to a symbol’s description via a `.description` getter    | [`symbolDescription`](features/symbolDescription.js)       |
