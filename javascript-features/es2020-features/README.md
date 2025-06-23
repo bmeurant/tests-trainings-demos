@@ -1,3 +1,4 @@
-| Topic           | New Feature                                                                         | Test / Class Example             |
-|-----------------|-------------------------------------------------------------------------------------|----------------------------------|
-| BigInt          | Native support for arbitrarily large integers using the `n` suffix (e.g. `123n`)    | [`bigInt`](features/bigInt.js)   |
+| Topic                    | New Feature                                                                                    | Test / Class Example                               |
+|--------------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| BigInt                   | Native support for arbitrarily large integers using the `n` suffix (e.g. `123n`)               | [`bigInt`](features/bigInt.js)                     |
+| Optional chaining (`?.`) | Short-circuits property access or function calls if part of the chain is `null` or `undefined` | [`optionalChaining`](features/optionalChaining.js) |
