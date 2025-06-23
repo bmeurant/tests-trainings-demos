@@ -1,4 +1,4 @@
-// es2020/features/globalThis.js
+// es2020-features/features/globalThis.js
 const assert = require('assert');
 
 function runGlobalThisDemo() {
