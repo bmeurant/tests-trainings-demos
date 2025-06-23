@@ -1,0 +1,14 @@
+{
+  "name": "es2020-features",
+  "version": "1.0.0",
+  "description": "",
+  "main": "features.js",
+  "scripts": {
+    "test": "echo \"No dedicated test runner configured for this version, running features demonstrate functionality.\" && exit 0",
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
