@@ -1,4 +1,4 @@
-// es2024-features/features/setOperations.js
+// es2025-features/features/setOperations.js
 const assert = require('assert');
 
 function runSetOperationsDemo() {

@@ -1,4 +1,4 @@
-// es2024-features/features/regExpEscape.js
+// es2025-features/features/regExpEscape.js
 const assert = require('assert');
 
 function runRegExpEscapeDemo() {
