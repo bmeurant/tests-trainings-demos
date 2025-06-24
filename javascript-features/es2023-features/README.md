@@ -1,4 +1,5 @@
-| Topic                              | New Feature                                                                           | Test / Class Example                                         |
-|------------------------------------|---------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| Immutability Helpers for Arrays    | New non-mutating methods: `toSorted()`, `toReversed()`, `toSpliced()`, `with()`       | [`arrayImmutableMethods`](features/arrayImmutableMethods.js) |
-| Array Find-from-End Methods        | New methods: `findLast()` and `findLastIndex()` to search arrays from the end         | [`findLastMethods`](features/findLastMethods.js)             |
+| Topic                              | New Feature                                                                               | Test / Class Example                                                                          |
+|------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| Immutability Helpers for Arrays    | New non-mutating methods: `toSorted()`, `toReversed()`, `toSpliced()`, `with()`           | [`arrayImmutableMethods`](features/arrayImmutableMethods.js)                                  |
+| Array Find-from-End Methods        | New methods: `findLast()` and `findLastIndex()` to search arrays from the end             | [`findLastMethods`](features/findLastMethods.js)                                              |
+| Hashbang Grammar (`#!`)            | Adds support for Unix-style shebangs at the start of scripts (e.g. `#!/usr/bin/env node`) | [`hashbangGrammar`](features/hashbangGrammar.js) & [`HashbangGrammar.md`](HashbangGrammar.md) |
