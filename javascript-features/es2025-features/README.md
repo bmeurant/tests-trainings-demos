@@ -1,6 +1,5 @@
-| Topic          | New Feature                                                                                     | Test / Class Example                         |
-|----------------|-------------------------------------------------------------------------------------------------|----------------------------------------------|
-| RegExp Utility | `RegExp.escape()` escapes user-defined strings for safe use in RegExp literals                  | [`regExpEscape`](features/regExpEscape.js)   |
-| Set Operations | `union()`, `intersection()`, `difference()`, `symmetricDifference()`                            | [`setOperations`](features/setOperations.js) |
-| Set Relations  | Adds `isSubsetOf()`, `isSupersetOf()`, `isDisjointFrom()` to `Set` for set relations management | [`setRelations`](features/setRelations.js)   |
-
+| Topic             | New Feature                                                                                     | Test / Class Example                         | TC39 Link                                                       |
+|-------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------------------------------------|
+| `RegExp.escape()` | Escapes special characters in strings for use in RegExp patterns                                | [`regExpEscape`](features/regExpEscape.js)   | [RegExp Escape](https://github.com/tc39/proposal-regexp-escape) |
+| Set Operations    | `union()`, `intersection()`, `difference()`, `symmetricDifference()`                            | [`setOperations`](features/setOperations.js) | [New Set methods](https://github.com/tc39/proposal-set-methods) |
+| Set Relations     | Adds `isSubsetOf()`, `isSupersetOf()`, `isDisjointFrom()` to `Set` for set relations management | [`setRelations`](features/setRelations.js)   | [New Set methods](https://github.com/tc39/proposal-set-methods) |
