@@ -4,3 +4,5 @@
 | Set Operations         | `union()`, `intersection()`, `difference()`, `symmetricDifference()`                             | [`setOperations`](features/setOperations.js) | [New Set methods](https://github.com/tc39/proposal-set-methods) |
 | Set Relations          | Adds `isSubsetOf()`, `isSupersetOf()`, `isDisjointFrom()` to `Set` for set relations management  | [`setRelations`](features/setRelations.js)   | [New Set methods](https://github.com/tc39/proposal-set-methods) |
 | Float16 on TypedArrays | Adds `Float16Array`, `DataView` support, and `Math.f16round()` for 16-bit floating point numbers | [`float16`](features/float16.js)             | [Float16Array](https://github.com/tc39/proposal-float16array)   |
+| `Promise.try()`        | Introduces a utility to wrap sync/async code in a safe Promise                                   | [`promiseTry`](features/promiseTry.js)       | [Promise.try](https://github.com/tc39/proposal-promise-try)     |
+

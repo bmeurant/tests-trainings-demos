@@ -2,7 +2,7 @@
 const assert = require('assert');
 
 function runFloat16Demo() {
-    console.log('\n--- ES2024: Float16 on TypedArrays, DataView, Math.f16round ---');
+    console.log('\n--- ES2025: Float16 on TypedArrays, DataView, Math.f16round ---');
 
     // --- 1. Float16Array ---
     console.log('\n--- 1. Float16Array ---');
@@ -81,7 +81,7 @@ function runFloat16Demo() {
 try {
     runFloat16Demo();
 } catch (error) {
-    console.error('\n!!! ES2024 Float16 Demo FAILED !!!');
+    console.error('\n!!! ES2025 Float16 Demo FAILED !!!');
     console.error('Error details:', error.message);
     process.exit(1);
 }
