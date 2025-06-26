@@ -6,4 +6,6 @@
 | Float16 on TypedArrays | Adds `Float16Array`, `DataView` support, and `Math.f16round()` for 16-bit floating point numbers | [`float16`](features/float16.js)                         | [Float16Array](https://github.com/tc39/proposal-float16array)         |
 | `Promise.try()`        | Introduces a utility to wrap sync/async code in a safe Promise                                   | [`promiseTry`](features/promiseTry.js)                   | [Promise.try](https://github.com/tc39/proposal-promise-try)           |
 | Sync Iterator Helpers  | Adds helpers for working with sync iterators (`map`, `filter`, `take`, etc.)                     | [`syncIteratorHelpers`](features/syncIteratorHelpers.js) | [Iterator Helpers](https://github.com/tc39/proposal-iterator-helpers) |
+| JSON Modules           | Allows importing `.json` files as modules using `import` syntax                                  | [`jsonModules`](features/jsonModules.mjs)                | [JSON Modules](https://github.com/tc39/proposal-json-modules)         |
+
 

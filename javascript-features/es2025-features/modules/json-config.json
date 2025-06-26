@@ -1,0 +1,9 @@
+{
+  "appName": "My ES2025 App",
+  "version": "1.0.0",
+  "settings": {
+    "darkMode": true,
+    "maxItemsPerPage": 20
+  },
+  "features": ["json-modules", "iterator-helpers"]
+}
