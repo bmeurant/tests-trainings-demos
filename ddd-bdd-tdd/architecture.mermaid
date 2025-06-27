@@ -1,0 +1,42 @@
+---
+config:
+  layout: dagre
+---
+flowchart TD
+    subgraph Client["Client"]
+        A["User / Client Interface"]
+    end
+    subgraph subGraph1["Catalog Context"]
+        CatalogService["Catalog Service"]
+        CatalogDB(("Catalog Database"))
+    end
+    subgraph subGraph2["Order Context"]
+        OrderService["Order Service"]
+        OrderDB(("Order Database"))
+    end
+    subgraph subGraph3["Inventory Context"]
+        InventoryService["Inventory Service"]
+        InventoryDB(("Inventory Database"))
+    end
+    subgraph subGraph4["Book Selling Platform"]
+        subGraph1
+        subGraph2
+        subGraph3
+        EventBus("Event Bus")
+    end
+    CatalogService --> CatalogDB
+    OrderService --> OrderDB
+    InventoryService --> InventoryDB
+    A -- Requests --> OrderService
+    OrderService -- Publishes OrderCreatedEvent --> EventBus
+    EventBus -- Receives OrderCreatedEvent --> InventoryService
+    InventoryService -- Publishes StockReservedEvent --> EventBus
+    EventBus -- Receives StockReservedEvent --> OrderService
+    OrderService -- Publishes OrderCancelledEvent --> EventBus
+    EventBus -- Receives OrderCancelledEvent --> InventoryService
+    InventoryService -- Publishes ProductStockLowEvent --> EventBus
+    EventBus -- (Consumed by unmodeled replenishment service) --> EventBus
+style CatalogService fill:#f9f,stroke:#333,stroke-width:2px
+style OrderService fill:#bbf,stroke:#333,stroke-width:2px
+style InventoryService fill:#ccf,stroke:#333,stroke-width:2px
+style EventBus fill:#afa,stroke:#333,stroke-width:2px
