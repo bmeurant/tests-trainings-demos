@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.steps;
+package io.bmeurant.bookordermanager.integration.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -7,7 +7,7 @@ import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @CucumberContextConfiguration
-@SpringBootTest(classes = io.bmeurant.bookordermanager.TestApplication.class)
+@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
 public class OrderManagementSteps {
     @Given("a book with ISBN {string}, title {string}, author {string}, price {double}")
     public void a_book_with_isbn_title_author_price(String string, String string2, String string3, Double double1) {
