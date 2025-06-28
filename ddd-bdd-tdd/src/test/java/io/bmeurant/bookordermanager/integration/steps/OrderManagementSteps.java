@@ -1,18 +1,21 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import io.bmeurant.bookordermanager.catalog.Book;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
 public class OrderManagementSteps {
-    @Given("a book with ISBN {string}, title {string}, author {string}, price {double}")
-    public void a_book_with_isbn_title_author_price(String string, String string2, String string3, Double double1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+
+    @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
+    public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
+        Book book = new Book(isbn, title, author, price);
     }
 
     @Given("an inventory item {string} with initial stock of {int}")
