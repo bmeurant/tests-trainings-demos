@@ -1,6 +1,8 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
-import io.bmeurant.bookordermanager.catalog.Book;
+import io.bmeurant.bookordermanager.catalog.domain.model.Book;
+import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,20 +10,32 @@ import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
 public class OrderManagementSteps {
 
+    private Map<String, Book> books;
+    private Map<String, InventoryItem> inventoryItems;
+
+    @Before
+    public void setup() {
+        books = new HashMap<>();
+        inventoryItems = new HashMap<>();
+    }
+
     @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
     public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
         Book book = new Book(isbn, title, author, price);
+        books.put(isbn, book);
     }
 
     @Given("an inventory item {string} with initial stock of {int}")
-    public void an_inventory_item_with_initial_stock_of(String string, Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void an_inventory_item_with_initial_stock_of(String isbn, Integer stock) {
+        InventoryItem item = new InventoryItem(isbn, stock);
+        inventoryItems.put(isbn, item);
     }
 
     @When("I try to create an order for {string} with the following items:")
