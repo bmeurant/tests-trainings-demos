@@ -10,6 +10,7 @@ import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
+import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -34,6 +36,8 @@ public class OrderServiceTest {
     private InventoryService inventoryService;
     @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -86,6 +90,7 @@ public class OrderServiceTest {
         verify(bookService, times(1)).findBookByIsbn(isbn1);
         verify(bookService, times(1)).findBookByIsbn(isbn2);
         verify(orderRepository, times(1)).save(createdOrder);
+        verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCreatedEvent.class));
     }
 
     @Test
