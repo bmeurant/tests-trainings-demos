@@ -1,0 +1,41 @@
+package io.bmeurant.bookordermanager.order.domain.model;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import org.springframework.util.Assert;
+
+import java.math.BigDecimal;
+
+/**
+ * Represents a single line item within an order.
+ * It captures the product details and the quantity ordered.
+ */
+@Getter
+@EqualsAndHashCode
+@ToString
+public class OrderLine {
+    private String productId;
+    private int quantity;
+    private BigDecimal price;
+
+    /**
+     * Constructs a new OrderLine instance.
+     * All parameters are validated to ensure the order line is created in a valid state.
+     *
+     * @param productId The ID of the product (e.g., ISBN). Must not be null or blank.
+     * @param quantity The quantity of the product ordered. Must be positive.
+     * @param price The price of the product at the time of order. Must not be null and must be non-negative.
+     * @throws IllegalArgumentException if any validation fails.
+     */
+    public OrderLine(String productId, int quantity, BigDecimal price) {
+        Assert.hasText(productId, "Product ID cannot be null or blank");
+        Assert.isTrue(quantity > 0, "Quantity must be positive");
+        Assert.notNull(price, "Price cannot be null");
+        Assert.isTrue(price.compareTo(BigDecimal.ZERO) >= 0, "Price cannot be negative");
+
+        this.productId = productId;
+        this.quantity = quantity;
+        this.price = price;
+    }
+}

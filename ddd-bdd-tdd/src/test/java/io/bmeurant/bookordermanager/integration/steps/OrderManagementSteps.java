@@ -2,15 +2,20 @@ package io.bmeurant.bookordermanager.integration.steps;
 
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
+import io.bmeurant.bookordermanager.order.domain.model.Order;
+import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,35 +26,69 @@ import java.util.Map;
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
 public class OrderManagementSteps {
 
+    // Stores books by their ISBN for easy retrieval across steps
     private Map<String, Book> books;
+    // Stores inventory items by their ISBN for easy retrieval across steps
     private Map<String, InventoryItem> inventoryItems;
+    // Stores the current order being processed in the scenario
+    private Order currentOrder;
 
+    /**
+     * Initializes the maps before each scenario.
+     */
     @Before
     public void setup() {
         books = new HashMap<>();
         inventoryItems = new HashMap<>();
+        currentOrder = null;
     }
 
+    /**
+     * Defines a book with the given details and stores it.
+     * @param isbn The ISBN of the book.
+     * @param title The title of the book.
+     * @param author The author of the book.
+     * @param price The price of the book.
+     */
     @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
     public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
         Book book = new Book(isbn, title, author, price);
         books.put(isbn, book);
     }
 
+    /**
+     * Defines an inventory item with the given ISBN and initial stock.
+     * @param isbn The ISBN of the book associated with the inventory item.
+     * @param stock The initial stock level.
+     */
     @Given("an inventory item {string} with initial stock of {int}")
     public void an_inventory_item_with_initial_stock_of(String isbn, Integer stock) {
         InventoryItem item = new InventoryItem(isbn, stock);
         inventoryItems.put(isbn, item);
     }
 
+    /**
+     * Attempts to create a new order for a given customer with specified items.
+     * @param customerName The name of the customer.
+     * @param dataTable A DataTable containing product IDs and quantities for the order lines.
+     */
     @When("I try to create an order for {string} with the following items:")
-    public void i_try_to_create_an_order_for_with_the_following_items(String string, io.cucumber.datatable.DataTable dataTable) {
-        // TODO: Implement order creation logic
-        throw new io.cucumber.java.PendingException();
+    public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
+        List<OrderLine> orderLines = new ArrayList<>();
+        for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
+            String productId = row.get("productId");
+            int quantity = Integer.parseInt(row.get("quantity"));
+            Book book = books.get(productId);
+            if (book == null) {
+                throw new IllegalArgumentException("Book with ISBN " + productId + " not found in catalog.");
+            }
+            orderLines.add(new OrderLine(productId, quantity, book.getPrice()));
+        }
+        currentOrder = new Order(customerName, orderLines);
     }
 
     @Then("the order should be created successfully with status {string}")
-    public void the_order_should_be_created_successfully_with_status(String string) {
+    public void the_order_should_be_created_successfully_with_status(String expectedStatus) {
         // TODO: Implement order status verification
         throw new io.cucumber.java.PendingException();
     }
@@ -84,3 +123,4 @@ public class OrderManagementSteps {
         throw new io.cucumber.java.PendingException();
     }
 }
+
