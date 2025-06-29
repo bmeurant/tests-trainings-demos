@@ -6,9 +6,10 @@ This file provides context for the Gemini AI assistant to understand the project
 
 ## Project Overview
 
-- **Language:** Java 24
+- **Language:** Java 21
 - **Framework:** Spring Boot
-- **Architecture:** Domain-Driven Design (DDD)
+- **Architecture:** Domain-Driven Design (DDD).
+- **Business domain**: Business domain is briefly described in the `architecture.md` file.
 - **BDD (Behavior-Driven Development):** All new features and bug fixes should be driven by BDD. This means starting
   with clear, executable specifications (features) written in Gherkin, followed by implementing the steps and then the
   underlying code.
@@ -18,7 +19,11 @@ This file provides context for the Gemini AI assistant to understand the project
 ## Development Conventions
 
 - **Code and Comments:** All code and comments should be written in English.
-- **Logging:** Add relevant logs using `org.slf4j.Logger` at appropriate levels (DEBUG for detailed flow, INFO for key events).
-- **Assertion Messages:** All assertions in tests must include a descriptive message (e.g., `assertEquals(expected, actual, "Descriptive message");`).
-- **Testing:** The project uses Cucumber for BDD (Behavior-Driven Development) tests.
+- **Logging:** Add relevant logs using `org.slf4j.Logger` at appropriate levels (DEBUG for detailed flow, INFO for key
+  events).
+- **Assertion Messages:** All assertions in tests must include a descriptive message (e.g.,
+  `assertEquals(expected, actual, "Descriptive message");`).
+- **Testing:** The project uses Cucumber for BDD (Behavior-Driven Development) tests. Additionally, ensure unit tests
+  are provided for every new or modified domain method, repository implementation, or service, utilizing mocking where
+  appropriate for lightweight and efficient testing.
 - **Lombok:** Use Lombok but only when it is really necessary.
