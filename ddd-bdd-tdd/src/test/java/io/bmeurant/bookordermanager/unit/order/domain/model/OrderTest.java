@@ -29,6 +29,8 @@ public class OrderTest {
         assertEquals(Order.OrderStatus.PENDING, order.getStatus(), "Initial order status should be PENDING.");
         assertEquals(orderLines.size(), order.getOrderLines().size(), "Number of order lines should match.");
         assertTrue(order.getOrderLines().containsAll(orderLines), "Order should contain all provided order lines.");
+        // Since OrderLine is now an @Embeddable, its equality is based on its content, not identity.
+        // No need to check OrderLine IDs here.
     }
 
     @Test
@@ -71,12 +73,12 @@ public class OrderTest {
 
     @Test
     void shouldBeEqualWhenOrderIdIsSame() {
-        List<OrderLine> orderLines = Collections.singletonList(
+        List<OrderLine> orderLines = Arrays.asList(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
         Order order1 = new Order("Alice", orderLines);
         // Create a second order with the same orderId (simulating retrieval from persistence)
-        Order order2 = new Order("Bob", Collections.singletonList(new OrderLine("dummy-isbn", 1, new BigDecimal("1.00")))); // Use a valid, non-empty list
+        Order order2 = new Order("Bob", Arrays.asList(new OrderLine("dummy-isbn", 1, new BigDecimal("1.00")))); // Use a valid, non-empty list
         // Manually set orderId for testing equality based on ID
         try {
             java.lang.reflect.Field orderIdField = Order.class.getDeclaredField("orderId");
@@ -100,5 +102,36 @@ public class OrderTest {
 
         assertNotEquals(order1, order2, "Orders with different Order IDs should not be equal.");
         assertNotEquals(order1.hashCode(), order2.hashCode(), "Hash codes should not be equal for orders with different Order IDs.");
+    }
+
+    @Test
+    void shouldConfirmOrderSuccessfully() {
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        order.confirm();
+        assertEquals(Order.OrderStatus.CONFIRMED, order.getStatus(), "Order status should be CONFIRMED after confirmation.");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenConfirmingNonPendingOrder() {
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        // Manually set status to something other than PENDING for testing
+        try {
+            java.lang.reflect.Field statusField = Order.class.getDeclaredField("status");
+            statusField.setAccessible(true);
+            statusField.set(order, Order.OrderStatus.CONFIRMED);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Failed to set order status for testing: " + e.getMessage());
+        }
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            order.confirm();
+        }, "Should throw IllegalArgumentException when confirming a non-PENDING order.");
+        assertTrue(exception.getMessage().contains("Order can only be confirmed if its status is PENDING."), "Exception message should indicate invalid status for confirmation.");
     }
 }
