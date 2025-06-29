@@ -1,15 +1,14 @@
 package io.bmeurant.bookordermanager.unit.application.service.impl;
 
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
-import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
-import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
-import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
-import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
+import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
+import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
@@ -23,7 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

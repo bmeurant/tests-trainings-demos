@@ -49,7 +49,7 @@ public class OrderRepositoryTest {
     @Test
     void shouldIncrementVersionOnUpdate() {
         OrderLine line1 = new OrderLine("978-0321765723", 2, new BigDecimal("25.00"));
-        List<OrderLine> orderLines = Arrays.asList(line1);
+        List<OrderLine> orderLines = List.of(line1);
         Order order = new Order("Alice Wonderland", orderLines);
 
         Order savedOrder = orderRepository.save(order);

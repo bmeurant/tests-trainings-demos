@@ -59,9 +59,7 @@ public class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> {
-            inventoryService.deductStock(isbn, quantityToDeduct);
-        }, "Should throw InventoryItemNotFoundException when inventory item is not found.");
+        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.deductStock(isbn, quantityToDeduct), "Should throw InventoryItemNotFoundException when inventory item is not found.");
         assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn + " not found."), "Exception message should indicate item not found.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
@@ -78,9 +76,7 @@ public class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        Exception exception = assertThrows(InsufficientStockException.class, () -> {
-            inventoryService.deductStock(isbn, quantityToDeduct);
-        }, "Should throw InsufficientStockException when stock is insufficient.");
+        Exception exception = assertThrows(InsufficientStockException.class, () -> inventoryService.deductStock(isbn, quantityToDeduct), "Should throw InsufficientStockException when stock is insufficient.");
         assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToDeduct, initialStock)), "Exception message should indicate insufficient stock.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));

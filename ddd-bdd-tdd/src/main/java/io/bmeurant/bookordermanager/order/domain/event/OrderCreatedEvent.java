@@ -2,7 +2,6 @@ package io.bmeurant.bookordermanager.order.domain.event;
 
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
