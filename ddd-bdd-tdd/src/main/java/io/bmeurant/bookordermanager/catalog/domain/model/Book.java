@@ -1,24 +1,32 @@
 package io.bmeurant.bookordermanager.catalog.domain.model;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 /**
  * Represents a book in the catalog domain. A book is identified by its ISBN.
  * This is a value object in the DDD context, but acts as an aggregate root for its own properties.
  */
+@Entity
 @Getter
 @EqualsAndHashCode(of = "isbn")
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
+    @Id
     private String isbn;
     private String title;
     private String author;
     private BigDecimal price;
+    @Version
+    private Long version;
 
     /**
      * Constructs a new Book instance.
@@ -42,4 +50,15 @@ public class Book {
         this.author = author;
         this.price = price;
     }
+
+    /**
+     * Updates the title of the book.
+     * @param newTitle The new title for the book. Must not be null or blank.
+     * @throws IllegalArgumentException if the new title is null or blank.
+     */
+    public void updateTitle(String newTitle) {
+        Assert.hasText(newTitle, "New title cannot be null or blank");
+        this.title = newTitle;
+    }
 }
+

@@ -1,6 +1,9 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
+import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
@@ -10,6 +13,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.spring.CucumberContextConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -25,6 +29,9 @@ import java.util.Map;
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
 public class OrderManagementSteps {
+
+    @Autowired
+    private BookRepository bookRepository;
 
     // Stores books by their ISBN for easy retrieval across steps
     private Map<String, Book> books;
@@ -53,6 +60,7 @@ public class OrderManagementSteps {
     @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
     public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
         Book book = new Book(isbn, title, author, price);
+        bookRepository.save(book);
         books.put(isbn, book);
     }
 
@@ -78,10 +86,8 @@ public class OrderManagementSteps {
         for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
             String productId = row.get("productId");
             int quantity = Integer.parseInt(row.get("quantity"));
-            Book book = books.get(productId);
-            if (book == null) {
-                throw new IllegalArgumentException("Book with ISBN " + productId + " not found in catalog.");
-            }
+            Book book = bookRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + productId + " not found in catalog."));
             orderLines.add(new OrderLine(productId, quantity, book.getPrice()));
         }
         currentOrder = new Order(customerName, orderLines);
@@ -89,8 +95,8 @@ public class OrderManagementSteps {
 
     @Then("the order should be created successfully with status {string}")
     public void the_order_should_be_created_successfully_with_status(String expectedStatus) {
-        // TODO: Implement order status verification
-        throw new io.cucumber.java.PendingException();
+        assertNotNull(currentOrder, "Order should have been created.");
+        assertEquals(Order.OrderStatus.valueOf(expectedStatus), currentOrder.getStatus(), "Order status should match expected status.");
     }
 
     @Then("an {string} event should have been published for the order of {string}")
