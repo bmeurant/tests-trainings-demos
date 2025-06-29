@@ -1,6 +1,7 @@
 package io.bmeurant.bookordermanager.unit.catalog.domain.model;
 
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -27,50 +28,58 @@ public class BookTest {
 
     @Test
     void shouldThrowExceptionWhenIsbnIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book(null, "Title", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book(null, "Title", "Author", new BigDecimal("10.00")), "Should throw ValidationException when ISBN is null.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate null ISBN.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenIsbnIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("", "Title", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("", "Title", "Author", new BigDecimal("10.00")), "Should throw ValidationException when ISBN is blank.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate blank ISBN.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenTitleIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", null, "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when title is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", null, "Author", new BigDecimal("10.00")), "Should throw ValidationException when title is null.");
         assertTrue(exception.getMessage().contains("Title cannot be null or blank"), "Exception message should indicate null title.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenTitleIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when title is blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", "", "Author", new BigDecimal("10.00")), "Should throw ValidationException when title is blank.");
         assertTrue(exception.getMessage().contains("Title cannot be null or blank"), "Exception message should indicate blank title.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenAuthorIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", null, new BigDecimal("10.00")), "Should throw IllegalArgumentException when author is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", "Title", null, new BigDecimal("10.00")), "Should throw ValidationException when author is null.");
         assertTrue(exception.getMessage().contains("Author cannot be null or blank"), "Exception message should indicate null author.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenAuthorIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "", new BigDecimal("10.00")), "Should throw IllegalArgumentException when author is blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", "Title", "", new BigDecimal("10.00")), "Should throw ValidationException when author is blank.");
         assertTrue(exception.getMessage().contains("Author cannot be null or blank"), "Exception message should indicate blank author.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "Author", null), "Should throw IllegalArgumentException when price is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", "Title", "Author", null), "Should throw ValidationException when price is null.");
         assertTrue(exception.getMessage().contains("Price cannot be null"), "Exception message should indicate null price.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNegative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "Author", new BigDecimal("-0.01")), "Should throw IllegalArgumentException when price is negative.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Book("123-456", "Title", "Author", new BigDecimal("-0.01")), "Should throw ValidationException when price is negative.");
         assertTrue(exception.getMessage().contains("Price cannot be negative"), "Exception message should indicate negative price.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
@@ -126,14 +135,16 @@ public class BookTest {
     @Test
     void shouldThrowExceptionWhenUpdatingTitleWithNull() {
         Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> book.updateTitle(null), "Should throw IllegalArgumentException when updating title with null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> book.updateTitle(null), "Should throw ValidationException when updating title with null.");
         assertTrue(exception.getMessage().contains("New title cannot be null or blank"), "Exception message should indicate null title.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingTitleWithBlank() {
         Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> book.updateTitle(""), "Should throw IllegalArgumentException when updating title with blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> book.updateTitle(""), "Should throw ValidationException when updating title with blank.");
         assertTrue(exception.getMessage().contains("New title cannot be null or blank"), "Exception message should indicate blank title.");
+        assertEquals(Book.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Book.");
     }
 }

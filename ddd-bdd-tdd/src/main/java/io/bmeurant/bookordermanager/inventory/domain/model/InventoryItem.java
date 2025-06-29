@@ -1,16 +1,13 @@
 package io.bmeurant.bookordermanager.inventory.domain.model;
 
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.util.Assert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.persistence.*;
 
 /**
  * Represents an inventory item in the inventory domain. An inventory item is identified by its ISBN.
@@ -34,14 +31,18 @@ public class InventoryItem {
      * Constructs a new InventoryItem instance.
      * All parameters are validated to ensure the inventory item is created in a valid state.
      *
-     * @param isbn The International Standard Book Number, identifying the book this inventory item is for. Must not be null or blank.
+     * @param isbn  The International Standard Book Number, identifying the book this inventory item is for. Must not be null or blank.
      * @param stock The current stock level of the book. Must be non-negative.
-     * @throws IllegalArgumentException if any validation fails.
+     * @throws ValidationException if any validation fails.
      */
     public InventoryItem(String isbn, int stock) {
         log.debug("Creating InventoryItem with ISBN: {}, Stock: {}", isbn, stock);
-        Assert.hasText(isbn, "ISBN cannot be null or blank");
-        Assert.isTrue(stock >= 0, "Stock cannot be negative");
+        if (isbn == null || isbn.isBlank()) {
+            throw new ValidationException("ISBN cannot be null or blank", InventoryItem.class);
+        }
+        if (stock < 0) {
+            throw new ValidationException("Stock cannot be negative", InventoryItem.class);
+        }
 
         this.isbn = isbn;
         this.stock = stock;
@@ -50,12 +51,16 @@ public class InventoryItem {
 
     /**
      * Deducts the specified quantity from the current stock.
+     *
      * @param quantity The quantity to deduct. Must be positive and not exceed current stock.
      * @throws InsufficientStockException if quantity is invalid or exceeds available stock.
+     * @throws ValidationException        if quantity is not positive.
      */
     public void deductStock(int quantity) {
         log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
-        Assert.isTrue(quantity > 0, "Quantity to deduct must be positive");
+        if (quantity <= 0) {
+            throw new ValidationException("Quantity to deduct must be positive", InventoryItem.class);
+        }
         if (this.stock < quantity) {
             throw new InsufficientStockException(this.isbn, quantity, this.stock);
         }

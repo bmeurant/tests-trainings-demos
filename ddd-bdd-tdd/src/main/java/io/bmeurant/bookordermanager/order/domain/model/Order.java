@@ -1,15 +1,11 @@
 package io.bmeurant.bookordermanager.order.domain.model;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.util.Assert;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
+import jakarta.persistence.*;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,13 +46,17 @@ public class Order {
      * All parameters are validated to ensure the order is created in a valid state.
      *
      * @param customerName The name of the customer placing the order. Must not be null or blank.
-     * @param orderLines A list of order lines for this order. Must not be null or empty.
-     * @throws IllegalArgumentException if any validation fails.
+     * @param orderLines   A list of order lines for this order. Must not be null or empty.
+     * @throws ValidationException if any validation fails.
      */
     public Order(String customerName, List<OrderLine> orderLines) {
         log.debug("Creating Order for customer: {}", customerName);
-        Assert.hasText(customerName, "Customer name cannot be null or blank");
-        Assert.notEmpty(orderLines, "Order lines cannot be null or empty");
+        if (customerName == null || customerName.isBlank()) {
+            throw new ValidationException("Customer name cannot be null or blank", Order.class);
+        }
+        if (orderLines == null || orderLines.isEmpty()) {
+            throw new ValidationException("Order lines cannot be null or empty", Order.class);
+        }
 
         this.orderId = UUID.randomUUID().toString(); // Generate a unique ID for the order
         this.customerName = customerName;
@@ -67,10 +67,13 @@ public class Order {
 
     /**
      * Confirms the order, changing its status from PENDING to CONFIRMED.
-     * @throws IllegalArgumentException if the order is not in PENDING status.
+     *
+     * @throws ValidationException if the order is not in PENDING status.
      */
     public void confirm() {
-        Assert.isTrue(this.status == OrderStatus.PENDING, "Order can only be confirmed if its status is PENDING.");
+        if (this.status != OrderStatus.PENDING) {
+            throw new ValidationException("Order can only be confirmed if its status is PENDING.", Order.class);
+        }
         this.status = OrderStatus.CONFIRMED;
         log.info("Order {} confirmed.", this.orderId);
     }

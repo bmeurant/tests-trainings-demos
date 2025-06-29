@@ -1,15 +1,13 @@
 package io.bmeurant.bookordermanager.catalog.domain.model;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.util.Assert;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 /**
@@ -36,19 +34,29 @@ public class Book {
      * Constructs a new Book instance.
      * All parameters are validated to ensure the book is created in a valid state.
      *
-     * @param isbn The International Standard Book Number, a unique identifier for the book. Must not be null or blank.
-     * @param title The title of the book. Must not be null or blank.
+     * @param isbn   The International Standard Book Number, a unique identifier for the book. Must not be null or blank.
+     * @param title  The title of the book. Must not be null or blank.
      * @param author The author of the book. Must not be null or blank.
-     * @param price The price of the book. Must not be null and must be non-negative.
-     * @throws IllegalArgumentException if any validation fails.
+     * @param price  The price of the book. Must not be null and must be non-negative.
+     * @throws ValidationException if any validation fails.
      */
     public Book(String isbn, String title, String author, BigDecimal price) {
         log.debug("Creating Book with ISBN: {}, Title: {}, Author: {}, Price: {}", isbn, title, author, price);
-        Assert.hasText(isbn, "ISBN cannot be null or blank");
-        Assert.hasText(title, "Title cannot be null or blank");
-        Assert.hasText(author, "Author cannot be null or blank");
-        Assert.notNull(price, "Price cannot be null");
-        Assert.isTrue(price.compareTo(BigDecimal.ZERO) >= 0, "Price cannot be negative");
+        if (isbn == null || isbn.isBlank()) {
+            throw new ValidationException("ISBN cannot be null or blank", Book.class);
+        }
+        if (title == null || title.isBlank()) {
+            throw new ValidationException("Title cannot be null or blank", Book.class);
+        }
+        if (author == null || author.isBlank()) {
+            throw new ValidationException("Author cannot be null or blank", Book.class);
+        }
+        if (price == null) {
+            throw new ValidationException("Price cannot be null", Book.class);
+        }
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ValidationException("Price cannot be negative", Book.class);
+        }
 
         this.isbn = isbn;
         this.title = title;
@@ -59,12 +67,15 @@ public class Book {
 
     /**
      * Updates the title of the book.
+     *
      * @param newTitle The new title for the book. Must not be null or blank.
-     * @throws IllegalArgumentException if the new title is null or blank.
+     * @throws ValidationException if the new title is null or blank.
      */
     public void updateTitle(String newTitle) {
         log.debug("Updating title for Book {}. New title: {}", this.isbn, newTitle);
-        Assert.hasText(newTitle, "New title cannot be null or blank");
+        if (newTitle == null || newTitle.isBlank()) {
+            throw new ValidationException("New title cannot be null or blank", Book.class);
+        }
         this.title = newTitle;
         log.info("Book {} title updated to: {}", this.isbn, newTitle);
     }

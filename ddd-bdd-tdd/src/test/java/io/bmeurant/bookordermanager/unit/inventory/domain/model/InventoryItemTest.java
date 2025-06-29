@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.unit.inventory.domain.model;
 
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import org.junit.jupiter.api.Test;
@@ -22,20 +23,23 @@ public class InventoryItemTest {
 
     @Test
     void shouldThrowExceptionWhenIsbnIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new InventoryItem(null, 10), "Should throw IllegalArgumentException when ISBN is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new InventoryItem(null, 10), "Should throw ValidationException when ISBN is null.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate null ISBN.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
     @Test
     void shouldThrowExceptionWhenIsbnIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new InventoryItem("", 10), "Should throw IllegalArgumentException when ISBN is blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new InventoryItem("", 10), "Should throw ValidationException when ISBN is blank.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate blank ISBN.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
     @Test
     void shouldThrowExceptionWhenStockIsNegative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new InventoryItem("978-0321765723", -1), "Should throw IllegalArgumentException when stock is negative.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new InventoryItem("978-0321765723", -1), "Should throw ValidationException when stock is negative.");
         assertTrue(exception.getMessage().contains("Stock cannot be negative"), "Exception message should indicate negative stock.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
     @Test
@@ -66,15 +70,17 @@ public class InventoryItemTest {
     @Test
     void shouldThrowExceptionWhenDeductingZeroStock() {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> item.deductStock(0), "Should throw IllegalArgumentException when deducting zero stock.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.deductStock(0), "Should throw ValidationException when deducting zero stock.");
         assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
     @Test
     void shouldThrowExceptionWhenDeductingNegativeStock() {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> item.deductStock(-1), "Should throw IllegalArgumentException when deducting negative stock.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.deductStock(-1), "Should throw ValidationException when deducting negative stock.");
         assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
     @Test

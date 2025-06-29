@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.unit.order.domain.model;
 
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,9 @@ public class OrderTest {
         List<OrderLine> orderLines = Collections.singletonList(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order(null, orderLines), "Should throw IllegalArgumentException when customer name is null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Order(null, orderLines), "Should throw ValidationException when customer name is null.");
         assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate null customer name.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
 
     @Test
@@ -47,20 +49,23 @@ public class OrderTest {
         List<OrderLine> orderLines = Collections.singletonList(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("", orderLines), "Should throw IllegalArgumentException when customer name is blank.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Order("", orderLines), "Should throw ValidationException when customer name is blank.");
         assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate blank customer name.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("Alice", null), "Should throw IllegalArgumentException when order lines are null.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Order("Alice", null), "Should throw ValidationException when order lines are null.");
         assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate null order lines.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsEmpty() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("Alice", Collections.emptyList()), "Should throw IllegalArgumentException when order lines are empty.");
+        ValidationException exception = assertThrows(ValidationException.class, () -> new Order("Alice", Collections.emptyList()), "Should throw ValidationException when order lines are empty.");
         assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate empty order lines.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
 
     @Test
@@ -81,7 +86,7 @@ public class OrderTest {
         }
 
         assertEquals(order1, order2, "Orders with the same Order ID should be equal.");
-        assertEquals(order1.hashCode(), order2.hashCode(), "Hash codes should be equal for orders with the same Order ID.");
+        assertEquals(order1.hashCode(), order2.hashCode(), "Hash codes should be equal for items with the same Order ID.");
     }
 
     @Test
@@ -121,7 +126,8 @@ public class OrderTest {
             fail("Failed to set order status for testing: " + e.getMessage());
         }
 
-        Exception exception = assertThrows(IllegalArgumentException.class, order::confirm, "Should throw IllegalArgumentException when confirming a non-PENDING order.");
+        ValidationException exception = assertThrows(ValidationException.class, order::confirm, "Should throw ValidationException when confirming a non-PENDING order.");
         assertTrue(exception.getMessage().contains("Order can only be confirmed if its status is PENDING."), "Exception message should indicate invalid status for confirmation.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
 }
