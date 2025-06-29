@@ -1,20 +1,29 @@
 package io.bmeurant.bookordermanager.inventory.domain.model;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;
+
+import jakarta.persistence.*;
 
 /**
  * Represents an inventory item in the inventory domain. An inventory item is identified by its ISBN.
  * It holds the current stock level for a given book.
  */
+@Entity
 @Getter
 @EqualsAndHashCode(of = "isbn")
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InventoryItem {
+    @Id
     private String isbn;
     private int stock;
+    @Version
+    private Long version;
 
     /**
      * Constructs a new InventoryItem instance.
@@ -30,5 +39,16 @@ public class InventoryItem {
 
         this.isbn = isbn;
         this.stock = stock;
+    }
+
+    /**
+     * Deducts the specified quantity from the current stock.
+     * @param quantity The quantity to deduct. Must be positive and not exceed current stock.
+     * @throws IllegalArgumentException if quantity is invalid or exceeds available stock.
+     */
+    public void deductStock(int quantity) {
+        Assert.isTrue(quantity > 0, "Quantity to deduct must be positive");
+        Assert.isTrue(this.stock >= quantity, "Not enough stock to deduct " + quantity + ". Current stock: " + this.stock);
+        this.stock -= quantity;
     }
 }

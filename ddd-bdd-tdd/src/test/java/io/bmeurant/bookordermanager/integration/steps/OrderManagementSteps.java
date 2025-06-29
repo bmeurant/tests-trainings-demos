@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
+import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.cucumber.java.Before;
@@ -32,11 +33,9 @@ public class OrderManagementSteps {
 
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private InventoryItemRepository inventoryItemRepository;
 
-    // Stores books by their ISBN for easy retrieval across steps
-    private Map<String, Book> books;
-    // Stores inventory items by their ISBN for easy retrieval across steps
-    private Map<String, InventoryItem> inventoryItems;
     // Stores the current order being processed in the scenario
     private Order currentOrder;
 
@@ -45,8 +44,6 @@ public class OrderManagementSteps {
      */
     @Before
     public void setup() {
-        books = new HashMap<>();
-        inventoryItems = new HashMap<>();
         currentOrder = null;
     }
 
@@ -61,7 +58,6 @@ public class OrderManagementSteps {
     public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
         Book book = new Book(isbn, title, author, price);
         bookRepository.save(book);
-        books.put(isbn, book);
     }
 
     /**
@@ -72,7 +68,7 @@ public class OrderManagementSteps {
     @Given("an inventory item {string} with initial stock of {int}")
     public void an_inventory_item_with_initial_stock_of(String isbn, Integer stock) {
         InventoryItem item = new InventoryItem(isbn, stock);
-        inventoryItems.put(isbn, item);
+        inventoryItemRepository.save(item);
     }
 
     /**
@@ -88,6 +84,8 @@ public class OrderManagementSteps {
             int quantity = Integer.parseInt(row.get("quantity"));
             Book book = bookRepository.findById(productId)
                     .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + productId + " not found in catalog."));
+            InventoryItem inventoryItem = inventoryItemRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Inventory item with ISBN " + productId + " not found."));
             orderLines.add(new OrderLine(productId, quantity, book.getPrice()));
         }
         currentOrder = new Order(customerName, orderLines);
