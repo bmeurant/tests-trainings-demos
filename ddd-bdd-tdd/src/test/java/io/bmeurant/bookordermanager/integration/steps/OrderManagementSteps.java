@@ -7,8 +7,10 @@ import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.integration.events.TestEventListener;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
+import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
+import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -18,6 +20,7 @@ import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
@@ -36,6 +41,8 @@ public class OrderManagementSteps {
     private InventoryItemRepository inventoryItemRepository;
     @Autowired
     private OrderService orderService;
+    @MockitoSpyBean
+    private InventoryService inventoryService;
     @Autowired
     private TestEventListener testEventListener;
 
@@ -92,8 +99,10 @@ public class OrderManagementSteps {
 
     @Then("the inventory service receives the stock deduction request for the order")
     public void the_inventory_service_receives_the_stock_deduction_request_for_the_order() {
-        // TODO: Implement stock deduction request verification
-        throw new io.cucumber.java.PendingException();
+        assertNotNull(currentOrder, "Current order should not be null for stock deduction verification.");
+        for (OrderLine orderLine : currentOrder.getOrderLines()) {
+            verify(inventoryService, times(1)).deductStock(orderLine.getIsbn(), orderLine.getQuantity());
+        }
     }
 
     @Then("the order should transition to status {string}")
@@ -114,4 +123,5 @@ public class OrderManagementSteps {
         throw new io.cucumber.java.PendingException();
     }
 }
+
 
