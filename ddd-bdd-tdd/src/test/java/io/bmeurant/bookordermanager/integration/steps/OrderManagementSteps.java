@@ -1,12 +1,11 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
-import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
-import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -33,7 +32,7 @@ public class OrderManagementSteps {
     @Autowired
     private InventoryItemRepository inventoryItemRepository;
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     private Order currentOrder;
 
@@ -56,18 +55,13 @@ public class OrderManagementSteps {
 
     @When("I try to create an order for {string} with the following items:")
     public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
-        List<OrderLine> orderLines = new ArrayList<>();
+        List<OrderService.OrderItemRequest> itemRequests = new ArrayList<>();
         for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
             String isbn = row.get("productId");
             int quantity = Integer.parseInt(row.get("quantity"));
-            Book book = bookRepository.findById(isbn)
-                    .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + isbn + " not found in catalog."));
-            inventoryItemRepository.findById(isbn)
-                    .orElseThrow(() -> new IllegalArgumentException("Inventory item with ISBN " + isbn + " not found."));
-            orderLines.add(new OrderLine(isbn, quantity, book.getPrice()));
+            itemRequests.add(new OrderService.OrderItemRequest(isbn, quantity));
         }
-        currentOrder = new Order(customerName, orderLines);
-        orderRepository.save(currentOrder);
+        currentOrder = orderService.createOrder(customerName, itemRequests);
     }
 
     @Then("the order should be created successfully with status {string}")
