@@ -38,9 +38,7 @@ public class OrderTest {
         List<OrderLine> orderLines = Collections.singletonList(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Order(null, orderLines);
-        }, "Should throw IllegalArgumentException when customer name is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order(null, orderLines), "Should throw IllegalArgumentException when customer name is null.");
         assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate null customer name.");
     }
 
@@ -49,36 +47,30 @@ public class OrderTest {
         List<OrderLine> orderLines = Collections.singletonList(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Order("", orderLines);
-        }, "Should throw IllegalArgumentException when customer name is blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("", orderLines), "Should throw IllegalArgumentException when customer name is blank.");
         assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate blank customer name.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Order("Alice", null);
-        }, "Should throw IllegalArgumentException when order lines are null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("Alice", null), "Should throw IllegalArgumentException when order lines are null.");
         assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate null order lines.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsEmpty() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Order("Alice", Collections.emptyList());
-        }, "Should throw IllegalArgumentException when order lines are empty.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Order("Alice", Collections.emptyList()), "Should throw IllegalArgumentException when order lines are empty.");
         assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate empty order lines.");
     }
 
     @Test
     void shouldBeEqualWhenOrderIdIsSame() {
-        List<OrderLine> orderLines = Arrays.asList(
+        List<OrderLine> orderLines = List.of(
                 new OrderLine("978-0321765723", 1, new BigDecimal("10.00"))
         );
         Order order1 = new Order("Alice", orderLines);
         // Create a second order with the same orderId (simulating retrieval from persistence)
-        Order order2 = new Order("Bob", Arrays.asList(new OrderLine("dummy-isbn", 1, new BigDecimal("1.00")))); // Use a valid, non-empty list
+        Order order2 = new Order("Bob", List.of(new OrderLine("dummy-isbn", 1, new BigDecimal("1.00")))); // Use a valid, non-empty list
         // Manually set orderId for testing equality based on ID
         try {
             java.lang.reflect.Field orderIdField = Order.class.getDeclaredField("orderId");
@@ -129,9 +121,7 @@ public class OrderTest {
             fail("Failed to set order status for testing: " + e.getMessage());
         }
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            order.confirm();
-        }, "Should throw IllegalArgumentException when confirming a non-PENDING order.");
+        Exception exception = assertThrows(IllegalArgumentException.class, order::confirm, "Should throw IllegalArgumentException when confirming a non-PENDING order.");
         assertTrue(exception.getMessage().contains("Order can only be confirmed if its status is PENDING."), "Exception message should indicate invalid status for confirmation.");
     }
 }

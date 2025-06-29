@@ -27,65 +27,49 @@ public class BookTest {
 
     @Test
     void shouldThrowExceptionWhenIsbnIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book(null, "Title", "Author", new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when ISBN is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book(null, "Title", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is null.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate null ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenIsbnIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("", "Title", "Author", new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when ISBN is blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("", "Title", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is blank.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate blank ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenTitleIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", null, "Author", new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when title is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", null, "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when title is null.");
         assertTrue(exception.getMessage().contains("Title cannot be null or blank"), "Exception message should indicate null title.");
     }
 
     @Test
     void shouldThrowExceptionWhenTitleIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", "", "Author", new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when title is blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "", "Author", new BigDecimal("10.00")), "Should throw IllegalArgumentException when title is blank.");
         assertTrue(exception.getMessage().contains("Title cannot be null or blank"), "Exception message should indicate blank title.");
     }
 
     @Test
     void shouldThrowExceptionWhenAuthorIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", "Title", null, new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when author is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", null, new BigDecimal("10.00")), "Should throw IllegalArgumentException when author is null.");
         assertTrue(exception.getMessage().contains("Author cannot be null or blank"), "Exception message should indicate null author.");
     }
 
     @Test
     void shouldThrowExceptionWhenAuthorIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", "Title", "", new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when author is blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "", new BigDecimal("10.00")), "Should throw IllegalArgumentException when author is blank.");
         assertTrue(exception.getMessage().contains("Author cannot be null or blank"), "Exception message should indicate blank author.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", "Title", "Author", null);
-        }, "Should throw IllegalArgumentException when price is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "Author", null), "Should throw IllegalArgumentException when price is null.");
         assertTrue(exception.getMessage().contains("Price cannot be null"), "Exception message should indicate null price.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNegative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Book("123-456", "Title", "Author", new BigDecimal("-0.01"));
-        }, "Should throw IllegalArgumentException when price is negative.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new Book("123-456", "Title", "Author", new BigDecimal("-0.01")), "Should throw IllegalArgumentException when price is negative.");
         assertTrue(exception.getMessage().contains("Price cannot be negative"), "Exception message should indicate negative price.");
     }
 
@@ -128,7 +112,7 @@ public class BookTest {
     @Test
     void shouldNotBeEqualToDifferentClass() {
         Book book = new Book("978-0321765723", "Title", "Author", new BigDecimal("25.00"));
-        assertNotEquals(book, new Object(), "A book should not be equal to an object of a different class.");
+        assertNotEquals(new Object(), book, "A book should not be equal to an object of a different class.");
     }
 
     @Test
@@ -142,18 +126,14 @@ public class BookTest {
     @Test
     void shouldThrowExceptionWhenUpdatingTitleWithNull() {
         Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            book.updateTitle(null);
-        }, "Should throw IllegalArgumentException when updating title with null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> book.updateTitle(null), "Should throw IllegalArgumentException when updating title with null.");
         assertTrue(exception.getMessage().contains("New title cannot be null or blank"), "Exception message should indicate null title.");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingTitleWithBlank() {
         Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            book.updateTitle("");
-        }, "Should throw IllegalArgumentException when updating title with blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> book.updateTitle(""), "Should throw IllegalArgumentException when updating title with blank.");
         assertTrue(exception.getMessage().contains("New title cannot be null or blank"), "Exception message should indicate blank title.");
     }
 }

@@ -25,49 +25,37 @@ public class OrderLineTest {
 
     @Test
     void shouldThrowExceptionWhenProductIdIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine(null, 1, new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when ISBN is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine(null, 1, new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is null.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate null ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenProductIdIsBlank() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine("", 1, new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when ISBN is blank.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine("", 1, new BigDecimal("10.00")), "Should throw IllegalArgumentException when ISBN is blank.");
         assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate blank ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenQuantityIsZero() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine("978-0321765723", 0, new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when quantity is zero.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine("978-0321765723", 0, new BigDecimal("10.00")), "Should throw IllegalArgumentException when quantity is zero.");
         assertTrue(exception.getMessage().contains("Quantity must be positive"), "Exception message should indicate positive quantity.");
     }
 
     @Test
     void shouldThrowExceptionWhenQuantityIsNegative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine("978-0321765723", -1, new BigDecimal("10.00"));
-        }, "Should throw IllegalArgumentException when quantity is negative.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine("978-0321765723", -1, new BigDecimal("10.00")), "Should throw IllegalArgumentException when quantity is negative.");
         assertTrue(exception.getMessage().contains("Quantity must be positive"), "Exception message should indicate positive quantity.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine("978-0321765723", 1, null);
-        }, "Should throw IllegalArgumentException when price is null.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine("978-0321765723", 1, null), "Should throw IllegalArgumentException when price is null.");
         assertTrue(exception.getMessage().contains("Price cannot be null"), "Exception message should indicate null price.");
     }
 
     @Test
     void shouldThrowExceptionWhenPriceIsNegative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderLine("978-0321765723", 1, new BigDecimal("-0.01"));
-        }, "Should throw IllegalArgumentException when price is negative.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new OrderLine("978-0321765723", 1, new BigDecimal("-0.01")), "Should throw IllegalArgumentException when price is negative.");
         assertTrue(exception.getMessage().contains("Price cannot be negative"), "Exception message should indicate negative price.");
     }
 
