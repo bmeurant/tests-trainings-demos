@@ -4,8 +4,10 @@ import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
+import io.bmeurant.bookordermanager.integration.events.TestEventListener;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
+import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
@@ -15,14 +17,14 @@ import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEvent;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
@@ -34,12 +36,15 @@ public class OrderManagementSteps {
     private InventoryItemRepository inventoryItemRepository;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private TestEventListener testEventListener;
 
     private Order currentOrder;
 
     @Before
     public void setup() {
         currentOrder = null;
+        testEventListener.clearEvents();
     }
 
     @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
@@ -72,9 +77,17 @@ public class OrderManagementSteps {
     }
 
     @Then("an {string} event should have been published for the order of {string}")
-    public void an_event_should_have_been_published_for_the_order_of(String string, String string2) {
-        // TODO: Implement event publication verification
-        throw new io.cucumber.java.PendingException();
+    public void an_event_should_have_been_published_for_the_order_of(String eventType, String customerName) {
+        boolean eventFound = false;
+        for (ApplicationEvent event : testEventListener.getCapturedEvents()) {
+            if (event instanceof OrderCreatedEvent orderCreatedEvent) {
+                if (orderCreatedEvent.getOrder().getCustomerName().equals(customerName)) {
+                    eventFound = true;
+                    break;
+                }
+            }
+        }
+        assertTrue(eventFound, String.format("Expected %s event for customer %s not found.", eventType, customerName));
     }
 
     @Then("the inventory service receives the stock deduction request for the order")

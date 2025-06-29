@@ -4,14 +4,15 @@ import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
-import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
+import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,14 @@ public class OrderServiceImpl implements OrderService {
     private final BookService bookService;
     private final InventoryService inventoryService;
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     @Autowired
-    public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository) {
+    public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.bookService = bookService;
         this.inventoryService = inventoryService;
         this.orderRepository = orderRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(customerName, buildOrderLines(items));
         Order savedOrder = orderRepository.save(order);
         log.info("Order created and saved: {}", savedOrder);
+        applicationEventPublisher.publishEvent(new OrderCreatedEvent(savedOrder));
         return savedOrder;
     }
 
