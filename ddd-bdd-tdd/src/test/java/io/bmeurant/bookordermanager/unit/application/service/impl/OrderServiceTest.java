@@ -1,11 +1,12 @@
 package io.bmeurant.bookordermanager.unit.application.service.impl;
 
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
+import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
-import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
+import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ public class OrderServiceTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private InventoryItemRepository inventoryItemRepository;
+    private InventoryService inventoryService;
     @Mock
     private OrderRepository orderRepository;
 
@@ -61,10 +62,9 @@ public class OrderServiceTest {
 
         when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
         when(bookRepository.findById(isbn2)).thenReturn(Optional.of(book2));
-        when(inventoryItemRepository.findById(isbn1)).thenReturn(Optional.of(inventoryItem1));
-        when(inventoryItemRepository.findById(isbn2)).thenReturn(Optional.of(inventoryItem2));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenReturn(inventoryItem1);
+        when(inventoryService.deductStock(isbn2, quantity2)).thenReturn(inventoryItem2);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(inventoryItemRepository.save(any(InventoryItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         Order createdOrder = orderService.createOrder(customerName, itemRequests);
@@ -76,16 +76,12 @@ public class OrderServiceTest {
         assertEquals(2, createdOrder.getOrderLines().size(), "Should have two order lines.");
 
         // Verify stock deduction
-        assertEquals(10 - quantity1, inventoryItem1.getStock(), "Stock for item1 should be deducted.");
-        assertEquals(5 - quantity2, inventoryItem2.getStock(), "Stock for item2 should be deducted.");
+        verify(inventoryService, times(1)).deductStock(isbn1, quantity1);
+        verify(inventoryService, times(1)).deductStock(isbn2, quantity2);
 
         // Verify repository interactions
         verify(bookRepository, times(1)).findById(isbn1);
         verify(bookRepository, times(1)).findById(isbn2);
-        verify(inventoryItemRepository, times(1)).findById(isbn1);
-        verify(inventoryItemRepository, times(1)).findById(isbn2);
-        verify(inventoryItemRepository, times(1)).save(inventoryItem1);
-        verify(inventoryItemRepository, times(1)).save(inventoryItem2);
         verify(orderRepository, times(1)).save(createdOrder);
     }
 
@@ -119,7 +115,7 @@ public class OrderServiceTest {
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
 
         when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
-        when(inventoryItemRepository.findById(isbn1)).thenReturn(Optional.empty());
+        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Inventory item with ISBN " + isbn1 + " not found."));
 
         // When & Then
         Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when inventory item is not found.");
@@ -140,10 +136,11 @@ public class OrderServiceTest {
         InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
 
         when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
-        when(inventoryItemRepository.findById(isbn1)).thenReturn(Optional.of(inventoryItem1));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Not enough stock to deduct"));
 
         // When & Then
         Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when not enough stock.");
         assertTrue(exception.getMessage().contains("Not enough stock to deduct"), "Exception message should indicate insufficient stock.");
     }
 }
+

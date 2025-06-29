@@ -5,7 +5,7 @@ import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
-import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
+import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
@@ -24,13 +24,12 @@ public class OrderServiceImpl implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final BookRepository bookRepository;
-    private final InventoryItemRepository inventoryItemRepository;
+    private final InventoryService inventoryService;
     private final OrderRepository orderRepository;
-
     @Autowired
-    public OrderServiceImpl(BookRepository bookRepository, InventoryItemRepository inventoryItemRepository, OrderRepository orderRepository) {
+    public OrderServiceImpl(BookRepository bookRepository, InventoryService inventoryService, OrderRepository orderRepository) {
         this.bookRepository = bookRepository;
-        this.inventoryItemRepository = inventoryItemRepository;
+        this.inventoryService = inventoryService;
         this.orderRepository = orderRepository;
     }
 
@@ -55,23 +54,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
         Book book = findBook(itemRequest.getIsbn());
-        InventoryItem inventoryItem = findInventoryItem(itemRequest.getIsbn());
-
-        // Deduct stock
-        log.debug("Deducting {} from stock for ISBN {}. Current stock: {}", itemRequest.getQuantity(), itemRequest.getIsbn(), inventoryItem.getStock());
-        inventoryItem.deductStock(itemRequest.getQuantity());
-        inventoryItemRepository.save(inventoryItem);
-        log.info("Stock for ISBN {} updated to: {}", itemRequest.getIsbn(), inventoryItem.getStock());
+        inventoryService.deductStock(itemRequest.getIsbn(), itemRequest.getQuantity());
 
         return new OrderLine(itemRequest.getIsbn(), itemRequest.getQuantity(), book.getPrice());
-    }
-
-    private InventoryItem findInventoryItem(String isbn) {
-        return inventoryItemRepository.findById(isbn)
-                .orElseThrow(() -> {
-                    log.warn("Inventory item with ISBN {} not found.", isbn);
-                    return new IllegalArgumentException("Inventory item with ISBN " + isbn + " not found.");
-                });
     }
 
     private Book findBook(String isbn) {
@@ -82,3 +67,4 @@ public class OrderServiceImpl implements OrderService {
                 });
     }
 }
+
