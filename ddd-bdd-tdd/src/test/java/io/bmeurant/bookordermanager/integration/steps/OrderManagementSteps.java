@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -106,9 +108,13 @@ public class OrderManagementSteps {
     }
 
     @Then("the order should transition to status {string}")
-    public void the_order_should_transition_to_status(String string) {
-        // TODO: Implement order status transition verification
-        throw new io.cucumber.java.PendingException();
+    public void the_order_should_transition_to_status(String expectedStatus) {
+        assertNotNull(currentOrder, "Current order should not be null for status transition verification.");
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            Order updatedOrder = orderService.findOrderById(currentOrder.getOrderId())
+                    .orElseThrow(() -> new AssertionError("Order not found"));
+            assertEquals(Order.OrderStatus.valueOf(expectedStatus), updatedOrder.getStatus(), "Order status should be updated as expected.");
+        });
     }
 
     @Then("the stock for product {string} should be {int}")

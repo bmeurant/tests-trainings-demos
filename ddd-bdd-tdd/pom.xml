@@ -21,6 +21,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <cucumber.version>7.23.0</cucumber.version>
         <junit-platform-suite.version>1.13.2</junit-platform-suite.version>
+        <awaitility.version>4.2.1</awaitility.version>
     </properties>
 
     <dependencies>
@@ -71,6 +72,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
             <version>${junit-platform-suite.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

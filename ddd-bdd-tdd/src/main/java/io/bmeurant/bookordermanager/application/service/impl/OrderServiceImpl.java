@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -46,6 +48,11 @@ public class OrderServiceImpl implements OrderService {
         log.info("Order created and saved: {}", savedOrder);
         applicationEventPublisher.publishEvent(new OrderCreatedEvent(savedOrder));
         return savedOrder;
+    }
+
+    @Override
+    public Optional<Order> findOrderById(String id) {
+        return orderRepository.findById(id);
     }
 
     private List<OrderLine> buildOrderLines(List<OrderItemRequest> items) {
