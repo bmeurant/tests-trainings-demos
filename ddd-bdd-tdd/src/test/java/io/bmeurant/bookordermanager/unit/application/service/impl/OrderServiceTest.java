@@ -7,6 +7,9 @@ import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +98,10 @@ public class OrderServiceTest {
         OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
         List<OrderItemRequest> itemRequests = List.of(itemRequest1);
 
-        when(bookService.findBookByIsbn(isbn1)).thenThrow(new IllegalArgumentException("Book with ISBN " + isbn1 + " not found in catalog."));
+        when(bookService.findBookByIsbn(isbn1)).thenThrow(new BookNotFoundException(isbn1));
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when book is not found.");
+        Exception exception = assertThrows(BookNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw BookNotFoundException when book is not found.");
         assertTrue(exception.getMessage().contains("Book with ISBN " + isbn1 + " not found in catalog."), "Exception message should indicate book not found.");
     }
 
@@ -115,10 +118,10 @@ public class OrderServiceTest {
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
 
         when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
-        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Inventory item with ISBN " + isbn1 + " not found."));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new InventoryItemNotFoundException(isbn1));
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when inventory item is not found.");
+        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw InventoryItemNotFoundException when inventory item is not found.");
         assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn1 + " not found."), "Exception message should indicate inventory item not found.");
     }
 
@@ -136,11 +139,11 @@ public class OrderServiceTest {
         InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
 
         when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
-        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Not enough stock to deduct"));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new InsufficientStockException(isbn1, quantity1, inventoryItem1.getStock()));
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when not enough stock.");
-        assertTrue(exception.getMessage().contains("Not enough stock to deduct"), "Exception message should indicate insufficient stock.");
+        Exception exception = assertThrows(InsufficientStockException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw InsufficientStockException when not enough stock.");
+        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn1, quantity1, inventoryItem1.getStock())), "Exception message should indicate insufficient stock.");
     }
 }
 

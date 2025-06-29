@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.unit.catalog.domain.service.impl;
 
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.catalog.domain.service.impl.BookServiceImpl;
@@ -49,15 +50,15 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException when book is not found by ISBN")
+    @DisplayName("Should throw BookNotFoundException when book is not found by ISBN")
     void findBookByIsbn_shouldThrowExceptionWhenNotFound() {
         // Given
         String isbn = "978-0321765723";
         when(bookRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> bookService.findBookByIsbn(isbn),
-                "Should throw IllegalArgumentException when book is not found.");
+        Exception exception = assertThrows(BookNotFoundException.class, () -> bookService.findBookByIsbn(isbn),
+                "Should throw BookNotFoundException when book is not found.");
         assertTrue(exception.getMessage().contains("Book with ISBN " + isbn + " not found in catalog."),
                 "Exception message should indicate book not found.");
         verify(bookRepository, times(1)).findById(isbn);

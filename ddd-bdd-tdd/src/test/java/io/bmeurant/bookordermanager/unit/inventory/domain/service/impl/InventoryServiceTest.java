@@ -1,5 +1,7 @@
 package io.bmeurant.bookordermanager.unit.inventory.domain.service.impl;
 
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.impl.InventoryServiceImpl;
@@ -57,9 +59,9 @@ public class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> {
             inventoryService.deductStock(isbn, quantityToDeduct);
-        }, "Should throw IllegalArgumentException when inventory item is not found.");
+        }, "Should throw InventoryItemNotFoundException when inventory item is not found.");
         assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn + " not found."), "Exception message should indicate item not found.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
@@ -76,10 +78,10 @@ public class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(InsufficientStockException.class, () -> {
             inventoryService.deductStock(isbn, quantityToDeduct);
-        }, "Should throw IllegalArgumentException when stock is insufficient.");
-        assertTrue(exception.getMessage().contains("Not enough stock to deduct"), "Exception message should indicate insufficient stock.");
+        }, "Should throw InsufficientStockException when stock is insufficient.");
+        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToDeduct, initialStock)), "Exception message should indicate insufficient stock.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
     }

@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.unit.inventory.domain.model;
 
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import org.junit.jupiter.api.Test;
 
@@ -78,8 +79,11 @@ public class InventoryItemTest {
 
     @Test
     void shouldThrowExceptionWhenDeductingMoreThanAvailableStock() {
-        InventoryItem item = new InventoryItem("978-0321765723", 5);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> item.deductStock(10), "Should throw IllegalArgumentException when deducting more than available stock.");
-        assertTrue(exception.getMessage().contains("Not enough stock to deduct"), "Exception message should indicate insufficient stock.");
+        String isbn = "978-0321765723";
+        int initialStock = 5;
+        int quantityToDeduct = 10;
+        InventoryItem item = new InventoryItem(isbn, initialStock);
+        Exception exception = assertThrows(InsufficientStockException.class, () -> item.deductStock(quantityToDeduct), "Should throw InsufficientStockException when deducting more than available stock.");
+        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToDeduct, initialStock)), "Exception message should indicate insufficient stock.");
     }
 }

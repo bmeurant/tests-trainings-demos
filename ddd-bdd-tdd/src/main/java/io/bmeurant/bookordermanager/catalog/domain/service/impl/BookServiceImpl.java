@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.catalog.domain.service.impl;
 
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
@@ -26,7 +27,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findById(isbn)
                 .orElseThrow(() -> {
                     log.warn("Book with ISBN {} not found in catalog.", isbn);
-                    return new IllegalArgumentException("Book with ISBN " + isbn + " not found in catalog.");
+                    return new BookNotFoundException(isbn);
                 });
     }
 }

@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.inventory.domain.service.impl;
 
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
@@ -31,7 +32,7 @@ public class InventoryServiceImpl implements InventoryService {
         InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
                 .orElseThrow(() -> {
                     log.warn("Inventory item with ISBN {} not found for deduction.", isbn);
-                    return new IllegalArgumentException("Inventory item with ISBN " + isbn + " not found.");
+                    return new InventoryItemNotFoundException(isbn);
                 });
 
         inventoryItem.deductStock(quantity);

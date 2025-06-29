@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.inventory.domain.model;
 
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -50,12 +51,14 @@ public class InventoryItem {
     /**
      * Deducts the specified quantity from the current stock.
      * @param quantity The quantity to deduct. Must be positive and not exceed current stock.
-     * @throws IllegalArgumentException if quantity is invalid or exceeds available stock.
+     * @throws InsufficientStockException if quantity is invalid or exceeds available stock.
      */
     public void deductStock(int quantity) {
         log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
         Assert.isTrue(quantity > 0, "Quantity to deduct must be positive");
-        Assert.isTrue(this.stock >= quantity, "Not enough stock to deduct " + quantity + ". Current stock: " + this.stock);
+        if (this.stock < quantity) {
+            throw new InsufficientStockException(this.isbn, quantity, this.stock);
+        }
         this.stock -= quantity;
         log.info("Stock for InventoryItem {} updated to: {}", this.isbn, this.stock);
     }
