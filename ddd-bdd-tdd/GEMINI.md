@@ -27,3 +27,6 @@ This file provides context for the Gemini AI assistant to understand the project
   are provided for every new or modified domain method, repository implementation, or service, utilizing mocking where
   appropriate for lightweight and efficient testing.
 - **Lombok:** Use Lombok but only when it is really necessary.
+- **JavaDoc:** All public methods and classes must have a JavaDoc.
+- **Maven POM:** Use properties for dependency versions in the `pom.xml` file.
+- **Workflow:** Always return control to the user before implementing a new step from a `PendingException`.
