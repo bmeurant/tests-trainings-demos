@@ -130,4 +130,30 @@ public class BookTest {
         Book book = new Book("978-0321765723", "Title", "Author", new BigDecimal("25.00"));
         assertNotEquals(book, new Object());
     }
+
+    @Test
+    void shouldUpdateTitleCorrectly() {
+        Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
+        String newTitle = "New Title";
+        book.updateTitle(newTitle);
+        assertEquals(newTitle, book.getTitle());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingTitleWithNull() {
+        Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            book.updateTitle(null);
+        });
+        assertTrue(exception.getMessage().contains("New title cannot be null or blank"));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingTitleWithBlank() {
+        Book book = new Book("978-0321765723", "Old Title", "Author", new BigDecimal("25.00"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            book.updateTitle("");
+        });
+        assertTrue(exception.getMessage().contains("New title cannot be null or blank"));
+    }
 }
