@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -15,6 +17,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString
 public class OrderLine {
+    private static final Logger log = LoggerFactory.getLogger(OrderLine.class);
+
     private String productId;
     private int quantity;
     private BigDecimal price;
@@ -29,6 +33,7 @@ public class OrderLine {
      * @throws IllegalArgumentException if any validation fails.
      */
     public OrderLine(String productId, int quantity, BigDecimal price) {
+        log.debug("Creating OrderLine for Product ID: {}, Quantity: {}, Price: {}", productId, quantity, price);
         Assert.hasText(productId, "Product ID cannot be null or blank");
         Assert.isTrue(quantity > 0, "Quantity must be positive");
         Assert.notNull(price, "Price cannot be null");
@@ -37,5 +42,6 @@ public class OrderLine {
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
+        log.info("OrderLine created: {}", this);
     }
 }

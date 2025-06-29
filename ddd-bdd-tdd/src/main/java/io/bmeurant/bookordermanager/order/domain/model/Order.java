@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +18,8 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "orderId")
 @ToString
 public class Order {
+    private static final Logger log = LoggerFactory.getLogger(Order.class);
+
     private String orderId;
     private String customerName;
     private OrderStatus status;
@@ -30,6 +34,7 @@ public class Order {
      * @throws IllegalArgumentException if any validation fails.
      */
     public Order(String customerName, List<OrderLine> orderLines) {
+        log.debug("Creating Order for customer: {}", customerName);
         Assert.hasText(customerName, "Customer name cannot be null or blank");
         Assert.notEmpty(orderLines, "Order lines cannot be null or empty");
 
@@ -37,6 +42,7 @@ public class Order {
         this.customerName = customerName;
         this.status = OrderStatus.PENDING; // Initial status
         this.orderLines = orderLines;
+        log.info("Order created: {}", this);
     }
 
     /**

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -20,6 +22,8 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
+    private static final Logger log = LoggerFactory.getLogger(Book.class);
+
     @Id
     private String isbn;
     private String title;
@@ -39,6 +43,7 @@ public class Book {
      * @throws IllegalArgumentException if any validation fails.
      */
     public Book(String isbn, String title, String author, BigDecimal price) {
+        log.debug("Creating Book with ISBN: {}, Title: {}, Author: {}, Price: {}", isbn, title, author, price);
         Assert.hasText(isbn, "ISBN cannot be null or blank");
         Assert.hasText(title, "Title cannot be null or blank");
         Assert.hasText(author, "Author cannot be null or blank");
@@ -49,6 +54,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.price = price;
+        log.info("Book created: {}", this);
     }
 
     /**
@@ -57,8 +63,11 @@ public class Book {
      * @throws IllegalArgumentException if the new title is null or blank.
      */
     public void updateTitle(String newTitle) {
+        log.debug("Updating title for Book {}. New title: {}", this.isbn, newTitle);
         Assert.hasText(newTitle, "New title cannot be null or blank");
         this.title = newTitle;
+        log.info("Book {} title updated to: {}", this.isbn, newTitle);
     }
 }
+
 

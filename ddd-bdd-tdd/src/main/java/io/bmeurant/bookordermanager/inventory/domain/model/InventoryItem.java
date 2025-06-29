@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.*;
 
@@ -19,6 +21,8 @@ import jakarta.persistence.*;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InventoryItem {
+    private static final Logger log = LoggerFactory.getLogger(InventoryItem.class);
+
     @Id
     private String isbn;
     private int stock;
@@ -34,11 +38,13 @@ public class InventoryItem {
      * @throws IllegalArgumentException if any validation fails.
      */
     public InventoryItem(String isbn, int stock) {
+        log.debug("Creating InventoryItem with ISBN: {}, Stock: {}", isbn, stock);
         Assert.hasText(isbn, "ISBN cannot be null or blank");
         Assert.isTrue(stock >= 0, "Stock cannot be negative");
 
         this.isbn = isbn;
         this.stock = stock;
+        log.info("InventoryItem created: {}", this);
     }
 
     /**
@@ -47,8 +53,10 @@ public class InventoryItem {
      * @throws IllegalArgumentException if quantity is invalid or exceeds available stock.
      */
     public void deductStock(int quantity) {
+        log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
         Assert.isTrue(quantity > 0, "Quantity to deduct must be positive");
         Assert.isTrue(this.stock >= quantity, "Not enough stock to deduct " + quantity + ". Current stock: " + this.stock);
         this.stock -= quantity;
+        log.info("Stock for InventoryItem {} updated to: {}", this.isbn, this.stock);
     }
 }
