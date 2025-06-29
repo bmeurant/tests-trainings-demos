@@ -9,6 +9,10 @@ import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+
+import static io.bmeurant.bookordermanager.domain.util.Assertions.*;
+
 /**
  * Represents an inventory item in the inventory domain. An inventory item is identified by its ISBN.
  * It holds the current stock level for a given book.
@@ -37,16 +41,16 @@ public class InventoryItem {
      */
     public InventoryItem(String isbn, int stock) {
         log.debug("Creating InventoryItem with ISBN: {}, Stock: {}", isbn, stock);
-        if (isbn == null || isbn.isBlank()) {
-            throw new ValidationException("ISBN cannot be null or blank", InventoryItem.class);
-        }
-        if (stock < 0) {
-            throw new ValidationException("Stock cannot be negative", InventoryItem.class);
-        }
+        assertInventoryItemIsValid(isbn, stock);
 
         this.isbn = isbn;
         this.stock = stock;
         log.info("InventoryItem created: {}", this);
+    }
+
+    private static void assertInventoryItemIsValid(String isbn, int stock) {
+        assertHasText(isbn, "ISBN", InventoryItem.class);
+        assertIsNonNegative(BigDecimal.valueOf(stock), "Stock", InventoryItem.class);
     }
 
     /**
@@ -58,13 +62,15 @@ public class InventoryItem {
      */
     public void deductStock(int quantity) {
         log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
-        if (quantity <= 0) {
-            throw new ValidationException("Quantity to deduct must be positive", InventoryItem.class);
-        }
+        assertDeductionIsValid(quantity);
+        this.stock -= quantity;
+        log.info("Stock for InventoryItem {} updated to: {}", this.isbn, this.stock);
+    }
+
+    private void assertDeductionIsValid(int quantity) {
+        assertIsPositive(quantity, "Quantity to deduct", InventoryItem.class);
         if (this.stock < quantity) {
             throw new InsufficientStockException(this.isbn, quantity, this.stock);
         }
-        this.stock -= quantity;
-        log.info("Stock for InventoryItem {} updated to: {}", this.isbn, this.stock);
     }
 }

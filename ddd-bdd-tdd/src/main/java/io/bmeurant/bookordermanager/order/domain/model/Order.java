@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static io.bmeurant.bookordermanager.domain.util.Assertions.*;
+
 /**
  * Represents an order in the order domain. An order is an aggregate root.
  * It encapsulates a collection of order lines and manages the order's lifecycle.
@@ -51,12 +53,7 @@ public class Order {
      */
     public Order(String customerName, List<OrderLine> orderLines) {
         log.debug("Creating Order for customer: {}", customerName);
-        if (customerName == null || customerName.isBlank()) {
-            throw new ValidationException("Customer name cannot be null or blank", Order.class);
-        }
-        if (orderLines == null || orderLines.isEmpty()) {
-            throw new ValidationException("Order lines cannot be null or empty", Order.class);
-        }
+        assertOrderIsValid(customerName, orderLines);
 
         this.orderId = UUID.randomUUID().toString(); // Generate a unique ID for the order
         this.customerName = customerName;
@@ -65,15 +62,18 @@ public class Order {
         log.info("Order created: {}", this);
     }
 
+    private static void assertOrderIsValid(String customerName, List<OrderLine> orderLines) {
+        assertHasText(customerName, "Customer name", Order.class);
+        assertNotEmpty(orderLines, "Order lines", Order.class);
+    }
+
     /**
      * Confirms the order, changing its status from PENDING to CONFIRMED.
      *
      * @throws ValidationException if the order is not in PENDING status.
      */
     public void confirm() {
-        if (this.status != OrderStatus.PENDING) {
-            throw new ValidationException("Order can only be confirmed if its status is PENDING.", Order.class);
-        }
+        assertIsTrue(this.status == OrderStatus.PENDING, "Order can only be confirmed if its status is PENDING.", Order.class);
         this.status = OrderStatus.CONFIRMED;
         log.info("Order {} confirmed.", this.orderId);
     }

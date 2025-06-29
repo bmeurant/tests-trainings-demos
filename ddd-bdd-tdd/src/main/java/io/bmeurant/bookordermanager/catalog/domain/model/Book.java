@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
+import static io.bmeurant.bookordermanager.domain.util.Assertions.*;
+
 /**
  * Represents a book in the catalog domain. A book is identified by its ISBN.
  * This is a value object in the DDD context, but acts as an aggregate root for its own properties.
@@ -37,32 +39,26 @@ public class Book {
      * @param isbn   The International Standard Book Number, a unique identifier for the book. Must not be null or blank.
      * @param title  The title of the book. Must not be null or blank.
      * @param author The author of the book. Must not be null or blank.
-     * @param price  The price of the book. Must not be null and must be non-negative.
+     * @param price  The price of the book at the time of order. Must not be null and must be non-negative.
      * @throws ValidationException if any validation fails.
      */
     public Book(String isbn, String title, String author, BigDecimal price) {
         log.debug("Creating Book with ISBN: {}, Title: {}, Author: {}, Price: {}", isbn, title, author, price);
-        if (isbn == null || isbn.isBlank()) {
-            throw new ValidationException("ISBN cannot be null or blank", Book.class);
-        }
-        if (title == null || title.isBlank()) {
-            throw new ValidationException("Title cannot be null or blank", Book.class);
-        }
-        if (author == null || author.isBlank()) {
-            throw new ValidationException("Author cannot be null or blank", Book.class);
-        }
-        if (price == null) {
-            throw new ValidationException("Price cannot be null", Book.class);
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Price cannot be negative", Book.class);
-        }
+        assertBookIsValid(isbn, title, author, price);
 
         this.isbn = isbn;
         this.title = title;
         this.author = author;
         this.price = price;
         log.info("Book created: {}", this);
+    }
+
+    private static void assertBookIsValid(String isbn, String title, String author, BigDecimal price) {
+        assertHasText(isbn, "ISBN", Book.class);
+        assertHasText(title, "Title", Book.class);
+        assertHasText(author, "Author", Book.class);
+        assertNotNull(price, "Price", Book.class);
+        assertIsNonNegative(price, "Price", Book.class);
     }
 
     /**
@@ -73,11 +69,13 @@ public class Book {
      */
     public void updateTitle(String newTitle) {
         log.debug("Updating title for Book {}. New title: {}", this.isbn, newTitle);
-        if (newTitle == null || newTitle.isBlank()) {
-            throw new ValidationException("New title cannot be null or blank", Book.class);
-        }
+        assertTitleIsValid(newTitle);
         this.title = newTitle;
         log.info("Book {} title updated to: {}", this.isbn, newTitle);
+    }
+
+    private static void assertTitleIsValid(String newTitle) {
+        assertHasText(newTitle, "New title", Book.class);
     }
 }
 

@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
+import static io.bmeurant.bookordermanager.domain.util.Assertions.*;
+
 /**
  * Represents a single line item within an order.
  * It captures the product details and the quantity ordered.
@@ -42,22 +44,18 @@ public class OrderLine {
      */
     public OrderLine(String isbn, int quantity, BigDecimal price) {
         log.debug("Creating OrderLine for ISBN: {}, Quantity: {}, Price: {}", isbn, quantity, price);
-        if (isbn == null || isbn.isBlank()) {
-            throw new ValidationException("ISBN cannot be null or blank", OrderLine.class);
-        }
-        if (quantity <= 0) {
-            throw new ValidationException("Quantity must be positive", OrderLine.class);
-        }
-        if (price == null) {
-            throw new ValidationException("Price cannot be null", OrderLine.class);
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Price cannot be negative", OrderLine.class);
-        }
+        assertOrderLineIsValid(isbn, quantity, price);
 
         this.isbn = isbn;
         this.quantity = quantity;
         this.price = price;
         log.info("OrderLine created: {}", this);
+    }
+
+    private static void assertOrderLineIsValid(String isbn, int quantity, BigDecimal price) {
+        assertHasText(isbn, "ISBN", OrderLine.class);
+        assertIsPositive(quantity, "Quantity", OrderLine.class);
+        assertNotNull(price, "Price", OrderLine.class);
+        assertIsNonNegative(price, "Price", OrderLine.class);
     }
 }
