@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the {@link BookService} interface.
+ * Handles operations related to books in the catalog.
+ */
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -16,6 +20,11 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
+    /**
+     * Constructs a new {@code BookServiceImpl} with the given {@link BookRepository}.
+     *
+     * @param bookRepository The repository for accessing book data.
+     */
     @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;

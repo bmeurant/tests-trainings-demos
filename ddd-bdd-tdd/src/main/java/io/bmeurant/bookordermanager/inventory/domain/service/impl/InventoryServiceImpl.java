@@ -20,6 +20,11 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryItemRepository inventoryItemRepository;
 
+    /**
+     * Constructs a new {@code InventoryServiceImpl} with the given {@link InventoryItemRepository}.
+     *
+     * @param inventoryItemRepository The repository for accessing inventory item data.
+     */
     @Autowired
     public InventoryServiceImpl(InventoryItemRepository inventoryItemRepository) {
         this.inventoryItemRepository = inventoryItemRepository;

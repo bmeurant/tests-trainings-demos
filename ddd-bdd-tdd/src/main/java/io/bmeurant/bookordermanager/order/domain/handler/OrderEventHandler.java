@@ -12,6 +12,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+/**
+ * Handles events related to the Order domain.
+ */
 @Component
 public class OrderEventHandler {
 

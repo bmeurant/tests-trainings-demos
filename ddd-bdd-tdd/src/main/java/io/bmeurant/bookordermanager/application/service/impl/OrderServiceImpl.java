@@ -19,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+/**
+ * Implementation of the {@link OrderService} interface.
+ * Handles the creation and management of orders, interacting with catalog and inventory services.
+ */
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -31,6 +34,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * Constructs an {@code OrderServiceImpl} with the necessary dependencies.
+     *
+     * @param bookService The service for retrieving book information.
+     * @param inventoryService The service for managing inventory stock.
+     * @param orderRepository The repository for persisting and retrieving orders.
+     * @param applicationEventPublisher The publisher for application events.
+     */
     @Autowired
     public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.bookService = bookService;
@@ -39,6 +50,14 @@ public class OrderServiceImpl implements OrderService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    /**
+     * Creates a new order for a given customer with the specified items.
+     * This method is transactional and publishes an {@link OrderCreatedEvent} upon successful order creation.
+     *
+     * @param customerName The name of the customer.
+     * @param items The list of items to include in the order.
+     * @return The created and saved Order object.
+     */
     @Override
     @Transactional
     public Order createOrder(String customerName, List<OrderItemRequest> items) {
@@ -50,11 +69,23 @@ public class OrderServiceImpl implements OrderService {
         return savedOrder;
     }
 
+    /**
+     * Finds an order by its unique identifier.
+     *
+     * @param id The unique identifier of the order.
+     * @return An Optional containing the Order if found, otherwise empty.
+     */
     @Override
     public Optional<Order> findOrderById(String id) {
         return orderRepository.findById(id);
     }
 
+    /**
+     * Builds a list of {@link OrderLine} objects from a list of {@link OrderItemRequest}s.
+     *
+     * @param items The list of order item requests.
+     * @return A list of OrderLine objects.
+     */
     private List<OrderLine> buildOrderLines(List<OrderItemRequest> items) {
         List<OrderLine> orderLines = new ArrayList<>();
         for (OrderItemRequest itemRequest : items) {
@@ -63,6 +94,13 @@ public class OrderServiceImpl implements OrderService {
         return orderLines;
     }
 
+    /**
+     * Creates a single {@link OrderLine} from an {@link OrderItemRequest}.
+     * This involves looking up book details and deducting stock from inventory.
+     *
+     * @param itemRequest The order item request.
+     * @return The created OrderLine object.
+     */
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
         Book book = bookService.findBookByIsbn(itemRequest.getIsbn());
