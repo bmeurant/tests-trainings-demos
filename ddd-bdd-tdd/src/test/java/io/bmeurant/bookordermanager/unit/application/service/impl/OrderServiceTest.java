@@ -1,6 +1,6 @@
 package io.bmeurant.bookordermanager.unit.application.service.impl;
 
-import io.bmeurant.bookordermanager.application.service.OrderService;
+import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
@@ -50,9 +50,9 @@ public class OrderServiceTest {
         BigDecimal price1 = new BigDecimal("25.00");
         BigDecimal price2 = new BigDecimal("35.00");
 
-        OrderService.OrderItemRequest itemRequest1 = new OrderService.OrderItemRequest(isbn1, quantity1);
-        OrderService.OrderItemRequest itemRequest2 = new OrderService.OrderItemRequest(isbn2, quantity2);
-        List<OrderService.OrderItemRequest> itemRequests = Arrays.asList(itemRequest1, itemRequest2);
+        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
+        OrderItemRequest itemRequest2 = new OrderItemRequest(isbn2, quantity2);
+        List<OrderItemRequest> itemRequests = Arrays.asList(itemRequest1, itemRequest2);
 
         Book book1 = new Book(isbn1, "Book One", "Author One", price1);
         Book book2 = new Book(isbn2, "Book Two", "Author Two", price2);
@@ -96,8 +96,8 @@ public class OrderServiceTest {
         String isbn1 = "978-0321765723";
         int quantity1 = 2;
 
-        OrderService.OrderItemRequest itemRequest1 = new OrderService.OrderItemRequest(isbn1, quantity1);
-        List<OrderService.OrderItemRequest> itemRequests = List.of(itemRequest1);
+        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
+        List<OrderItemRequest> itemRequests = List.of(itemRequest1);
 
         when(bookRepository.findById(isbn1)).thenReturn(Optional.empty());
 
@@ -113,8 +113,8 @@ public class OrderServiceTest {
         String isbn1 = "978-0321765723";
         int quantity1 = 2;
 
-        OrderService.OrderItemRequest itemRequest1 = new OrderService.OrderItemRequest(isbn1, quantity1);
-        List<OrderService.OrderItemRequest> itemRequests = List.of(itemRequest1);
+        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
+        List<OrderItemRequest> itemRequests = List.of(itemRequest1);
 
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
 
@@ -133,8 +133,8 @@ public class OrderServiceTest {
         String isbn1 = "978-0321765723";
         int quantity1 = 15; // More than available stock
 
-        OrderService.OrderItemRequest itemRequest1 = new OrderService.OrderItemRequest(isbn1, quantity1);
-        List<OrderService.OrderItemRequest> itemRequests = List.of(itemRequest1);
+        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
+        List<OrderItemRequest> itemRequests = List.of(itemRequest1);
 
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
         InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);

@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
@@ -55,11 +56,11 @@ public class OrderManagementSteps {
 
     @When("I try to create an order for {string} with the following items:")
     public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
-        List<OrderService.OrderItemRequest> itemRequests = new ArrayList<>();
+        List<OrderItemRequest> itemRequests = new ArrayList<>();
         for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
             String isbn = row.get("productId");
             int quantity = Integer.parseInt(row.get("quantity"));
-            itemRequests.add(new OrderService.OrderItemRequest(isbn, quantity));
+            itemRequests.add(new OrderItemRequest(isbn, quantity));
         }
         currentOrder = orderService.createOrder(customerName, itemRequests);
     }
