@@ -8,6 +8,7 @@ import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
+import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -30,6 +31,8 @@ public class OrderManagementSteps {
     private BookRepository bookRepository;
     @Autowired
     private InventoryItemRepository inventoryItemRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     private Order currentOrder;
 
@@ -54,15 +57,16 @@ public class OrderManagementSteps {
     public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
         List<OrderLine> orderLines = new ArrayList<>();
         for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
-            String productId = row.get("productId");
+            String isbn = row.get("productId");
             int quantity = Integer.parseInt(row.get("quantity"));
-            Book book = bookRepository.findById(productId)
-                    .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + productId + " not found in catalog."));
-            InventoryItem inventoryItem = inventoryItemRepository.findById(productId)
-                    .orElseThrow(() -> new IllegalArgumentException("Inventory item with ISBN " + productId + " not found."));
-            orderLines.add(new OrderLine(productId, quantity, book.getPrice()));
+            Book book = bookRepository.findById(isbn)
+                    .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + isbn + " not found in catalog."));
+            InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
+                    .orElseThrow(() -> new IllegalArgumentException("Inventory item with ISBN " + isbn + " not found."));
+            orderLines.add(new OrderLine(isbn, quantity, book.getPrice()));
         }
         currentOrder = new Order(customerName, orderLines);
+        orderRepository.save(currentOrder);
     }
 
     @Then("the order should be created successfully with status {string}")
