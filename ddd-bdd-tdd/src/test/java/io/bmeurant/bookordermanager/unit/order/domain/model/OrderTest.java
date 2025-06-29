@@ -23,12 +23,12 @@ public class OrderTest {
 
         Order order = new Order(customerName, orderLines);
 
-        assertNotNull(order);
-        assertNotNull(order.getOrderId());
-        assertEquals(customerName, order.getCustomerName());
-        assertEquals(Order.OrderStatus.PENDING, order.getStatus());
-        assertEquals(orderLines.size(), order.getOrderLines().size());
-        assertTrue(order.getOrderLines().containsAll(orderLines));
+        assertNotNull(order, "Order should not be null.");
+        assertNotNull(order.getOrderId(), "Order ID should not be null.");
+        assertEquals(customerName, order.getCustomerName(), "Customer name should match the provided value.");
+        assertEquals(Order.OrderStatus.PENDING, order.getStatus(), "Initial order status should be PENDING.");
+        assertEquals(orderLines.size(), order.getOrderLines().size(), "Number of order lines should match.");
+        assertTrue(order.getOrderLines().containsAll(orderLines), "Order should contain all provided order lines.");
     }
 
     @Test
@@ -38,8 +38,8 @@ public class OrderTest {
         );
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Order(null, orderLines);
-        });
-        assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"));
+        }, "Should throw IllegalArgumentException when customer name is null.");
+        assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate null customer name.");
     }
 
     @Test
@@ -49,24 +49,24 @@ public class OrderTest {
         );
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Order("", orderLines);
-        });
-        assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"));
+        }, "Should throw IllegalArgumentException when customer name is blank.");
+        assertTrue(exception.getMessage().contains("Customer name cannot be null or blank"), "Exception message should indicate blank customer name.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Order("Alice", null);
-        });
-        assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"));
+        }, "Should throw IllegalArgumentException when order lines are null.");
+        assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate null order lines.");
     }
 
     @Test
     void shouldThrowExceptionWhenOrderLinesIsEmpty() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Order("Alice", Collections.emptyList());
-        });
-        assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"));
+        }, "Should throw IllegalArgumentException when order lines are empty.");
+        assertTrue(exception.getMessage().contains("Order lines cannot be null or empty"), "Exception message should indicate empty order lines.");
     }
 
     @Test
@@ -86,8 +86,8 @@ public class OrderTest {
             fail("Failed to set orderId for testing equality: " + e.getMessage());
         }
 
-        assertEquals(order1, order2);
-        assertEquals(order1.hashCode(), order2.hashCode());
+        assertEquals(order1, order2, "Orders with the same Order ID should be equal.");
+        assertEquals(order1.hashCode(), order2.hashCode(), "Hash codes should be equal for orders with the same Order ID.");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class OrderTest {
         Order order1 = new Order("Alice", orderLines);
         Order order2 = new Order("Bob", orderLines);
 
-        assertNotEquals(order1, order2);
-        assertNotEquals(order1.hashCode(), order2.hashCode());
+        assertNotEquals(order1, order2, "Orders with different Order IDs should not be equal.");
+        assertNotEquals(order1.hashCode(), order2.hashCode(), "Hash codes should not be equal for orders with different Order IDs.");
     }
 }

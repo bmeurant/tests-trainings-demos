@@ -14,33 +14,33 @@ public class InventoryItemTest {
 
         InventoryItem item = new InventoryItem(isbn, stock);
 
-        assertNotNull(item);
-        assertEquals(isbn, item.getIsbn());
-        assertEquals(stock, item.getStock());
+        assertNotNull(item, "InventoryItem should not be null.");
+        assertEquals(isbn, item.getIsbn(), "ISBN should match the provided value.");
+        assertEquals(stock, item.getStock(), "Stock should match the provided value.");
     }
 
     @Test
     void shouldThrowExceptionWhenIsbnIsNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new InventoryItem(null, 10);
-        });
-        assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"));
+        }, "Should throw IllegalArgumentException when ISBN is null.");
+        assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate null ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenIsbnIsBlank() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new InventoryItem("", 10);
-        });
-        assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"));
+        }, "Should throw IllegalArgumentException when ISBN is blank.");
+        assertTrue(exception.getMessage().contains("ISBN cannot be null or blank"), "Exception message should indicate blank ISBN.");
     }
 
     @Test
     void shouldThrowExceptionWhenStockIsNegative() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new InventoryItem("978-0321765723", -1);
-        });
-        assertTrue(exception.getMessage().contains("Stock cannot be negative"));
+        }, "Should throw IllegalArgumentException when stock is negative.");
+        assertTrue(exception.getMessage().contains("Stock cannot be negative"), "Exception message should indicate negative stock.");
     }
 
     @Test
@@ -48,8 +48,8 @@ public class InventoryItemTest {
         InventoryItem item1 = new InventoryItem("978-0321765723", 10);
         InventoryItem item2 = new InventoryItem("978-0321765723", 5);
 
-        assertEquals(item1, item2);
-        assertEquals(item1.hashCode(), item2.hashCode());
+        assertEquals(item1, item2, "Inventory items with same ISBN should be equal.");
+        assertEquals(item1.hashCode(), item2.hashCode(), "Hash codes should be equal for items with same ISBN.");
     }
 
     @Test
@@ -57,15 +57,15 @@ public class InventoryItemTest {
         InventoryItem item1 = new InventoryItem("978-0321765723", 10);
         InventoryItem item2 = new InventoryItem("978-0132350884", 10);
 
-        assertNotEquals(item1, item2);
-        assertNotEquals(item1.hashCode(), item2.hashCode());
+        assertNotEquals(item1, item2, "Inventory items with different ISBNs should not be equal.");
+        assertNotEquals(item1.hashCode(), item2.hashCode(), "Hash codes should not be equal for items with different ISBNs.");
     }
 
     @Test
     void shouldDeductStockCorrectly() {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
         item.deductStock(3);
-        assertEquals(7, item.getStock());
+        assertEquals(7, item.getStock(), "Stock should be correctly deducted.");
     }
 
     @Test
@@ -73,8 +73,8 @@ public class InventoryItemTest {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             item.deductStock(0);
-        });
-        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"));
+        }, "Should throw IllegalArgumentException when deducting zero stock.");
+        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
     }
 
     @Test
@@ -82,8 +82,8 @@ public class InventoryItemTest {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             item.deductStock(-1);
-        });
-        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"));
+        }, "Should throw IllegalArgumentException when deducting negative stock.");
+        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
     }
 
     @Test
@@ -91,7 +91,7 @@ public class InventoryItemTest {
         InventoryItem item = new InventoryItem("978-0321765723", 5);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             item.deductStock(10);
-        });
-        assertTrue(exception.getMessage().contains("Not enough stock to deduct"));
+        }, "Should throw IllegalArgumentException when deducting more than available stock.");
+        assertTrue(exception.getMessage().contains("Not enough stock to deduct"), "Exception message should indicate insufficient stock.");
     }
 }

@@ -26,14 +26,14 @@ public class BookRepositoryTest {
         Book book = new Book("978-0321765723", "The Lord of the Rings", "J.R.R. Tolkien", new BigDecimal("25.00"));
         Book savedBook = bookRepository.save(book);
 
-        assertNotNull(savedBook.getVersion());
-        assertEquals(0L, savedBook.getVersion());
+        assertNotNull(savedBook.getVersion(), "Version should not be null after saving.");
+        assertEquals(0L, savedBook.getVersion(), "Initial version should be 0.");
 
         Optional<Book> foundBook = bookRepository.findById(book.getIsbn());
 
-        assertTrue(foundBook.isPresent());
-        assertEquals(savedBook, foundBook.get());
-        assertEquals(savedBook.getVersion(), foundBook.get().getVersion());
+        assertTrue(foundBook.isPresent(), "Expected book to be present after saving.");
+        assertEquals(savedBook, foundBook.get(), "Saved and found book should be equal.");
+        assertEquals(savedBook.getVersion(), foundBook.get().getVersion(), "Versions should match after initial save.");
     }
 
     @Test
@@ -41,7 +41,7 @@ public class BookRepositoryTest {
         Book book = new Book("978-0321765723", "The Lord of the Rings", "J.R.R. Tolkien", new BigDecimal("25.00"));
         Book savedBook = bookRepository.save(book);
 
-        assertEquals(0L, savedBook.getVersion());
+        assertEquals(0L, savedBook.getVersion(), "Initial version should be 0 before update.");
 
         // Modify the saved book and save it again
         savedBook.updateTitle("The Lord of the Rings - Updated");
@@ -53,8 +53,9 @@ public class BookRepositoryTest {
 
         // Fetch the book again to verify the updated version
         Optional<Book> foundBook = bookRepository.findById(book.getIsbn());
-        assertTrue(foundBook.isPresent(), "Expected book to be present");
+        assertTrue(foundBook.isPresent(), "Expected book to be present after update.");
         Book verifiedBook = foundBook.get();
-        assertEquals(1L, verifiedBook.getVersion());
+
+        assertEquals(1L, verifiedBook.getVersion(), "Version should be incremented to 1 after update.");
     }
 }

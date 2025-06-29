@@ -67,8 +67,8 @@ public class OrderManagementSteps {
 
     @Then("the order should be created successfully with status {string}")
     public void the_order_should_be_created_successfully_with_status(String expectedStatus) {
-        assertNotNull(currentOrder, "Order should have been created.");
-        assertEquals(Order.OrderStatus.valueOf(expectedStatus), currentOrder.getStatus(), "Order status should match expected status.");
+        assertNotNull(currentOrder, "Current order should not be null after creation.");
+        assertEquals(Order.OrderStatus.valueOf(expectedStatus), currentOrder.getStatus(), "Order status should match the expected status.");
     }
 
     @Then("an {string} event should have been published for the order of {string}")
