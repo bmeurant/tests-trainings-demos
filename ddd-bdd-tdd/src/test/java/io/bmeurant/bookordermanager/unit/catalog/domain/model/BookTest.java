@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.catalog.book.domain.model;
+package io.bmeurant.bookordermanager.unit.catalog.domain.model;
 
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import org.junit.jupiter.api.Test;

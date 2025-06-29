@@ -3,7 +3,7 @@ package io.bmeurant.bookordermanager.application.service.impl;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
-import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
+import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
@@ -23,12 +23,12 @@ public class OrderServiceImpl implements OrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
     private final InventoryService inventoryService;
     private final OrderRepository orderRepository;
     @Autowired
-    public OrderServiceImpl(BookRepository bookRepository, InventoryService inventoryService, OrderRepository orderRepository) {
-        this.bookRepository = bookRepository;
+    public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository) {
+        this.bookService = bookService;
         this.inventoryService = inventoryService;
         this.orderRepository = orderRepository;
     }
@@ -53,18 +53,10 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
-        Book book = findBook(itemRequest.getIsbn());
+        Book book = bookService.findBookByIsbn(itemRequest.getIsbn());
         inventoryService.deductStock(itemRequest.getIsbn(), itemRequest.getQuantity());
 
         return new OrderLine(itemRequest.getIsbn(), itemRequest.getQuantity(), book.getPrice());
-    }
-
-    private Book findBook(String isbn) {
-        return bookRepository.findById(isbn)
-                .orElseThrow(() -> {
-                    log.warn("Book with ISBN {} not found in catalog.", isbn);
-                    return new IllegalArgumentException("Book with ISBN " + isbn + " not found in catalog.");
-                });
     }
 }
 

@@ -4,7 +4,7 @@ import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
-import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
+import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class OrderServiceTest {
 
     @Mock
-    private BookRepository bookRepository;
+    private BookService bookService;
     @Mock
     private InventoryService inventoryService;
     @Mock
@@ -60,8 +60,8 @@ public class OrderServiceTest {
         InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
         InventoryItem inventoryItem2 = new InventoryItem(isbn2, 5);
 
-        when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
-        when(bookRepository.findById(isbn2)).thenReturn(Optional.of(book2));
+        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
+        when(bookService.findBookByIsbn(isbn2)).thenReturn(book2);
         when(inventoryService.deductStock(isbn1, quantity1)).thenReturn(inventoryItem1);
         when(inventoryService.deductStock(isbn2, quantity2)).thenReturn(inventoryItem2);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -79,9 +79,9 @@ public class OrderServiceTest {
         verify(inventoryService, times(1)).deductStock(isbn1, quantity1);
         verify(inventoryService, times(1)).deductStock(isbn2, quantity2);
 
-        // Verify repository interactions
-        verify(bookRepository, times(1)).findById(isbn1);
-        verify(bookRepository, times(1)).findById(isbn2);
+        // Verify service interactions
+        verify(bookService, times(1)).findBookByIsbn(isbn1);
+        verify(bookService, times(1)).findBookByIsbn(isbn2);
         verify(orderRepository, times(1)).save(createdOrder);
     }
 
@@ -95,7 +95,7 @@ public class OrderServiceTest {
         OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
         List<OrderItemRequest> itemRequests = List.of(itemRequest1);
 
-        when(bookRepository.findById(isbn1)).thenReturn(Optional.empty());
+        when(bookService.findBookByIsbn(isbn1)).thenThrow(new IllegalArgumentException("Book with ISBN " + isbn1 + " not found in catalog."));
 
         // When & Then
         Exception exception = assertThrows(IllegalArgumentException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw IllegalArgumentException when book is not found.");
@@ -114,7 +114,7 @@ public class OrderServiceTest {
 
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
 
-        when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
+        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
         when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Inventory item with ISBN " + isbn1 + " not found."));
 
         // When & Then
@@ -135,7 +135,7 @@ public class OrderServiceTest {
         Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
         InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
 
-        when(bookRepository.findById(isbn1)).thenReturn(Optional.of(book1));
+        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
         when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new IllegalArgumentException("Not enough stock to deduct"));
 
         // When & Then
