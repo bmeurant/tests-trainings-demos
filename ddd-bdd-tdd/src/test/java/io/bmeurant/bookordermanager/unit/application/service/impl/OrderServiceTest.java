@@ -12,6 +12,7 @@ import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
+import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,6 +23,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -147,6 +150,36 @@ public class OrderServiceTest {
         // When & Then
         Exception exception = assertThrows(InsufficientStockException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw InsufficientStockException when not enough stock.");
         assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn1, quantity1, inventoryItem1.getStock())), "Exception message should indicate insufficient stock.");
+    }
+
+    @Test
+    void findOrderById_shouldReturnOrderWhenFound() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        Order order = new Order("Test Customer", List.of(new OrderLine("123", 1, BigDecimal.ONE)));
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+        // When
+        Optional<Order> foundOrder = orderService.findOrderById(orderId);
+
+        // Then
+        assertTrue(foundOrder.isPresent(), "Order should be found.");
+        assertEquals(order, foundOrder.get(), "Found order should match the expected order.");
+        verify(orderRepository, times(1)).findById(orderId);
+    }
+
+    @Test
+    void findOrderById_shouldReturnEmptyWhenNotFound() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        // When
+        Optional<Order> foundOrder = orderService.findOrderById(orderId);
+
+        // Then
+        assertFalse(foundOrder.isPresent(), "Order should not be found.");
+        verify(orderRepository, times(1)).findById(orderId);
     }
 }
 
