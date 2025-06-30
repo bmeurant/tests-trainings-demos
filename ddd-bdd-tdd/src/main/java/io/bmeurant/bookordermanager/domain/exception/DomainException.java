@@ -11,7 +11,7 @@ public abstract class DomainException extends RuntimeException {
      *
      * @param message The detail message (which is saved for later retrieval by the {@link #getMessage()} method).
      */
-    public DomainException(String message) {
+    protected DomainException(String message) {
         super(message);
     }
 
@@ -23,7 +23,7 @@ public abstract class DomainException extends RuntimeException {
      * @param cause   The cause (which is saved for later retrieval by the {@link #getCause()} method).
      *                (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public DomainException(String message, Throwable cause) {
+    protected DomainException(String message, Throwable cause) {
         super(message, cause);
     }
 }

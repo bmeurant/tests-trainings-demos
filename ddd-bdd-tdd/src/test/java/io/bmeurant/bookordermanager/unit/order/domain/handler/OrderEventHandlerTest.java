@@ -3,19 +3,17 @@ package io.bmeurant.bookordermanager.unit.order.domain.handler;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.handler.OrderEventHandler;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
-import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
+import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 

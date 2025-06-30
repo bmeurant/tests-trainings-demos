@@ -5,6 +5,7 @@ import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.integration.events.TestEventListener;
+import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
@@ -12,7 +13,6 @@ import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
-import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -104,11 +104,9 @@ public class OrderManagementSteps {
     public void an_event_should_have_been_published_for_the_order_of(String eventType, String customerName) {
         boolean eventFound = false;
         for (ApplicationEvent event : testEventListener.getCapturedEvents()) {
-            if (event instanceof OrderCreatedEvent orderCreatedEvent) {
-                if (orderCreatedEvent.getOrder().getCustomerName().equals(customerName)) {
-                    eventFound = true;
-                    break;
-                }
+            if (event instanceof OrderCreatedEvent orderCreatedEvent && orderCreatedEvent.getOrder().getCustomerName().equals(customerName)) {
+                eventFound = true;
+                break;
             }
         }
         assertTrue(eventFound, String.format("Expected %s event for customer %s not found.", eventType, customerName));

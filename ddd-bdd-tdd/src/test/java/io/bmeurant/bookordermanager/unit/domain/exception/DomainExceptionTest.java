@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DomainExceptionTest {
+class DomainExceptionTest {
 
     @Test
     void domainException_shouldBeCreatedWithMessage() {

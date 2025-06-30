@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationEvent;
  */
 @Getter
 public class OrderCreatedEvent extends ApplicationEvent {
-    private final Order order;
+    private final transient Order order;
 
     /**
      * Constructs a new {@code OrderCreatedEvent}.

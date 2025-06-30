@@ -8,7 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class BookOrderManagerApplicationTest {
+class BookOrderManagerApplicationTest {
 
     @Test
     void contextLoads() {

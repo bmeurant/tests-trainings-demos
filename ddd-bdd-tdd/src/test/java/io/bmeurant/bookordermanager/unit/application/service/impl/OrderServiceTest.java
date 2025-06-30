@@ -6,14 +6,13 @@ import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundExcepti
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
-import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
-import io.bmeurant.bookordermanager.order.domain.model.Order;
-import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
+import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
+import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +29,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class OrderServiceTest {
+class OrderServiceTest {
 
     @Mock
     private BookService bookService;

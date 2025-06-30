@@ -1,11 +1,11 @@
 package io.bmeurant.bookordermanager.unit.inventory.domain.service.impl;
 
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.impl.InventoryServiceImpl;
-import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class InventoryServiceTest {
+class InventoryServiceTest {
 
     @Mock
     private InventoryItemRepository inventoryItemRepository;
@@ -101,8 +101,8 @@ public class InventoryServiceTest {
         verify(inventoryItemRepository, times(1)).save(inventoryItem);
         verify(applicationEventPublisher, times(1)).publishEvent(argThat(event ->
                 event instanceof io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent &&
-                ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
-                ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
+                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
+                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
         ));
     }
 
@@ -127,8 +127,8 @@ public class InventoryServiceTest {
         verify(inventoryItemRepository, times(1)).save(inventoryItem);
         verify(applicationEventPublisher, times(1)).publishEvent(argThat(event ->
                 event instanceof io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent &&
-                ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
-                ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
+                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
+                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
         ));
     }
 

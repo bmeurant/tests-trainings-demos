@@ -4,7 +4,6 @@ import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundExcepti
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.catalog.domain.service.impl.BookServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +25,6 @@ class BookServiceTest {
 
     @InjectMocks
     private BookServiceImpl bookService;
-
-    @BeforeEach
-    void setUp() {
-        // MockitoExtension handles opening mocks, so no need for MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("Should find a book by ISBN when it exists")
