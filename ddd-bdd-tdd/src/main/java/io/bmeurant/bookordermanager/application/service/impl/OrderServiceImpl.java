@@ -128,6 +128,7 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param itemRequest The order item request.
      * @return The created OrderLine object.
+     * @throws io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException if the book for the item request is not found.
      */
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);

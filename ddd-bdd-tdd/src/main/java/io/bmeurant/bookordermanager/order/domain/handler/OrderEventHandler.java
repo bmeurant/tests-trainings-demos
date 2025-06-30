@@ -30,8 +30,9 @@ public class OrderEventHandler {
     }
 
     /**
-     * Handles the {@link OrderCreatedEvent} to confirm the order.
+     * Handles the {@link OrderCreatedEvent}.
      * This method is executed asynchronously in a new transaction after the original transaction commits.
+     * Note: The order confirmation logic has been moved to an explicit `confirmOrder` method in `OrderService`.
      *
      * @param event the {@link OrderCreatedEvent}
      */

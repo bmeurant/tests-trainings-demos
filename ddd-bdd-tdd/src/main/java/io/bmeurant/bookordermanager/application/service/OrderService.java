@@ -34,7 +34,9 @@ public interface OrderService {
      * @param orderId The ID of the order to confirm.
      * @return The confirmed Order object.
      * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status).
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status) or if stock deduction quantity is invalid.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if an inventory item for an order line is not found.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient for an order line.
      */
     Order confirmOrder(String orderId);
 }
