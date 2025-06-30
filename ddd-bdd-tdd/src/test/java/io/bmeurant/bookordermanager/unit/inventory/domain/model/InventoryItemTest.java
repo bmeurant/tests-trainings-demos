@@ -92,4 +92,27 @@ public class InventoryItemTest {
         Exception exception = assertThrows(InsufficientStockException.class, () -> item.deductStock(quantityToDeduct), "Should throw InsufficientStockException when deducting more than available stock.");
         assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToDeduct, initialStock)), "Exception message should indicate insufficient stock.");
     }
+
+    @Test
+    void shouldAddStockCorrectly() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        item.addStock(5);
+        assertEquals(15, item.getStock(), "Stock should be correctly added.");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAddingZeroStock() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.addStock(0), "Should throw ValidationException when adding zero stock.");
+        assertTrue(exception.getMessage().contains("Quantity to add must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAddingNegativeStock() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.addStock(-1), "Should throw ValidationException when adding negative stock.");
+        assertTrue(exception.getMessage().contains("Quantity to add must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
+    }
 }

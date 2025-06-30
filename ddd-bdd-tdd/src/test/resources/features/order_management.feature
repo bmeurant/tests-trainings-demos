@@ -26,4 +26,4 @@ Feature: Order Management
     Then the order should transition to status "CONFIRMED"
     And the stock for product "978-0321765723" should be 6
     And the stock for product "978-0132350884" should be 3
-    And a "ProductStockLowEvent" event should have been published for product "978-0132350884" with stock 4
+    And a "ProductStockLowEvent" event should have been published for product "978-0132350884" with stock 3

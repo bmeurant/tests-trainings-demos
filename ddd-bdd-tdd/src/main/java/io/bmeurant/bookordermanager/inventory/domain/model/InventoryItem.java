@@ -64,7 +64,7 @@ public class InventoryItem {
         log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
         assertDeductionIsValid(quantity);
         this.stock -= quantity;
-        log.info("Stock for InventoryItem {} updated to: {}", this.isbn, this.stock);
+        log.info("Stock for InventoryItem {} deducted of {} to: {}", this.isbn, quantity, this.stock);
     }
 
     private void assertDeductionIsValid(int quantity) {
@@ -72,5 +72,18 @@ public class InventoryItem {
         if (this.stock < quantity) {
             throw new InsufficientStockException(this.isbn, quantity, this.stock);
         }
+    }
+
+    /**
+     * Adds the specified quantity to the current stock.
+     *
+     * @param quantity The quantity to add. Must be positive.
+     * @throws ValidationException if quantity is not positive.
+     */
+    public void addStock(int quantity) {
+        log.debug("Adding {} to stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
+        assertIsPositive(quantity, "Quantity to add", InventoryItem.class);
+        this.stock += quantity;
+        log.info("Stock for InventoryItem {} increased of {} to: {}", this.isbn, quantity, this.stock);
     }
 }

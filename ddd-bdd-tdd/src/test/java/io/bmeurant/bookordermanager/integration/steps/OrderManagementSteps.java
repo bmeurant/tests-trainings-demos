@@ -12,6 +12,7 @@ import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
+import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -159,9 +160,14 @@ public class OrderManagementSteps {
     }
 
     @Then("a {string} event should have been published for product {string} with stock {int}")
-    public void a_event_should_have_been_published_for_product_with_stock(String string, String string2, Integer int1) {
-        // TODO: Implement product stock low event verification
-        throw new io.cucumber.java.PendingException();
+    public void a_event_should_have_been_published_for_product_with_stock(String eventType, String isbn, Integer stock) {
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            boolean eventFound = testEventListener.getCapturedEvents().stream()
+                    .anyMatch(event -> event instanceof ProductStockLowEvent
+                            && ((ProductStockLowEvent) event).getIsbn().equals(isbn)
+                            && ((ProductStockLowEvent) event).getCurrentStock() == stock);
+            assertTrue(eventFound, String.format("Expected %s event for product %s with stock %d not found.", eventType, isbn, stock));
+        });
     }
 }
 
