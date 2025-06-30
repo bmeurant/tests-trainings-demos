@@ -39,13 +39,6 @@ public class OrderEventHandler {
     @TransactionalEventListener
     public void handleOrderCreatedEvent(OrderCreatedEvent event) {
         log.info("Handling order created event: {}", event);
-        transactionTemplate.execute(status -> {
-            Order order = orderRepository.findById(event.getOrder().getOrderId())
-                    .orElseThrow(() -> new RuntimeException("Order not found"));
-            order.confirm();
-            orderRepository.save(order);
-            log.info("Order {} confirmed and saved.", order.getOrderId());
-            return null;
-        });
+        // No longer confirms the order here. Confirmation is now an explicit step.
     }
 }

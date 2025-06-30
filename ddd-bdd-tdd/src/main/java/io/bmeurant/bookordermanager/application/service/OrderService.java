@@ -27,4 +27,14 @@ public interface OrderService {
      * @return An Optional containing the Order if found, otherwise empty.
      */
     Optional<Order> findOrderById(String id);
+
+    /**
+     * Confirms an existing order, transitioning its status to CONFIRMED.
+     *
+     * @param orderId The ID of the order to confirm.
+     * @return The confirmed Order object.
+     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status).
+     */
+    Order confirmOrder(String orderId);
 }

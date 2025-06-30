@@ -12,6 +12,7 @@ import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,15 +84,12 @@ public class OrderServiceTest {
         assertEquals(Order.OrderStatus.PENDING, createdOrder.getStatus(), "Order status should be PENDING.");
         assertEquals(2, createdOrder.getOrderLines().size(), "Should have two order lines.");
 
-        // Verify stock deduction
-        verify(inventoryService, times(1)).deductStock(isbn1, quantity1);
-        verify(inventoryService, times(1)).deductStock(isbn2, quantity2);
-
         // Verify service interactions
         verify(bookService, times(1)).findBookByIsbn(isbn1);
         verify(bookService, times(1)).findBookByIsbn(isbn2);
         verify(orderRepository, times(1)).save(createdOrder);
         verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCreatedEvent.class));
+        verify(inventoryService, never()).deductStock(anyString(), anyInt());
     }
 
     @Test
@@ -109,47 +107,6 @@ public class OrderServiceTest {
         // When & Then
         Exception exception = assertThrows(BookNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw BookNotFoundException when book is not found.");
         assertTrue(exception.getMessage().contains("Book with ISBN " + isbn1 + " not found in catalog."), "Exception message should indicate book not found.");
-    }
-
-    @Test
-    void createOrder_shouldThrowExceptionWhenInventoryItemNotFound() {
-        // Given
-        String customerName = "Test Customer";
-        String isbn1 = "978-0321765723";
-        int quantity1 = 2;
-
-        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
-        List<OrderItemRequest> itemRequests = List.of(itemRequest1);
-
-        Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
-
-        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
-        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new InventoryItemNotFoundException(isbn1));
-
-        // When & Then
-        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw InventoryItemNotFoundException when inventory item is not found.");
-        assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn1 + " not found."), "Exception message should indicate inventory item not found.");
-    }
-
-    @Test
-    void createOrder_shouldThrowExceptionWhenNotEnoughStock() {
-        // Given
-        String customerName = "Test Customer";
-        String isbn1 = "978-0321765723";
-        int quantity1 = 15; // More than available stock
-
-        OrderItemRequest itemRequest1 = new OrderItemRequest(isbn1, quantity1);
-        List<OrderItemRequest> itemRequests = List.of(itemRequest1);
-
-        Book book1 = new Book(isbn1, "Book One", "Author One", new BigDecimal("25.00"));
-        InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
-
-        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
-        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new InsufficientStockException(isbn1, quantity1, inventoryItem1.getStock()));
-
-        // When & Then
-        Exception exception = assertThrows(InsufficientStockException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw InsufficientStockException when not enough stock.");
-        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn1, quantity1, inventoryItem1.getStock())), "Exception message should indicate insufficient stock.");
     }
 
     @Test
@@ -180,6 +137,60 @@ public class OrderServiceTest {
         // Then
         assertFalse(foundOrder.isPresent(), "Order should not be found.");
         verify(orderRepository, times(1)).findById(orderId);
+    }
+
+    @Test
+    void confirmOrder_shouldConfirmOrderAndDeductStockSuccessfully() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 2;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenReturn(new InventoryItem(isbn1, 10 - quantity1));
+
+        // When
+        Order confirmedOrder = orderService.confirmOrder(orderId);
+
+        // Then
+        assertNotNull(confirmedOrder, "Confirmed order should not be null.");
+        assertEquals(Order.OrderStatus.CONFIRMED, confirmedOrder.getStatus(), "Order status should be CONFIRMED.");
+        verify(inventoryService, times(1)).deductStock(isbn1, quantity1);
+        verify(orderRepository, times(1)).save(confirmedOrder);
+    }
+
+    @Test
+    void confirmOrder_shouldThrowExceptionWhenOrderNotFound() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(OrderNotFoundException.class, () -> orderService.confirmOrder(orderId), "Should throw OrderNotFoundException when order is not found.");
+        verify(inventoryService, never()).deductStock(anyString(), anyInt());
+        verify(orderRepository, never()).save(any(Order.class));
+    }
+
+    @Test
+    void confirmOrder_shouldThrowExceptionWhenStockInsufficient() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 15;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(inventoryService.deductStock(isbn1, quantity1)).thenThrow(new InsufficientStockException(isbn1, quantity1, 10));
+
+        // When & Then
+        assertThrows(InsufficientStockException.class, () -> orderService.confirmOrder(orderId), "Should throw InsufficientStockException when stock is insufficient.");
+        verify(orderRepository, never()).save(any(Order.class));
     }
 }
 

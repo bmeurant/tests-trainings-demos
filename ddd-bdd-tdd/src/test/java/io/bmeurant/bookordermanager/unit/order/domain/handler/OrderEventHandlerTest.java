@@ -37,12 +37,11 @@ class OrderEventHandlerTest {
         OrderLine orderLine = new OrderLine("978-0321765723", 1, BigDecimal.valueOf(25.00));
         Order order = new Order("customer", List.of(orderLine));
         OrderCreatedEvent event = new OrderCreatedEvent(order);
-        when(orderRepository.findById(order.getOrderId())).thenReturn(Optional.of(order));
 
         // When
         orderEventHandler.handleOrderCreatedEvent(event);
 
         // Then
-        verify(orderRepository).save(argThat(savedOrder -> savedOrder.getStatus() == Order.OrderStatus.CONFIRMED));
+        verify(orderRepository, never()).save(any(Order.class));
     }
 }

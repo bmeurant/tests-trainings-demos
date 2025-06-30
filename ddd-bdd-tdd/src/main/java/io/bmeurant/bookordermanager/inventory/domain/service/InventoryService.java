@@ -12,7 +12,9 @@ public interface InventoryService {
      * @param isbn The ISBN of the inventory item.
      * @param quantity The quantity to deduct.
      * @return The updated InventoryItem.
-     * @throws IllegalArgumentException if the item is not found or stock is insufficient.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if the item is not found.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
      */
     InventoryItem deductStock(String isbn, int quantity);
 }

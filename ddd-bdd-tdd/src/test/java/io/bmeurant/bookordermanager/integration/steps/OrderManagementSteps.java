@@ -11,6 +11,7 @@ import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
+import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -30,8 +31,6 @@ import java.util.Map;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
@@ -43,6 +42,8 @@ public class OrderManagementSteps {
     private InventoryItemRepository inventoryItemRepository;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderRepository orderRepository;
     @MockitoSpyBean
     private InventoryService inventoryService;
     @Autowired
@@ -99,12 +100,30 @@ public class OrderManagementSteps {
         assertTrue(eventFound, String.format("Expected %s event for customer %s not found.", eventType, customerName));
     }
 
-    @Then("the inventory service receives the stock deduction request for the order")
-    public void the_inventory_service_receives_the_stock_deduction_request_for_the_order() {
-        assertNotNull(currentOrder, "Current order should not be null for stock deduction verification.");
-        for (OrderLine orderLine : currentOrder.getOrderLines()) {
-            verify(inventoryService, times(1)).deductStock(orderLine.getIsbn(), orderLine.getQuantity());
+    @Given("an existing order for {string} with status {string} and items:")
+    public void an_existing_order_for_with_status_and_items(String customerName, String status, DataTable dataTable) {
+        List<OrderItemRequest> itemRequests = new ArrayList<>();
+        for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
+            String isbn = row.get("productId");
+            int quantity = Integer.parseInt(row.get("quantity"));
+            itemRequests.add(new OrderItemRequest(isbn, quantity));
         }
+
+        // Create books and inventory items if they don't exist
+        for (OrderItemRequest itemRequest : itemRequests) {
+            if (bookRepository.findById(itemRequest.getIsbn()).isEmpty()) {
+                bookRepository.save(new Book(itemRequest.getIsbn(), "Test Book", "Test Author", BigDecimal.TEN));
+            }
+            if (inventoryItemRepository.findById(itemRequest.getIsbn()).isEmpty()) {
+                inventoryItemRepository.save(new InventoryItem(itemRequest.getIsbn(), 100)); // Default large stock
+            }
+        }
+
+        // Create the order directly in the desired state
+        currentOrder = new Order(customerName, itemRequests.stream()
+                .map(req -> new OrderLine(req.getIsbn(), req.getQuantity(), BigDecimal.TEN))
+                .collect(java.util.ArrayList::new, java.util.ArrayList::add, java.util.ArrayList::addAll));
+        orderRepository.save(currentOrder);
     }
 
     @Then("the order should transition to status {string}")
@@ -117,10 +136,26 @@ public class OrderManagementSteps {
         });
     }
 
+    @Given("the stock for product {string} is {int}")
+    public void the_stock_for_product_is(String isbn, Integer stock) {
+        inventoryItemRepository.findById(isbn).ifPresent(inventoryItemRepository::delete);
+        InventoryItem newItem = new InventoryItem(isbn, stock);
+        inventoryItemRepository.save(newItem);
+    }
+
+    @When("the external system confirms the order")
+    public void the_external_system_confirms_the_order() {
+        assertNotNull(currentOrder, "Current order should not be null for confirmation.");
+        orderService.confirmOrder(currentOrder.getOrderId());
+    }
+
     @Then("the stock for product {string} should be {int}")
-    public void the_stock_for_product_should_be(String string, Integer int1) {
-        // TODO: Implement stock level verification
-        throw new io.cucumber.java.PendingException();
+    public void the_stock_for_product_should_be(String isbn, Integer expectedStock) {
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
+                    .orElseThrow(() -> new AssertionError("Inventory item not found"));
+            assertEquals(expectedStock, inventoryItem.getStock(), "Stock level should be updated as expected.");
+        });
     }
 
     @Then("a {string} event should have been published for product {string} with stock {int}")

@@ -6,6 +6,7 @@ import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
@@ -81,6 +82,33 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * Confirms an existing order, transitioning its status to CONFIRMED.
+     * This method performs the final stock deduction for each order line.
+     *
+     * @param orderId The ID of the order to confirm.
+     * @return The confirmed Order object.
+     * @throws OrderNotFoundException if the order is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status).
+     */
+    @Override
+    @Transactional
+    public Order confirmOrder(String orderId) {
+        log.debug("Attempting to confirm order with ID: {}", orderId);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+        // Perform final stock deduction for each order line
+        for (OrderLine orderLine : order.getOrderLines()) {
+            inventoryService.deductStock(orderLine.getIsbn(), orderLine.getQuantity());
+        }
+
+        order.confirm();
+        Order confirmedOrder = orderRepository.save(order);
+        log.info("Order {} successfully confirmed.", orderId);
+        return confirmedOrder;
+    }
+
+    /**
      * Builds a list of {@link OrderLine} objects from a list of {@link OrderItemRequest}s.
      *
      * @param items The list of order item requests.
@@ -96,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Creates a single {@link OrderLine} from an {@link OrderItemRequest}.
-     * This involves looking up book details and deducting stock from inventory.
+     * This involves looking up book details.
      *
      * @param itemRequest The order item request.
      * @return The created OrderLine object.
@@ -104,9 +132,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
         Book book = bookService.findBookByIsbn(itemRequest.getIsbn());
-        inventoryService.deductStock(itemRequest.getIsbn(), itemRequest.getQuantity());
 
         return new OrderLine(itemRequest.getIsbn(), itemRequest.getQuantity(), book.getPrice());
     }
 }
-
