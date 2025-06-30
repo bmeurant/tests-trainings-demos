@@ -28,14 +28,13 @@ flowchart TD
     OrderService --> OrderDB
     InventoryService --> InventoryDB
     A -- Requests --> OrderService
+    A -- Confirms Order --> OrderService
     OrderService -- Publishes OrderCreatedEvent --> EventBus
     EventBus -- Receives OrderCreatedEvent --> InventoryService
-    InventoryService -- Publishes StockReservedEvent --> EventBus
-    EventBus -- Receives StockReservedEvent --> OrderService
     OrderService -- Publishes OrderCancelledEvent --> EventBus
-    EventBus -- Receives OrderCancelledEvent --> InventoryService
+    EventBus -- Receives OrderCancelledEvent (Planned) --> InventoryService
     InventoryService -- Publishes ProductStockLowEvent --> EventBus
-    EventBus -- (Consumed by unmodeled replenishment service) --> EventBus
+    EventBus -- (No implemented consumer) --> EventBus
 style CatalogService fill:#f9f,stroke:#333,stroke-width:2px
 style OrderService fill:#bbf,stroke:#333,stroke-width:2px
 style InventoryService fill:#ccf,stroke:#333,stroke-width:2px
