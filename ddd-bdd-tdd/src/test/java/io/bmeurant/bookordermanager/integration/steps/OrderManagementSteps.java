@@ -51,10 +51,12 @@ public class OrderManagementSteps {
     private TestEventListener testEventListener;
 
     private Order currentOrder;
+    private Exception caughtException;
 
     @Before
     public void setup() {
         currentOrder = null;
+        caughtException = null;
         testEventListener.clearEvents();
     }
 
@@ -78,7 +80,18 @@ public class OrderManagementSteps {
             int quantity = Integer.parseInt(row.get("quantity"));
             itemRequests.add(new OrderItemRequest(isbn, quantity));
         }
-        currentOrder = orderService.createOrder(customerName, itemRequests);
+        try {
+            currentOrder = orderService.createOrder(customerName, itemRequests);
+        } catch (Exception e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("the order creation should fail with message {string}")
+    public void the_order_creation_should_fail_with_message(String expectedMessage) {
+        assertNotNull(caughtException, "An exception should have been caught.");
+        assertTrue(caughtException.getMessage().contains(expectedMessage), "Exception message should contain: " + expectedMessage + ". Actual: " + caughtException.getMessage());
+        assertNull(currentOrder, "Order should not be created on failure.");
     }
 
     @Then("the order should be created successfully with status {string}")

@@ -9,7 +9,7 @@ Feature: Order Management
     And a book with ISBN "978-0132350884", title "Clean Code", author "Robert C. Martin", price 35.00
     And an inventory item "978-0132350884" with initial stock of 5
     When I try to create an order for "Alice Wonderland" with the following items:
-      | productId        | quantity |
+      | productId      | quantity |
       | 978-0321765723 | 2        |
       | 978-0132350884 | 1        |
     Then the order should be created successfully with status "PENDING"
@@ -17,7 +17,7 @@ Feature: Order Management
 
   Scenario: Confirming an order after successful stock reservation
     Given an existing order for "Alice Wonderland" with status "PENDING" and items:
-      | productId        | quantity |
+      | productId      | quantity |
       | 978-0321765723 | 2        |
       | 978-0132350884 | 1        |
     And the stock for product "978-0321765723" is 8
@@ -27,3 +27,12 @@ Feature: Order Management
     And the stock for product "978-0321765723" should be 6
     And the stock for product "978-0132350884" should be 3
     And a "ProductStockLowEvent" event should have been published for product "978-0132350884" with stock 3
+
+  Scenario: Order creation fails due to insufficient stock
+    Given a book with ISBN "978-0134786275", title "Effective Java", author "Joshua Bloch", price 40.00
+    And an inventory item "978-0134786275" with initial stock of 2
+    When I try to create an order for "Bob TheBuilder" with the following items:
+      | productId      | quantity |
+      | 978-0134786275 | 3        |
+    Then the order creation should fail with message "Not enough stock for ISBN 978-0134786275. Requested: 3, Available: 2."
+    And the stock for product "978-0134786275" should be 2

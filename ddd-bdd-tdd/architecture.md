@@ -23,7 +23,8 @@ Our platform will be modeled with a clear separation between business contexts:
 
 ## Order Creation and Stock Deduction
 
-- When an order is placed, the **Order Service** publishes a domain event:  
+- When an order is placed, the **Order Service** performs a **synchronous stock availability check** for each item via the **Inventory Service**.
+- If stock is sufficient, the **Order Service** publishes a domain event:  
   **`OrderCreatedEvent`**, including productIds and desired quantities.
 - The order is initially set to the **`PENDING`** status.
 - The **Order Service** includes a `confirmOrder` method. When this method is called (e.g., by an external system),

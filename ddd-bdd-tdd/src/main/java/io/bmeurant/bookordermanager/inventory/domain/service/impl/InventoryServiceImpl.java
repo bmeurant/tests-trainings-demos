@@ -59,4 +59,16 @@ public class InventoryServiceImpl implements InventoryService {
 
         return updatedItem;
     }
+
+    @Override
+    public void checkStock(String isbn, int quantity) {
+        log.debug("Attempting to check if {} of ISBN {} is available.", quantity, isbn);
+        InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
+                .orElseThrow(() -> {
+                    log.warn("Inventory item with ISBN {} not found during stock check.", isbn);
+                    return new InventoryItemNotFoundException(isbn);
+                });
+
+        inventoryItem.checkAvailability(quantity);
+    }
 }

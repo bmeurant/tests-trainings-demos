@@ -28,6 +28,7 @@ flowchart TD
     OrderService --> OrderDB
     InventoryService --> InventoryDB
     A -- Requests --> OrderService
+    OrderService -- Checks Stock (Sync) --> InventoryService
     A -- Confirms Order --> OrderService
     OrderService -- Publishes OrderCreatedEvent --> EventBus
     EventBus -- Receives OrderCreatedEvent --> InventoryService

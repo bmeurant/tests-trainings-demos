@@ -62,16 +62,9 @@ public class InventoryItem {
      */
     public void deductStock(int quantity) {
         log.debug("Deducting {} from stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
-        assertDeductionIsValid(quantity);
+        checkAvailability(quantity); // Reuse validation logic
         this.stock -= quantity;
         log.info("Stock for InventoryItem {} deducted of {} to: {}", this.isbn, quantity, this.stock);
-    }
-
-    private void assertDeductionIsValid(int quantity) {
-        assertIsPositive(quantity, "Quantity to deduct", InventoryItem.class);
-        if (this.stock < quantity) {
-            throw new InsufficientStockException(this.isbn, quantity, this.stock);
-        }
     }
 
     /**
@@ -85,5 +78,22 @@ public class InventoryItem {
         assertIsPositive(quantity, "Quantity to add", InventoryItem.class);
         this.stock += quantity;
         log.info("Stock for InventoryItem {} increased of {} to: {}", this.isbn, quantity, this.stock);
+    }
+
+    /**
+     * Checks if the specified quantity is available in stock.
+     * This method does not modify the stock level.
+     *
+     * @param quantity The quantity to check for availability. Must be positive.
+     * @throws InsufficientStockException if the quantity is greater than the current stock.
+     * @throws ValidationException if the quantity is not positive.
+     */
+    public void checkAvailability(int quantity) {
+        log.debug("Checking availability of {} for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
+        assertIsPositive(quantity, "Quantity to check", InventoryItem.class);
+        if (this.stock < quantity) {
+            throw new InsufficientStockException(this.isbn, quantity, this.stock);
+        }
+        log.info("{} of ISBN {} is available. Current stock: {}", quantity, this.isbn, this.stock);
     }
 }

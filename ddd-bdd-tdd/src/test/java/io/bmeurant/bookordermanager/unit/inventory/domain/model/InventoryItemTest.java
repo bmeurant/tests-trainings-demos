@@ -71,7 +71,7 @@ public class InventoryItemTest {
     void shouldThrowExceptionWhenDeductingZeroStock() {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
         ValidationException exception = assertThrows(ValidationException.class, () -> item.deductStock(0), "Should throw ValidationException when deducting zero stock.");
-        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
         assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
@@ -79,7 +79,7 @@ public class InventoryItemTest {
     void shouldThrowExceptionWhenDeductingNegativeStock() {
         InventoryItem item = new InventoryItem("978-0321765723", 10);
         ValidationException exception = assertThrows(ValidationException.class, () -> item.deductStock(-1), "Should throw ValidationException when deducting negative stock.");
-        assertTrue(exception.getMessage().contains("Quantity to deduct must be positive"), "Exception message should indicate positive quantity.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
         assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
     }
 
@@ -114,5 +114,37 @@ public class InventoryItemTest {
         ValidationException exception = assertThrows(ValidationException.class, () -> item.addStock(-1), "Should throw ValidationException when adding negative stock.");
         assertTrue(exception.getMessage().contains("Quantity to add must be positive"), "Exception message should indicate positive quantity.");
         assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
+    }
+
+    @Test
+    void checkAvailability_shouldNotThrowExceptionWhenStockIsSufficient() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        assertDoesNotThrow(() -> item.checkAvailability(5), "Should not throw exception when stock is sufficient.");
+    }
+
+    @Test
+    void checkAvailability_shouldThrowExceptionWhenQuantityIsZero() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.checkAvailability(0), "Should throw ValidationException when quantity is zero.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
+    }
+
+    @Test
+    void checkAvailability_shouldThrowExceptionWhenQuantityIsNegative() {
+        InventoryItem item = new InventoryItem("978-0321765723", 10);
+        ValidationException exception = assertThrows(ValidationException.class, () -> item.checkAvailability(-1), "Should throw ValidationException when quantity is negative.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+        assertEquals(InventoryItem.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be InventoryItem.");
+    }
+
+    @Test
+    void checkAvailability_shouldThrowExceptionWhenStockIsInsufficient() {
+        String isbn = "978-0321765723";
+        int initialStock = 5;
+        int quantityToCheck = 10;
+        InventoryItem item = new InventoryItem(isbn, initialStock);
+        Exception exception = assertThrows(InsufficientStockException.class, () -> item.checkAvailability(quantityToCheck), "Should throw InsufficientStockException when stock is insufficient.");
+        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToCheck, initialStock)), "Exception message should indicate insufficient stock.");
     }
 }

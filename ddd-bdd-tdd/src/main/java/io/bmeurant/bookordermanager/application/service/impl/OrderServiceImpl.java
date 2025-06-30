@@ -63,6 +63,12 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order createOrder(String customerName, List<OrderItemRequest> items) {
         log.debug("Creating order for customer: {} with {} items.", customerName, items.size());
+
+        // Check stock for each item before creating the order
+        for (OrderItemRequest itemRequest : items) {
+            inventoryService.checkStock(itemRequest.getIsbn(), itemRequest.getQuantity());
+        }
+
         Order order = new Order(customerName, buildOrderLines(items));
         Order savedOrder = orderRepository.save(order);
         log.info("Order created and saved: {}", savedOrder);

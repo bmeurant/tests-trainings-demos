@@ -5,6 +5,7 @@ import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotF
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.impl.InventoryServiceImpl;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -163,5 +164,80 @@ public class InventoryServiceTest {
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
         verify(applicationEventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    void checkStock_shouldNotThrowExceptionWhenStockIsSufficient() {
+        // Given
+        String isbn = "978-0321765723";
+        int initialStock = 10;
+        int quantityToCheck = 5;
+        InventoryItem inventoryItem = new InventoryItem(isbn, initialStock);
+
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
+
+        // When & Then
+        assertDoesNotThrow(() -> inventoryService.checkStock(isbn, quantityToCheck), "Should not throw exception when stock is sufficient.");
+        verify(inventoryItemRepository, times(1)).findById(isbn);
+    }
+
+    @Test
+    void checkStock_shouldThrowExceptionWhenItemNotFound() {
+        // Given
+        String isbn = "978-0321765723";
+        int quantityToCheck = 5;
+
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
+
+        // When & Then
+        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InventoryItemNotFoundException when inventory item is not found.");
+        assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn + " not found."), "Exception message should indicate item not found.");
+        verify(inventoryItemRepository, times(1)).findById(isbn);
+    }
+
+    @Test
+    void checkStock_shouldThrowExceptionWhenQuantityIsZero() {
+        // Given
+        String isbn = "978-0321765723";
+        int initialStock = 10;
+        int quantityToCheck = 0;
+        InventoryItem inventoryItem = new InventoryItem(isbn, initialStock);
+
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
+
+        // When & Then
+        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is zero.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+    }
+
+    @Test
+    void checkStock_shouldThrowExceptionWhenQuantityIsNegative() {
+        // Given
+        String isbn = "978-0321765723";
+        int initialStock = 10;
+        int quantityToCheck = -1;
+        InventoryItem inventoryItem = new InventoryItem(isbn, initialStock);
+
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
+
+        // When & Then
+        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is negative.");
+        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+    }
+
+    @Test
+    void checkStock_shouldThrowExceptionWhenInsufficientStock() {
+        // Given
+        String isbn = "978-0321765723";
+        int initialStock = 5;
+        int quantityToCheck = 10;
+        InventoryItem inventoryItem = new InventoryItem(isbn, initialStock);
+
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
+
+        // When & Then
+        Exception exception = assertThrows(InsufficientStockException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InsufficientStockException when stock is insufficient.");
+        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToCheck, initialStock)), "Exception message should indicate insufficient stock.");
+        verify(inventoryItemRepository, times(1)).findById(isbn);
     }
 }
