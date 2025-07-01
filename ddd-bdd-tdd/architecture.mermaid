@@ -30,10 +30,11 @@ flowchart TD
     A -- Requests --> OrderService
     OrderService -- Checks Stock (Sync) --> InventoryService
     A -- Confirms Order --> OrderService
+    A -- Cancels Order --> OrderService
     OrderService -- Publishes OrderCreatedEvent --> EventBus
-    EventBus -- Receives OrderCreatedEvent --> InventoryService
     OrderService -- Publishes OrderCancelledEvent --> EventBus
-    EventBus -- Receives OrderCancelledEvent (Planned) --> InventoryService
+    EventBus -- Receives OrderCreatedEvent --> InventoryService
+    OrderService -- Calls releaseStock (Sync) --> InventoryService
     InventoryService -- Publishes ProductStockLowEvent --> EventBus
     EventBus -- (No implemented consumer) --> EventBus
 style CatalogService fill:#f9f,stroke:#333,stroke-width:2px

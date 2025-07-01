@@ -28,4 +28,14 @@ public interface InventoryService {
      * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
      */
     void checkStock(String isbn, int quantity);
+
+    /**
+     * Releases a specified quantity back into the stock of an inventory item.
+     * This is typically used when an order is cancelled.
+     * @param isbn The ISBN of the inventory item.
+     * @param quantity The quantity to release.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if the item is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
+     */
+    void releaseStock(String isbn, int quantity);
 }

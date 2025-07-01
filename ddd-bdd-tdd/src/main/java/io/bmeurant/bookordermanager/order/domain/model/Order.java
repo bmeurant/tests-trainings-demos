@@ -79,6 +79,24 @@ public class Order {
     }
 
     /**
+     * Cancels the order, changing its status to CANCELLED.
+     * If the order was CONFIRMED, it returns the list of order lines for stock release.
+     *
+     * @return A list of OrderLine objects that need their stock released, or an empty list.
+     * @throws ValidationException if the order is already CANCELLED or DELIVERED.
+     */
+    public List<OrderLine> cancel() {
+        assertIsTrue(this.status == OrderStatus.PENDING || this.status == OrderStatus.CONFIRMED, "Order can only be cancelled if its status is PENDING or CONFIRMED.", Order.class);
+        List<OrderLine> itemsToRelease = new ArrayList<>();
+        if (this.status == OrderStatus.CONFIRMED) {
+            itemsToRelease.addAll(this.orderLines);
+        }
+        this.status = OrderStatus.CANCELLED;
+        log.info("Order {} cancelled. Stock to release: {}", this.orderId, itemsToRelease.size());
+        return itemsToRelease;
+    }
+
+    /**
      * Enum representing the possible statuses of an order.
      */
     public enum OrderStatus {

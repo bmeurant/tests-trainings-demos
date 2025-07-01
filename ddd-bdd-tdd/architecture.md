@@ -36,7 +36,10 @@ Our platform will be modeled with a clear separation between business contexts:
 
 ## Cancellation Handling
 
-- If an order is cancelled, an event **`OrderCancelledEvent`** is emitted to **increment the stock back**. This functionality is planned but not yet implemented.
+- When an order is cancelled, the **Order Service** orchestrates the cancellation process.
+- The `Order` aggregate determines if stock needs to be released (i.e., if the order was previously `CONFIRMED`).
+- If stock release is required, the **Order Service** synchronously calls the **Inventory Service** to `releaseStock` for the corresponding items.
+- An **`OrderCancelledEvent`** is published by the **Order Service** after the order status is updated and stock (if any) is released. This event is for notification/other contexts, not for stock release itself.
 
 ## Low Stock Management
 

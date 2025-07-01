@@ -17,6 +17,13 @@ class BookOrderManagerApplicationTest {
     }
 
     @Test
+    void mainMethodRunsSuccessfully() {
+        try (ConfigurableApplicationContext context = SpringApplication.run(BookOrderManagerApplication.class)) {
+            assertNotNull(context, "Application context should not be null");
+        }
+    }
+
+    @Test
     void mainMethodLoadsContext() {
         ConfigurableApplicationContext context = null;
         try {

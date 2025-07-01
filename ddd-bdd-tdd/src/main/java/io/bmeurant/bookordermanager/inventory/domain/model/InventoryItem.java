@@ -75,8 +75,7 @@ public class InventoryItem {
      */
     public void addStock(int quantity) {
         log.debug("Adding {} to stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
-        assertIsPositive(quantity, "Quantity to add", InventoryItem.class);
-        this.stock += quantity;
+        increaseStock(quantity);
         log.info("Stock for InventoryItem {} increased of {} to: {}", this.isbn, quantity, this.stock);
     }
 
@@ -86,7 +85,7 @@ public class InventoryItem {
      *
      * @param quantity The quantity to check for availability. Must be positive.
      * @throws InsufficientStockException if the quantity is greater than the current stock.
-     * @throws ValidationException if the quantity is not positive.
+     * @throws ValidationException        if the quantity is not positive.
      */
     public void checkAvailability(int quantity) {
         log.debug("Checking availability of {} for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
@@ -95,5 +94,23 @@ public class InventoryItem {
             throw new InsufficientStockException(this.isbn, quantity, this.stock);
         }
         log.info("{} of ISBN {} is available. Current stock: {}", quantity, this.isbn, this.stock);
+    }
+
+    /**
+     * Releases the specified quantity back into the current stock.
+     * This method is typically used when an order is cancelled and its reserved stock needs to be returned.
+     *
+     * @param quantity The quantity to release. Must be positive.
+     * @throws ValidationException if quantity is not positive.
+     */
+    public void releaseStock(int quantity) {
+        log.debug("Releasing {} to stock for InventoryItem {}. Current stock: {}", quantity, this.isbn, this.stock);
+        increaseStock(quantity);
+        log.info("Stock for InventoryItem {} released of {} to: {}", this.isbn, quantity, this.stock);
+    }
+
+    private void increaseStock(int quantity) {
+        assertIsPositive(quantity, "Quantity to add", InventoryItem.class);
+        this.stock += quantity;
     }
 }

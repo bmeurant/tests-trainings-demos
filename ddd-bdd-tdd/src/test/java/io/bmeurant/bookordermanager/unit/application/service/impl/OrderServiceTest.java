@@ -49,7 +49,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_shouldCreateOrderAndDeductStockSuccessfully() {
+    void createOrder_shouldCreateOrderAndCheckStockSuccessfully() {
         // Given
         String customerName = "Test Customer";
         String isbn1 = "978-0321765723";
@@ -65,14 +65,14 @@ class OrderServiceTest {
 
         Book book1 = new Book(isbn1, "Book One", "Author One", price1);
         Book book2 = new Book(isbn2, "Book Two", "Author Two", price2);
-        InventoryItem inventoryItem1 = new InventoryItem(isbn1, 10);
-        InventoryItem inventoryItem2 = new InventoryItem(isbn2, 5);
 
         when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
         when(bookService.findBookByIsbn(isbn2)).thenReturn(book2);
-        when(inventoryService.deductStock(isbn1, quantity1)).thenReturn(inventoryItem1);
-        when(inventoryService.deductStock(isbn2, quantity2)).thenReturn(inventoryItem2);
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Mock checkStock calls
+        doNothing().when(inventoryService).checkStock(isbn1, quantity1);
+        doNothing().when(inventoryService).checkStock(isbn2, quantity2);
 
         // When
         Order createdOrder = orderService.createOrder(customerName, itemRequests);
@@ -88,6 +88,8 @@ class OrderServiceTest {
         verify(bookService, times(1)).findBookByIsbn(isbn2);
         verify(orderRepository, times(1)).save(createdOrder);
         verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCreatedEvent.class));
+        verify(inventoryService, times(1)).checkStock(isbn1, quantity1);
+        verify(inventoryService, times(1)).checkStock(isbn2, quantity2);
         verify(inventoryService, never()).deductStock(anyString(), anyInt());
     }
 
@@ -191,5 +193,113 @@ class OrderServiceTest {
         assertThrows(InsufficientStockException.class, () -> orderService.confirmOrder(orderId), "Should throw InsufficientStockException when stock is insufficient.");
         verify(orderRepository, never()).save(any(Order.class));
     }
-}
 
+    @Test
+    void cancelOrder_shouldCancelConfirmedOrderAndReleaseStock() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 2;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        order.confirm(); // Simulate a confirmed order
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        Order cancelledOrder = orderService.cancelOrder(orderId);
+
+        // Then
+        assertNotNull(cancelledOrder, "Cancelled order should not be null.");
+        assertEquals(Order.OrderStatus.CANCELLED, cancelledOrder.getStatus(), "Order status should be CANCELLED.");
+        verify(inventoryService, times(1)).releaseStock(isbn1, quantity1);
+        verify(orderRepository, times(1)).save(cancelledOrder);
+        verify(applicationEventPublisher, times(1)).publishEvent(any(io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent.class));
+    }
+
+    @Test
+    void cancelOrder_shouldCancelPendingOrderWithoutReleasingStock() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 2;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        // Order is PENDING by default
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        Order cancelledOrder = orderService.cancelOrder(orderId);
+
+        // Then
+        assertNotNull(cancelledOrder, "Cancelled order should not be null.");
+        assertEquals(Order.OrderStatus.CANCELLED, cancelledOrder.getStatus(), "Order status should be CANCELLED.");
+        verify(inventoryService, never()).releaseStock(anyString(), anyInt()); // No stock release for PENDING order
+        verify(orderRepository, times(1)).save(cancelledOrder);
+        verify(applicationEventPublisher, times(1)).publishEvent(any(io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent.class));
+    }
+
+    @Test
+    void cancelOrder_shouldThrowOrderNotFoundExceptionWhenOrderDoesNotExist() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(OrderNotFoundException.class, () -> orderService.cancelOrder(orderId), "Should throw OrderNotFoundException when order is not found.");
+        verify(inventoryService, never()).releaseStock(anyString(), anyInt());
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(applicationEventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    void cancelOrder_shouldThrowValidationExceptionWhenOrderIsAlreadyCancelled() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 2;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        order.cancel(); // Simulate an already cancelled order
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+        // When & Then
+        assertThrows(io.bmeurant.bookordermanager.domain.exception.ValidationException.class, () -> orderService.cancelOrder(orderId), "Should throw ValidationException when order is already cancelled.");
+        verify(inventoryService, never()).releaseStock(anyString(), anyInt());
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(applicationEventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    void cancelOrder_shouldThrowValidationExceptionWhenOrderIsDelivered() {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        String isbn1 = "978-0321765723";
+        int quantity1 = 2;
+        BigDecimal price1 = new BigDecimal("25.00");
+
+        OrderLine orderLine = new OrderLine(isbn1, quantity1, price1);
+        Order order = new Order("Test Customer", List.of(orderLine));
+        order.confirm(); // Simulate a confirmed order
+        // Manually set status to DELIVERED for testing purposes
+        org.springframework.test.util.ReflectionTestUtils.setField(order, "status", Order.OrderStatus.DELIVERED);
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+        // When & Then
+        assertThrows(io.bmeurant.bookordermanager.domain.exception.ValidationException.class, () -> orderService.cancelOrder(orderId), "Should throw ValidationException when order is delivered.");
+        verify(inventoryService, never()).releaseStock(anyString(), anyInt());
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(applicationEventPublisher, never()).publishEvent(any());
+    }
+}

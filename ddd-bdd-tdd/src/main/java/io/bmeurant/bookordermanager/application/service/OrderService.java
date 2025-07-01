@@ -39,4 +39,14 @@ public interface OrderService {
      * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient for an order line.
      */
     Order confirmOrder(String orderId);
+
+    /**
+     * Cancels an existing order, transitioning its status to CANCELLED and releasing stock if necessary.
+     *
+     * @param orderId The ID of the order to cancel.
+     * @return The cancelled Order object.
+     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be cancelled (e.g., wrong status).
+     */
+    Order cancelOrder(String orderId);
 }

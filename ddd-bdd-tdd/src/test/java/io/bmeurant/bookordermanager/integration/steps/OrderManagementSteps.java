@@ -10,6 +10,7 @@ import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
+import io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
@@ -32,6 +33,8 @@ import java.util.Map;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
@@ -136,6 +139,26 @@ public class OrderManagementSteps {
                 .map(req -> new OrderLine(req.getIsbn(), req.getQuantity(), BigDecimal.TEN))
                 .collect(java.util.ArrayList::new, java.util.ArrayList::add, java.util.ArrayList::addAll));
         orderRepository.save(currentOrder);
+
+        // Set initial status if not PENDING
+        if (!"PENDING".equals(status)) {
+            if ("CONFIRMED".equals(status)) {
+                // Simulate stock deduction for confirmed orders
+                for (OrderItemRequest itemRequest : itemRequests) {
+                    inventoryService.deductStock(itemRequest.getIsbn(), itemRequest.getQuantity());
+                }
+                currentOrder.confirm();
+            }
+            // Add other status transitions here if needed
+            orderRepository.save(currentOrder);
+        }
+    }
+
+    @Given("an order for {string} with the following items:")
+    public void an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
+        // This step implies the order is created and confirmed, so stock is deducted.
+        // Reusing the existing step with status "CONFIRMED"
+        an_existing_order_for_with_status_and_items(customerName, "CONFIRMED", dataTable);
     }
 
     @Then("the order should transition to status {string}")
@@ -159,6 +182,40 @@ public class OrderManagementSteps {
     public void the_external_system_confirms_the_order() {
         assertNotNull(currentOrder, "Current order should not be null for confirmation.");
         orderService.confirmOrder(currentOrder.getOrderId());
+    }
+
+    @When("I cancel the order")
+    public void i_cancel_the_order() {
+        assertNotNull(currentOrder, "Current order should not be null for cancellation.");
+        orderService.cancelOrder(currentOrder.getOrderId());
+    }
+
+    @Then("the order should have status {string}")
+    public void the_order_should_have_status(String expectedStatus) {
+        assertNotNull(currentOrder, "Current order should not be null for status verification.");
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            Order updatedOrder = orderRepository.findById(currentOrder.getOrderId())
+                    .orElseThrow(() -> new AssertionError("Order not found"));
+            assertEquals(Order.OrderStatus.valueOf(expectedStatus), updatedOrder.getStatus(), "Order status should be updated as expected.");
+        });
+    }
+
+    @Then("an {string} event should have been published for the order")
+    public void an_event_should_have_been_published_for_the_order(String eventType) {
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            boolean eventFound = testEventListener.getCapturedEvents().stream()
+                    .anyMatch(event -> event instanceof OrderCancelledEvent
+                            && ((OrderCancelledEvent) event).getOrder().getOrderId().equals(currentOrder.getOrderId()));
+            assertTrue(eventFound, String.format("Expected %s event for order %s not found.", eventType, currentOrder.getOrderId()));
+        });
+    }
+
+    @Then("the inventory service receives the stock release request for the order")
+    public void the_inventory_service_receives_the_stock_release_request_for_the_order() {
+        // Verify that releaseStock was called for each item in the order
+        for (OrderLine orderLine : currentOrder.getOrderLines()) {
+            verify(inventoryService, times(1)).releaseStock(orderLine.getIsbn(), orderLine.getQuantity());
+        }
     }
 
     @Then("the stock for product {string} should be {int}")

@@ -36,3 +36,15 @@ Feature: Order Management
       | 978-0134786275 | 3        |
     Then the order creation should fail with message "Not enough stock for ISBN 978-0134786275. Requested: 3, Available: 2."
     And the stock for product "978-0134786275" should be 2
+
+  Scenario: Order cancellation and stock release
+    Given a book with ISBN "978-1491904244", title "Designing Data-Intensive Applications", author "Martin Kleppmann", price 60.00
+    And an inventory item "978-1491904244" with initial stock of 5
+    And an order for "John Doe" with the following items:
+      | productId      | quantity |
+      | 978-1491904244 | 2        |
+    When I cancel the order
+    Then the order should have status "CANCELLED"
+    And an "OrderCancelledEvent" event should have been published for the order
+    And the inventory service receives the stock release request for the order
+    And the stock for product "978-1491904244" should be 5

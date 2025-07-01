@@ -130,4 +130,77 @@ class OrderTest {
         assertTrue(exception.getMessage().contains("Order can only be confirmed if its status is PENDING."), "Exception message should indicate invalid status for confirmation.");
         assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
     }
+
+    @Test
+    void cancel_shouldChangeStatusToCancelledAndReturnItemsForConfirmedOrder() {
+        // Given
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 2, new BigDecimal("25.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        order.confirm(); // Confirm the order so stock would have been deducted
+
+        // When
+        List<OrderLine> itemsToRelease = order.cancel();
+
+        // Then
+        assertEquals(Order.OrderStatus.CANCELLED, order.getStatus(), "Order status should be CANCELLED.");
+        assertFalse(itemsToRelease.isEmpty(), "Should return items to release for a confirmed order.");
+        assertEquals(orderLines.size(), itemsToRelease.size(), "Number of items to release should match order lines.");
+        assertTrue(itemsToRelease.containsAll(orderLines), "Items to release should contain all order lines.");
+    }
+
+    @Test
+    void cancel_shouldChangeStatusToCancelledAndReturnEmptyListForPendingOrder() {
+        // Given
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 2, new BigDecimal("25.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        // Order is PENDING by default
+
+        // When
+        List<OrderLine> itemsToRelease = order.cancel();
+
+        // Then
+        assertEquals(Order.OrderStatus.CANCELLED, order.getStatus(), "Order status should be CANCELLED.");
+        assertTrue(itemsToRelease.isEmpty(), "Should return an empty list for a pending order.");
+    }
+
+    @Test
+    void cancel_shouldThrowValidationExceptionWhenOrderIsAlreadyCancelled() {
+        // Given
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 2, new BigDecimal("25.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        order.cancel(); // Cancel the order first
+
+        // When & Then
+        ValidationException exception = assertThrows(ValidationException.class, order::cancel, "Should throw ValidationException when cancelling an already cancelled order.");
+        assertTrue(exception.getMessage().contains("Order can only be cancelled if its status is PENDING or CONFIRMED."), "Exception message should indicate invalid status for cancellation.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
+    }
+
+    @Test
+    void cancel_shouldThrowValidationExceptionWhenOrderIsDelivered() {
+        // Given
+        List<OrderLine> orderLines = Collections.singletonList(
+                new OrderLine("978-0321765723", 2, new BigDecimal("25.00"))
+        );
+        Order order = new Order("Alice", orderLines);
+        // Manually set status to DELIVERED for testing purposes
+        try {
+            java.lang.reflect.Field statusField = Order.class.getDeclaredField("status");
+            statusField.setAccessible(true);
+            statusField.set(order, Order.OrderStatus.DELIVERED);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Failed to set order status for testing: " + e.getMessage());
+        }
+
+        // When & Then
+        ValidationException exception = assertThrows(ValidationException.class, order::cancel, "Should throw ValidationException when cancelling a delivered order.");
+        assertTrue(exception.getMessage().contains("Order can only be cancelled if its status is PENDING or CONFIRMED."), "Exception message should indicate invalid status for cancellation.");
+        assertEquals(Order.class.getSimpleName(), exception.getDomainClassName(), "Domain class name should be Order.");
+    }
 }

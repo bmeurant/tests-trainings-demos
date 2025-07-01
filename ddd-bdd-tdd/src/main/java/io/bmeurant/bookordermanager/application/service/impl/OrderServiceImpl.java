@@ -38,9 +38,9 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Constructs an {@code OrderServiceImpl} with the necessary dependencies.
      *
-     * @param bookService The service for retrieving book information.
-     * @param inventoryService The service for managing inventory stock.
-     * @param orderRepository The repository for persisting and retrieving orders.
+     * @param bookService               The service for retrieving book information.
+     * @param inventoryService          The service for managing inventory stock.
+     * @param orderRepository           The repository for persisting and retrieving orders.
      * @param applicationEventPublisher The publisher for application events.
      */
     @Autowired
@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
      * This method is transactional and publishes an {@link OrderCreatedEvent} upon successful order creation.
      *
      * @param customerName The name of the customer.
-     * @param items The list of items to include in the order.
+     * @param items        The list of items to include in the order.
      * @return The created and saved Order object.
      */
     @Override
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param orderId The ID of the order to confirm.
      * @return The confirmed Order object.
-     * @throws OrderNotFoundException if the order is not found.
+     * @throws OrderNotFoundException                                            if the order is not found.
      * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status).
      */
     @Override
@@ -112,6 +112,39 @@ public class OrderServiceImpl implements OrderService {
         Order confirmedOrder = orderRepository.save(order);
         log.info("Order {} successfully confirmed.", orderId);
         return confirmedOrder;
+    }
+
+    /**
+     * Cancels an existing order, transitioning its status to CANCELLED and releasing stock if necessary.
+     *
+     * @param orderId The ID of the order to cancel.
+     * @return The cancelled Order object.
+     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException          if the order cannot be cancelled (e.g., wrong status).
+     */
+    @Override
+    @Transactional
+    public Order cancelOrder(String orderId) {
+        log.debug("Attempting to cancel order with ID: {}", orderId);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+        releaseStocks(order);
+
+        Order cancelledOrder = orderRepository.save(order);
+        log.info("Order {} successfully cancelled.", orderId);
+        applicationEventPublisher.publishEvent(new io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent(cancelledOrder));
+        return cancelledOrder;
+    }
+
+    private void releaseStocks(Order order) {
+        List<OrderLine> itemsToRelease = order.cancel();
+
+        if (!itemsToRelease.isEmpty()) {
+            for (OrderLine orderLine : itemsToRelease) {
+                inventoryService.releaseStock(orderLine.getIsbn(), orderLine.getQuantity());
+            }
+        }
     }
 
     /**
