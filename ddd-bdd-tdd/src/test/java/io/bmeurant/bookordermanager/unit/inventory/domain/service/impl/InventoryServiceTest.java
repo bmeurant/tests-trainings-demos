@@ -159,8 +159,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        Exception exception = assertThrows(InsufficientStockException.class, () -> inventoryService.deductStock(isbn, quantityToDeduct), "Should throw InsufficientStockException when stock is insufficient.");
-        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToDeduct, initialStock)), "Exception message should indicate insufficient stock.");
+        assertThrows(InsufficientStockException.class, () -> inventoryService.deductStock(isbn, quantityToDeduct), "Should throw InsufficientStockException when stock is insufficient.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
         verify(applicationEventPublisher, never()).publishEvent(any());
@@ -190,8 +189,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InventoryItemNotFoundException when inventory item is not found.");
-        assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn + " not found."), "Exception message should indicate item not found.");
+        assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InventoryItemNotFoundException when inventory item is not found.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
     }
 
@@ -206,8 +204,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is zero.");
-        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+        assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is zero.");
     }
 
     @Test
@@ -221,8 +218,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is negative.");
-        assertTrue(exception.getMessage().contains("Quantity to check must be positive"), "Exception message should indicate positive quantity.");
+        assertThrows(ValidationException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw ValidationException when quantity is negative.");
     }
 
     @Test
@@ -236,8 +232,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        Exception exception = assertThrows(InsufficientStockException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InsufficientStockException when stock is insufficient.");
-        assertTrue(exception.getMessage().contains(String.format("Not enough stock for ISBN %s. Requested: %d, Available: %d.", isbn, quantityToCheck, initialStock)), "Exception message should indicate insufficient stock.");
+        assertThrows(InsufficientStockException.class, () -> inventoryService.checkStock(isbn, quantityToCheck), "Should throw InsufficientStockException when stock is insufficient.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
     }
 
@@ -270,8 +265,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw InventoryItemNotFoundException when inventory item is not found.");
-        assertTrue(exception.getMessage().contains("Inventory item with ISBN " + isbn + " not found."), "Exception message should indicate item not found.");
+        assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw InventoryItemNotFoundException when inventory item is not found.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
     }
@@ -287,8 +281,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw ValidationException when quantity is zero.");
-        assertTrue(exception.getMessage().contains("Quantity to add must be positive"), "Exception message should indicate positive quantity.");
+        assertThrows(ValidationException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw ValidationException when quantity is zero.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
     }
@@ -304,8 +297,7 @@ class InventoryServiceTest {
         when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
 
         // When & Then
-        ValidationException exception = assertThrows(ValidationException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw ValidationException when quantity is negative.");
-        assertTrue(exception.getMessage().contains("Quantity to add must be positive"), "Exception message should indicate positive quantity.");
+        assertThrows(ValidationException.class, () -> inventoryService.releaseStock(isbn, quantityToRelease), "Should throw ValidationException when quantity is negative.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
     }

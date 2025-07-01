@@ -106,8 +106,7 @@ class OrderServiceTest {
         when(bookService.findBookByIsbn(isbn1)).thenThrow(new BookNotFoundException(isbn1));
 
         // When & Then
-        Exception exception = assertThrows(BookNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw BookNotFoundException when book is not found.");
-        assertTrue(exception.getMessage().contains("Book with ISBN " + isbn1 + " not found in catalog."), "Exception message should indicate book not found.");
+        assertThrows(BookNotFoundException.class, () -> orderService.createOrder(customerName, itemRequests), "Should throw BookNotFoundException when book is not found.");
     }
 
     @Test

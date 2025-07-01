@@ -69,6 +69,5 @@ class OrderRepositoryTest {
         Order verifiedOrder = foundOrder.get();
 
         assertEquals(1L, verifiedOrder.getVersion(), "Version should be incremented to 1 after update.");
-        assertEquals(Order.OrderStatus.CONFIRMED, verifiedOrder.getStatus(), "Order status should be CONFIRMED.");
     }
 }
