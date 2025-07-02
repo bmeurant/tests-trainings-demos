@@ -1,5 +1,3 @@
-@use "sass:color";
-
 $primary-color: #42b883;
 
 :global(:root) {
@@ -27,10 +25,12 @@ $primary-color: #42b883;
 }
 
 :global(body) {
+  color: $global-text-color;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   font-family: sans-serif;
+  @include flex-center;
 }
 
 :global(h1) {

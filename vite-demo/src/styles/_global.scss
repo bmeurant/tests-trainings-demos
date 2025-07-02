@@ -1,0 +1,10 @@
+/* src/styles/_global.scss */
+@use "sass:color";
+
+$global-text-color: #333;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

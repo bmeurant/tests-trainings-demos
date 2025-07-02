@@ -440,3 +440,69 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
             ```
     *   **4. Verify the result:** Restart the development server (`npm run dev`).
     *   **Expected Output:** The application should look identical. However, if you inspect an element in your browser's developer tools (e.g., the `logo` image), you will see that its class name has been transformed into a unique string (e.g., `_logo_a1b2c_`), proving that the style is now locally scoped and safe from conflicts.
+
+    14. **Global CSS Preprocessor Configuration:**
+        *   **Description:** In larger projects, it's common to have global Sass variables, mixins, or functions that you want to use across multiple `.scss` files without explicitly importing them in each file. Vite allows you to configure this globally.
+        *   **1. Create a global Sass file:** Create a new file, for example, `src/styles/_global.scss`, to house your global variables and mixins. It's crucial to include `sass:color` here if you plan to use its functions (like `color.adjust`) globally.
+            ```scss
+            /* src/styles/_global.scss */
+            @use "sass:color"; // Import sass:color here to make its functions available globally
+
+            $global-text-color: #333;
+
+            @mixin flex-center {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            ```
+        *   **2. Configure Vite to inject global styles:** Open `vite.config.js` and add a `css.preprocessorOptions` configuration. This tells Vite to automatically inject the content of `_global.scss` and `sass:color` into every Sass file.
+            ```javascript
+            // vite.config.js
+            ...
+              resolve: {
+                alias: {
+                  '@': resolve(__dirname, './src'),
+                },
+              },
+              css: { // This block is crucial for preprocessor options
+                preprocessorOptions: {
+                  scss: {
+                    // Inject both sass:color and _global.scss.
+                    // @use "sass:color" must come first if its functions are used globally.
+                    additionalData: `@use "sass:color"; @use "${resolve(__dirname, 'src/styles/_global.scss')}" as *;`
+                  }
+                }
+              }
+            ...
+            ```
+        *   **3. Update `src/style.module.scss`:** Remove the direct `@use "sass:color";` as it's now globally injected. Also, apply the global variable and remove the `flex-center` mixin from `body` as it caused layout issues.
+            ```scss
+            /* src/style.module.scss */
+            /* BEFORE */
+            @use "sass:color"; // This line will be removed
+            $primary-color: #42b883;
+
+            :global(body) {
+              margin: 0;
+              min-width: 320px;
+              min-height: 100vh;
+              font-family: sans-serif;
+              color: $global-text-color; // Using a global variable
+            }
+
+            /* AFTER */
+            $primary-color: #42b883; // Keep this local variable
+
+            :global(body) {
+              margin: 0;
+              min-width: 320px;
+              min-height: 100vh;
+              font-family: sans-serif;
+              color: $global-text-color; // Using a global variable
+              @include flex-center; 
+            }
+            ```
+        *   **4. Use global styles without explicit imports:** Now, you can use `$global-text-color` directly in any `.scss` file (e.g., `src/style.module.scss`) without needing an `@import` or `@use` statement. The `flex-center` mixin is available but was removed from `body` due to layout.
+        *   **5. Verify the result:** Restart the development server (`npm run dev`).
+        *   **Expected Output:** The application should load correctly, and the styles defined in `_global.scss` (e.g., the `body` text color) should be applied. The layout should also be correct as `flex-center` was removed from `body`.
