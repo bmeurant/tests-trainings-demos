@@ -55,7 +55,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         ├── public/             // Directory for static assets served directly
         │   └── vite.svg        // Vite's SVG logo, a static asset
         ├── index.html          // Main entry point of the application
-        ├── main.js             // The primary JavaScript entry point for your code
+        ├── main.jsx             // The primary JavaScript entry point for your code
         ├── style.css           // The main stylesheet for the application
         ├── javascript.svg      // An SVG icon used within the generated example code
         ├── package.json        // Project metadata and NPM scripts configuration
@@ -86,7 +86,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
 
 3.  **Hot Module Replacement (HMR):**
     * **HTML**
-      * Open the `src/main.js` file in your code editor.
+      * Open the `src/main.jsx` file in your code editor.
       * Locate the line that modifies the `<h1>` text (e.g., `document.querySelector('#app').innerHTML = ...`).
       * Change the text, for example, from "Vite + JavaScript" to "Vite + HMR in action!".
       * Save the file.
@@ -169,7 +169,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         echo "VITE_APP_TITLE=My Vite App in Dev" > .env.development
         ```
         
-    * change `h1` innerHTML in `main.js` to use the environment variable:
+    * change `h1` innerHTML in `main.jsx` to use the environment variable:
     
         ```html
         <h1>${import.meta.env.VITE_APP_TITLE}</h1>
@@ -180,7 +180,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
       ```bash
       10:31:55 [vite] .env.development changed, restarting server...
       10:31:55 [vite] server restarted.
-      11:23:36 [vite] (client) page reload src/main.js
+      11:23:36 [vite] (client) page reload src/main.jsx
       ```
 
     * Stop the server with `Ctrl-C`
@@ -202,7 +202,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         npm install -D sass
         ```
     *   Rename `src/style.css` to `src/style.scss`.
-    *   Update `src/main.js` to import `style.scss` instead of `style.css`.
+    *   Update `src/main.jsx` to import `style.scss` instead of `style.css`.
         ```javascript
         // Before
         import './style.css'
@@ -250,7 +250,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
           },
         })
         ```
-    *   Update an import in `src/main.js` to use the alias:
+    *   Update an import in `src/main.jsx` to use the alias:
         ```javascript
         // Before
         import javascriptLogo from './javascript.svg'
@@ -270,7 +270,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         <img src="/image-public.svg" alt="Image from public folder" />
         ```
     *   Place another image (e.g., `image-src.svg`) in the `src/` folder.
-    *   Open `src/main.js` and import this image, then add it to the DOM:
+    *   Open `src/main.jsx` and import this image, then add it to the DOM:
         ```javascript
         import imageSrc from '@/image-src.svg'; // Or './image-src.png' if no alias
 
@@ -296,7 +296,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
           console.log('Dynamic module loaded!');
         }
         ```
-    *   Modify `src/main.js` to add a button that, on click, will import and execute the function from this module:
+    *   Modify `src/main.jsx` to add a button that, on click, will import and execute the function from this module:
         ```javascript
         // ... (your existing code) ...
 
@@ -337,7 +337,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
           setCounter(0)
         }
         ```
-    *   Update the import path for `counter.ts` in `src/main.js`:
+    *   Update the import path for `counter.ts` in `src/main.jsx`:
         ```javascript
         // Before
         import { setupCounter } from './counter.js'
@@ -419,7 +419,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         :global(#app) { /* ... */ }
         /* ...and so on for other global selectors like a, button. */
         ```
-    *   **3. Update JavaScript to use the styles object:** Modify `src/main.js` to import the styles as an object and use it to apply classes.
+    *   **3. Update JavaScript to use the styles object:** Modify `src/main.jsx` to import the styles as an object and use it to apply classes.
         *   First, change the import at the top of the file:
             ```javascript
             // BEFORE
@@ -521,7 +521,7 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
             ```bash
             npm install uuid
             ```
-        * Open `src/main.js` and import the `uuid` library to ensure it is included in the build:
+        * Open `src/main.jsx` and import the `uuid` library to ensure it is included in the build:
             ```javascript
             import imageSrc from '@/image-src.svg'
             import { v4 as uuidv4 } from 'uuid';
@@ -597,3 +597,42 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
             index-ABCDEFG.js     index-HIJKLMN.css  lazy-module-OPQRST.js  vendor-UVWXYZ.js
             ```
             (Note: Actual hashes will vary)
+
+16. **Integration with a Framework (e.g., React):**
+    * **Description:** Vite offers first-class support for various frontend frameworks through dedicated plugins. This section demonstrates how effortlessly Vite integrates with React, enabling you to build powerful applications with familiar tooling and Vite's rapid development experience, including Hot Module Replacement (HMR) for components.
+
+        * **1. Install React and the Vite React Plugin:**
+            * Stop your development server (`Ctrl-C`).
+            * Install React, React DOM, and the official Vite React plugin as development dependencies:
+                ```bash
+                npm install react react-dom
+                npm install -D @vitejs/plugin-react
+                ```
+
+        * **2. Configure Vite to Use the React Plugin:**
+            * Open `vite.config.js` and import the `react` plugin, then add it to your `plugins` array.
+                ```javascript
+                import react from '@vitejs/plugin-react'
+
+                export default defineConfig({
+                  plugins: [
+                    react(),
+                    buildInfoPlugin(),
+                    ...
+                  ]
+                })
+                ```
+
+        * **3. Create a Simple React Component:**
+            * Create a new file `src/App.jsx` to house a basic React component (cf. [App.jsx](./src/App.jsx)).
+
+        * **4. Rename `main.js` to `main.jsx` to Render the React App:**
+            * Modify `src/main.jsx` to import and render your `App.jsx` component using React's client-side rendering API. cf. [main.jsx](./src/main.jsx).
+
+        * **5. Observe React Integration in Development:**
+            * Start the development server:
+                ```bash
+                npm run dev
+                ```
+            * **Expected Output:** Your browser should now display the content rendered by your React component.
+            * **Test HMR:** Make a small text change inside `src/App.jsx` and save the file. Observe that the changes are instantly reflected in the browser without a full page reload, demonstrating Vite's HMR working with React components.

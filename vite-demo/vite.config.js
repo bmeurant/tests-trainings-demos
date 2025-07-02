@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import buildInfoPlugin from './vite-plugin-build-info.js'
-import { visualizer } from 'rollup-plugin-visualizer' // Import the visualizer plugin
+import { visualizer } from 'rollup-plugin-visualizer'
+import react from '@vitejs/plugin-react'
 
 
 export default defineConfig({
   plugins: [
+    react(),
     buildInfoPlugin(),
     // Add the visualizer plugin
     visualizer({
@@ -34,7 +36,7 @@ export default defineConfig({
         manualChunks: {
           // Creates a 'vendor' chunk for commonly used libraries
           // We target node_modules to separate all third-party dependencies.
-          vendor: ['uuid'], // Example: add common libraries used
+          vendor: ['uuid', 'react', 'react-dom'], // Example: add common libraries used
           // Creates a 'lazy-module' chunk for our dynamically imported module
           // The lazy-module.js is already split by dynamic import, but this shows manual control
           'lazy-module': ['./src/lazy-module.js'],
