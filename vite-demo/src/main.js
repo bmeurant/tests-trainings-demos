@@ -3,6 +3,7 @@ import javascriptLogo from '@/javascript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
 import imageSrc from '@/image-src.svg'
+import { v4 as uuidv4 } from 'uuid';
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -21,6 +22,7 @@ document.querySelector('#app').innerHTML = `
     </p>
     <img src="${imageSrc}" alt="Image from src folder" />
     <button id="load-lazy-module">Load dynamic module</button>
+    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Generated UUID for demo: <strong>${uuidv4()}</strong></p>
   </div>
 `
 

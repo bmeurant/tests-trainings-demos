@@ -441,68 +441,159 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
     *   **4. Verify the result:** Restart the development server (`npm run dev`).
     *   **Expected Output:** The application should look identical. However, if you inspect an element in your browser's developer tools (e.g., the `logo` image), you will see that its class name has been transformed into a unique string (e.g., `_logo_a1b2c_`), proving that the style is now locally scoped and safe from conflicts.
 
-    14. **Global CSS Preprocessor Configuration:**
-        *   **Description:** In larger projects, it's common to have global Sass variables, mixins, or functions that you want to use across multiple `.scss` files without explicitly importing them in each file. Vite allows you to configure this globally.
-        *   **1. Create a global Sass file:** Create a new file, for example, `src/styles/_global.scss`, to house your global variables and mixins. It's crucial to include `sass:color` here if you plan to use its functions (like `color.adjust`) globally.
-            ```scss
-            /* src/styles/_global.scss */
-            @use "sass:color"; // Import sass:color here to make its functions available globally
+14. **Global CSS Preprocessor Configuration:**
+    *   **Description:** In larger projects, it's common to have global Sass variables, mixins, or functions that you want to use across multiple `.scss` files without explicitly importing them in each file. Vite allows you to configure this globally.
+    *   **1. Create a global Sass file:** Create a new file, for example, `src/styles/_global.scss`, to house your global variables and mixins. It's crucial to include `sass:color` here if you plan to use its functions (like `color.adjust`) globally.
+        ```scss
+        /* src/styles/_global.scss */
+        @use "sass:color"; // Import sass:color here to make its functions available globally
 
-            $global-text-color: #333;
+        $global-text-color: #333;
 
-            @mixin flex-center {
-              display: flex;
-              justify-content: center;
-              align-items: center;
+        @mixin flex-center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        ```
+    *   **2. Configure Vite to inject global styles:** Open `vite.config.js` and add a `css.preprocessorOptions` configuration. This tells Vite to automatically inject the content of `_global.scss` and `sass:color` into every Sass file.
+        ```javascript
+        // vite.config.js
+        ...
+          resolve: {
+            alias: {
+              '@': resolve(__dirname, './src'),
+            },
+          },
+          css: { // This block is crucial for preprocessor options
+            preprocessorOptions: {
+              scss: {
+                // Inject both sass:color and _global.scss.
+                // @use "sass:color" must come first if its functions are used globally.
+                additionalData: `@use "sass:color"; @use "${resolve(__dirname, 'src/styles/_global.scss')}" as *;`
+              }
             }
+          }
+        ...
+        ```
+    *   **3. Update `src/style.module.scss`:** Remove the direct `@use "sass:color";` as it's now globally injected. Also, apply the global variable and remove the `flex-center` mixin from `body` as it caused layout issues.
+        ```scss
+        /* src/style.module.scss */
+        /* BEFORE */
+        @use "sass:color"; // This line will be removed
+        $primary-color: #42b883;
+
+        :global(body) {
+          margin: 0;
+          min-width: 320px;
+          min-height: 100vh;
+          font-family: sans-serif;
+          color: $global-text-color; // Using a global variable
+        }
+
+        /* AFTER */
+        $primary-color: #42b883; // Keep this local variable
+
+        :global(body) {
+          margin: 0;
+          min-width: 320px;
+          min-height: 100vh;
+          font-family: sans-serif;
+          color: $global-text-color; // Using a global variable
+          @include flex-center; 
+        }
+        ```
+    *   **4. Use global styles without explicit imports:** Now, you can use `$global-text-color` directly in any `.scss` file (e.g., `src/style.module.scss`) without needing an `@import` or `@use` statement. The `flex-center` mixin is available but was removed from `body` due to layout.
+    *   **5. Verify the result:** Restart the development server (`npm run dev`).
+    *   **Expected Output:** The application should load correctly, and the styles defined in `_global.scss` (e.g., the `body` text color) should be applied. The layout should also be correct as `flex-center` was removed from `body`.
+
+15. **Optimizing Build Output (Advanced):**
+    * **Description:** This section delves deeper into optimizing your production build. We will explore manual chunking to control code splitting and integrate a bundle analyzer to visualize the size of your JavaScript modules and identify areas for further optimization.
+
+    * **1. Install Bundle Analyzer:**
+        * First, install `rollup-plugin-visualizer`, a powerful tool to visualize your bundle:
+            ```bash
+            npm install -D rollup-plugin-visualizer
             ```
-        *   **2. Configure Vite to inject global styles:** Open `vite.config.js` and add a `css.preprocessorOptions` configuration. This tells Vite to automatically inject the content of `_global.scss` and `sass:color` into every Sass file.
+        
+    * **2. Add and use a vendor lib:**
+        * Install uuid library to use as a vendor lib:
+            ```bash
+            npm install uuid
+            ```
+        * Open `src/main.js` and import the `uuid` library to ensure it is included in the build:
             ```javascript
-            // vite.config.js
+            import imageSrc from '@/image-src.svg'
+            import { v4 as uuidv4 } from 'uuid';
             ...
-              resolve: {
-                alias: {
-                  '@': resolve(__dirname, './src'),
+            <button id="load-lazy-module">Load dynamic module</button>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Generated UUID for demo: <strong>${uuidv4()}</strong></p>
+            ...
+            ```
+
+    * **3. Configure Vite for Manual Chunking and Bundle Analysis:**
+        * Open `vite.config.js` and add/modify the `build` configuration to include `rollupOptions` for manual chunking and integrate the `rollup-plugin-visualizer`. This will allow you to explicitly define how certain modules are grouped into separate output files.
+           ```javascript
+           ...
+           import buildInfoPlugin from './vite-plugin-build-info.js'
+           import { visualizer } from 'rollup-plugin-visualizer' // Import the visualizer plugin
+           ...
+             buildInfoPlugin(),
+             // Add the visualizer plugin
+             visualizer({
+               filename: './stats.html', // Output file for the visualization
+               open: false, // Do not open automatically, we'll open it manually
+               gzipSize: true, // Show gzip size
+               brotliSize: true, // Show brotli size
+             }),
+           ...
+            build: {
+              rollupOptions: {
+                output: {
+                // Manual chunking to separate specific modules into their own bundles
+                manualChunks: {
+                // Creates a 'vendor' chunk for commonly used libraries
+                // We target node_modules to separate all third-party dependencies.
+                vendor: ['react', 'react-dom', 'vue', 'vue-router', 'lodash', 'moment'], // Example: add common libraries used
+                // Creates a 'lazy-module' chunk for our dynamically imported module
+                // The lazy-module.js is already split by dynamic import, but this shows manual control
+                'lazy-module': ['./src/lazy-module.js'],
                 },
               },
-              css: { // This block is crucial for preprocessor options
-                preprocessorOptions: {
-                  scss: {
-                    // Inject both sass:color and _global.scss.
-                    // @use "sass:color" must come first if its functions are used globally.
-                    additionalData: `@use "sass:color"; @use "${resolve(__dirname, 'src/styles/_global.scss')}" as *;`
-                  }
-                }
-              }
-            ...
-            ```
-        *   **3. Update `src/style.module.scss`:** Remove the direct `@use "sass:color";` as it's now globally injected. Also, apply the global variable and remove the `flex-center` mixin from `body` as it caused layout issues.
-            ```scss
-            /* src/style.module.scss */
-            /* BEFORE */
-            @use "sass:color"; // This line will be removed
-            $primary-color: #42b883;
-
-            :global(body) {
-              margin: 0;
-              min-width: 320px;
-              min-height: 100vh;
-              font-family: sans-serif;
-              color: $global-text-color; // Using a global variable
             }
+           ```
 
-            /* AFTER */
-            $primary-color: #42b883; // Keep this local variable
-
-            :global(body) {
-              margin: 0;
-              min-width: 320px;
-              min-height: 100vh;
-              font-family: sans-serif;
-              color: $global-text-color; // Using a global variable
-              @include flex-center; 
-            }
+    * **4. Run and Analyze the Production Build:**
+        * Stop the development server (`Ctrl-C`).
+        * Run the production build command:
+            ```bash
+            npm run build
             ```
-        *   **4. Use global styles without explicit imports:** Now, you can use `$global-text-color` directly in any `.scss` file (e.g., `src/style.module.scss`) without needing an `@import` or `@use` statement. The `flex-center` mixin is available but was removed from `body` due to layout.
-        *   **5. Verify the result:** Restart the development server (`npm run dev`).
-        *   **Expected Output:** The application should load correctly, and the styles defined in `_global.scss` (e.g., the `body` text color) should be applied. The layout should also be correct as `flex-center` was removed from `body`.
+        * **Expected Output:
+            ```bash
+            vite v7.0.0 building for production...
+            ✓ 31 modules transformed.
+            dist/index.html                      0.75 kB │ gzip: 0.45 kB
+            dist/assets/index-DOluJ5tD.css       1.52 kB │ gzip: 0.73 kB
+            dist/assets/lazy-module-Tt88o4u_.js  0.32 kB │ gzip: 0.26 kB
+            dist/assets/vendor-BKrj-4V8.js       0.89 kB │ gzip: 0.48 kB
+            dist/assets/index-U8oNmSVS.js        4.65 kB │ gzip: 2.50 kB
+            ✓ built in 712ms
+            ```          
+
+        * ** After the build, a new file named `stats.html` will be generated in your project root. This HTML file, when opened in a browser, will display an interactive treemap of your bundle, showing the size of each module. You should also observe new chunk files generated in `dist/assets/` due to manual chunking.
+
+    * **5. Verify Chunking in `dist` Directory:**
+        * List the contents of your `dist/assets` directory to confirm the new chunk files:
+            ```bash
+            ls -R dist/
+            ```
+        * **Expected Output:** You should see output similar to this, with `vendor` and `lazy-module` chunks:
+            ```
+            dist:
+            assets  index.html  stats.html  vite.svg
+
+            dist/assets:
+            index-ABCDEFG.js     index-HIJKLMN.css  lazy-module-OPQRST.js  vendor-UVWXYZ.js
+            ```
+            (Note: Actual hashes will vary)
