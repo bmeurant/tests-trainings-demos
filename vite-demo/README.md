@@ -126,23 +126,23 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
       ✓ built in 115ms
       ```
       
-  * Examine the optimized output in the `dist` directory.
+    * Examine the optimized output in the `dist` directory.
 
-    ```bash
-    ls -R dist/
-    ```
+     ```bash
+     ls -R dist/
+     ```
     
-    **Expected output:**
+     **Expected output:**
     
-    ```bash
-    dist:
-    assets  index.html  vite.svg
+     ```bash
+     dist:
+     assets  index.html  vite.svg
     
-    dist/assets:
-    index-C74yQL5S.js  index-CrYBktwj.css
-    ```
+     dist/assets:
+     index-C74yQL5S.js  index-CrYBktwj.css
+     ```
 
-    HTML, CSS, JavaScript files, and assets (SVG) are now minified and optimized. The JavaScript and CSS filenames include hashes (e.g., `-C74yQL5S.js`, `-CrYBktwj.css`) to enable efficient cache busting upon deployment.
+     HTML, CSS, JavaScript files, and assets (SVG) are now minified and optimized. The JavaScript and CSS filenames include hashes (e.g., `-C74yQL5S.js`, `-CrYBktwj.css`) to enable efficient cache busting upon deployment.
 
 5.  **Serving the Production Build:**
     *   Serve the production build locally to verify its functionality.
@@ -161,3 +161,37 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
           ➜  Network: use --host to expose
           ➜  press h + enter to show help
         ```
+6. **Environment Variables:**
+    * Stop the server with `Ctrl-C` and run `npm run dev` to restart the development server.
+    * Create a `.env.development` file in the root of your project.
+    
+        ```bash
+        echo "VITE_APP_TITLE=My Vite App in Dev" > .env.development
+        ```
+        
+    * change `h1` innerHTML in `main.js` to use the environment variable:
+    
+        ```html
+        <h1>${import.meta.env.VITE_APP_TITLE}</h1>
+        ```
+        
+    * See the changes applied.
+   
+      ```bash
+      10:31:55 [vite] .env.development changed, restarting server...
+      10:31:55 [vite] server restarted.
+      11:23:36 [vite] (client) page reload src/main.js
+      ```
+
+    * Stop the server with `Ctrl-C`
+    * Create a `.env.production` file in the root of your project.
+
+      ```bash
+      echo "VITE_APP_TITLE=My Vite App in Prod" > .env.production
+      ```
+
+   * Run and launch the production.
+
+     ```bash
+     npm run build
+     ```
