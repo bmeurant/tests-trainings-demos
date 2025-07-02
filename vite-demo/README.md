@@ -314,3 +314,39 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         2.  Load the page. You should not see `lazy-module.js` loaded initially.
         3.  Click the "Load dynamic module" button.
         4.  The message should appear on the page, and in the "Network" tab, you will see a new JavaScript file (with a hashed name like `lazy-module-xxxx.js`) that has been loaded. This demonstrates that Vite automatically code-splits and loads the module on demand.
+
+11. **TypeScript Integration:**
+    *   Install TypeScript as a development dependency:
+        ```bash
+        npm install -D typescript
+        ```
+    *   Generate a `tsconfig.json` file:
+        ```bash
+        npx tsc --init
+        ```
+    *   Rename `src/counter.js` to `src/counter.ts`.
+    *   Open `src/counter.ts` and add basic TypeScript type annotations (e.g., `: HTMLButtonElement`, `: number`).
+        ```typescript
+        export function setupCounter(element: HTMLButtonElement) {
+          let counter = 0
+          const setCounter = (count: number) => {
+            counter = count
+            element.innerHTML = `count is ${counter}`
+          }
+          element.addEventListener('click', () => setCounter(counter + 1))
+          setCounter(0)
+        }
+        ```
+    *   Update the import path for `counter.ts` in `src/main.js`:
+        ```javascript
+        // Before
+        import { setupCounter } from './counter.js'
+        // After
+        import { setupCounter } from './counter.ts'
+        ```
+    *   Restart the development server (mandatory for `tsconfig.json` changes).
+        ```bash
+        npm run dev
+        ```
+    *   **Expected Output:** The application should continue to function normally, and the counter should work. Vite automatically detects and compiles TypeScript files. If you introduce a type error, Vite will show a compilation error in your terminal and browser overlay.**
+    
