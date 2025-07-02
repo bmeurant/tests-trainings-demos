@@ -1,5 +1,6 @@
-package io.bmeurant.bookordermanager;
+package io.bmeurant.bookordermanager.unit;
 
+import io.bmeurant.bookordermanager.BookOrderManagerApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,19 +21,6 @@ class BookOrderManagerApplicationTest {
     void mainMethodRunsSuccessfully() {
         try (ConfigurableApplicationContext context = SpringApplication.run(BookOrderManagerApplication.class)) {
             assertNotNull(context, "Application context should not be null");
-        }
-    }
-
-    @Test
-    void mainMethodLoadsContext() {
-        ConfigurableApplicationContext context = null;
-        try {
-            context = SpringApplication.run(BookOrderManagerApplication.class);
-            assertNotNull(context, "Application context should not be null");
-        } finally {
-            if (context != null) {
-                context.close();
-            }
         }
     }
 }
