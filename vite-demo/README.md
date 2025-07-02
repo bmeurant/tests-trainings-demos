@@ -85,8 +85,11 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
     *   Open the [provided URL](http://localhost:5173/) in your web browser to view the application
 
 3.  **Hot Module Replacement (HMR):**
-    *   Make changes to source code (e.g., `main.js`, `style.css`, `index.html`).
-    *   Witness instant updates in the browser without a full page reload.
+    * Open the `src/main.js` file in your code editor.
+    * Locate the line that modifies the `<h1>` text (e.g., `document.querySelector('#app').innerHTML = ...`).
+    * Change the text, for example, from "Vite + JavaScript" to "Vite + HMR in action!".
+    * Save the file.
+    * Witness instant updates in the browser without a full page reload.
 
 4.  **Building for Production:**
     *   Run the production build command.
@@ -94,7 +97,3 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
 
 5.  **Serving the Production Build:**
     *   Serve the production build locally to verify its functionality.
-
-## How to Follow Along
-
-I will guide you step-by-step. After each explanation, I will prompt you to perform an action or observe a result. Please confirm when you are ready for the next step.
