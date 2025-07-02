@@ -398,4 +398,45 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         1.  Open the preview URL (e.g., `http://localhost:4173/`) in your browser.
         2.  At the bottom of the page, you should see a new footer with the text "Built on: [current date and time]", demonstrating that your plugin successfully injected content into the HTML.
 
-    
+13. **CSS Modules (Scoped Styles):**
+    *   **Description:** To prevent style conflicts in larger applications, we will use CSS Modules. This Vite-native feature makes CSS class names locally scoped by default.
+    *   **1. Rename the stylesheet:** In the `src/` directory, rename `style.scss` to `style.module.scss`. This naming convention tells Vite to process it as a CSS Module.
+        ```bash
+        mv src/style.scss src/style.module.scss
+        ```
+    *   **2. Isolate global styles:** Open `src/style.module.scss`. Styles for general tags (like `body`, `h1`, `a`, etc.) must be explicitly marked as global to continue applying to the whole page. Wrap them with the `:global()` pseudo-class. Local classes like `.card` or `.logo` should remain unchanged.
+        ```scss
+        /* src/style.module.scss */
+
+        /* BEFORE */
+        :root { /* ... */ }
+        body { /* ... */ }
+
+        /* AFTER */
+                :global(:root) { /* ... */ }
+        :global(body) { /* ... */ }
+        :global(h1) { /* ... */ }
+        :global(#app) { /* ... */ }
+        /* ...and so on for other global selectors like a, button. */
+        ```
+    *   **3. Update JavaScript to use the styles object:** Modify `src/main.js` to import the styles as an object and use it to apply classes.
+        *   First, change the import at the top of the file:
+            ```javascript
+            // BEFORE
+            import './style.scss';
+
+            // AFTER
+            import styles from './style.module.scss';
+            ```
+        *   Next, update the `innerHTML` string to use the `styles` object:
+            ```javascript
+            // BEFORE
+            // <img src="..." class="logo vanilla" ... />
+            // <div class="card"> ... </div>
+
+            // AFTER
+            // <img src="..." class="${styles.logo} ${styles.vanilla}" ... />
+            // <div class="${styles.card}"> ... </div>
+            ```
+    *   **4. Verify the result:** Restart the development server (`npm run dev`).
+    *   **Expected Output:** The application should look identical. However, if you inspect an element in your browser's developer tools (e.g., the `logo` image), you will see that its class name has been transformed into a unique string (e.g., `_logo_a1b2c_`), proving that the style is now locally scoped and safe from conflicts.
