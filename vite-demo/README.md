@@ -77,9 +77,9 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         ```bash
         VITE v7.0.0  ready in 132 ms
 
-        ➜  Local:   http://localhost:5173/
-        ➜  Network: use --host to expose
-        ➜  press h + enter to show help
+          ➜  Local:   http://localhost:5173/
+          ➜  Network: use --host to expose
+          ➜  press h + enter to show help
         ```
         
     *   Open the [provided URL](http://localhost:5173/) in your web browser to view the application
@@ -133,3 +133,18 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
 
 5.  **Serving the Production Build:**
     *   Serve the production build locally to verify its functionality.
+        
+        ```bash
+        npm run preview
+        ```
+        
+        **Expected output:**
+    
+        ```bash
+        > vite-demo@0.0.0 preview
+        > vite preview
+    
+          ➜  Local:   http://localhost:4173/
+          ➜  Network: use --host to expose
+          ➜  press h + enter to show help
+        ```
