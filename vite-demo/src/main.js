@@ -20,7 +20,13 @@ document.querySelector('#app').innerHTML = `
       Click on the Vite logo to learn more
     </p>
     <img src="${imageSrc}" alt="Image from src folder" />
+    <button id="load-lazy-module">Load dynamic module</button>
   </div>
 `
 
 setupCounter(document.querySelector('#counter'))
+
+document.getElementById('load-lazy-module').addEventListener('click', async () => {
+  const { showLazyMessage } = await import('./lazy-module.js');
+  showLazyMessage();
+});

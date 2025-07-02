@@ -279,4 +279,38 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
           <img src="${imageSrc}" alt="Image from src folder" />
         `;
         ```
+    *   Restart the development server.
+        ```bash
+        npm run dev
+        ```
     *   **Expected Output:** Both images should be displayed in the browser. The image from `public/` will have a direct path, while the image from `src/` will have a hashed filename (e.g., `assets/image-src-xxxx.png`) in the browser's developer tools, indicating it was processed by Vite.
+
+10. **Dynamic Imports (Lazy Loading):**
+    *   Create a new file `src/lazy-module.js` with the following content:
+        ```javascript
+        export function showLazyMessage() {
+          const messageDiv = document.createElement('div');
+          messageDiv.textContent = 'This message was loaded dynamically!';
+          messageDiv.style.cssText = 'margin-top: 20px; padding: 10px; background-color: #e0ffe0; border: 1px solid #a0ffa0;';
+          document.querySelector('#app').appendChild(messageDiv);
+          console.log('Dynamic module loaded!');
+        }
+        ```
+    *   Modify `src/main.js` to add a button that, on click, will import and execute the function from this module:
+        ```javascript
+        // ... (your existing code) ...
+
+        // Add this button to your innerHTML
+        <button id="load-lazy-module">Load dynamic module</button>
+
+        // Add this JavaScript code after the counter setup
+        document.getElementById('load-lazy-module').addEventListener('click', async () => {
+          const { showLazyMessage } = await import('./lazy-module.js');
+          showLazyMessage();
+        });
+        ```
+    *   **Expected Output:**
+        1.  Open your browser's developer tools (F12), go to the "Network" tab.
+        2.  Load the page. You should not see `lazy-module.js` loaded initially.
+        3.  Click the "Load dynamic module" button.
+        4.  The message should appear on the page, and in the "Network" tab, you will see a new JavaScript file (with a hashed name like `lazy-module-xxxx.js`) that has been loaded. This demonstrates that Vite automatically code-splits and loads the module on demand.
