@@ -348,5 +348,54 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         ```bash
         npm run dev
         ```
-    *   **Expected Output:** The application should continue to function normally, and the counter should work. Vite automatically detects and compiles TypeScript files. If you introduce a type error, Vite will show a compilation error in your terminal and browser overlay.**
+    *   **Expected Output:** The application should continue to function normally, and the counter should work. Vite automatically detects and compiles TypeScript files. If you introduce a type error, Vite will show a compilation error in your terminal and browser overlay.
+
+12. **Custom Vite Plugin (HTML Injection):**
+    *   **Description:** This plugin demonstrates a more practical use case: injecting dynamic content into your `index.html` file. We will create a plugin that adds a footer with the build timestamp.
+    *   Create a new file named `vite-plugin-build-info.js` in the root of your project with the following content:
+        ```javascript
+        // vite-plugin-build-info.js
+        export default function buildInfoPlugin() {
+          return {
+            name: 'vite-plugin-build-info',
+            // Use the transformIndexHtml hook to modify the final HTML
+            transformIndexHtml(html) {
+              const buildTime = new Date().toLocaleString();
+              const footer = `
+                <footer style="text-align: center; padding: 10px; font-size: 12px; color: #888;">
+                  Built on: ${buildTime}
+                </footer>
+              `;
+              // Inject the footer before the closing body tag
+              return html.replace('</body>', `${footer}</body>`);
+            }
+          };
+        }
+        ```
+    *   Update `vite.config.js` to use this new plugin. Remove the old banner plugin and any related configuration (like `terserOptions` if you added it).
+        ```javascript
+        import { defineConfig } from 'vite'
+        import { resolve } from 'path'
+        import buildInfoPlugin from './vite-plugin-build-info.js'
+
+        export default defineConfig({
+          plugins: [
+            buildInfoPlugin(),
+          ],
+          resolve: {
+            alias: {
+              '@': resolve(__dirname, './src'),
+            },
+          },
+        })
+        ```
+    *   Run the production build and preview it:
+        ```bash
+        npm run build
+        npm run preview
+        ```
+    *   **Expected Output:**
+        1.  Open the preview URL (e.g., `http://localhost:4173/`) in your browser.
+        2.  At the bottom of the page, you should see a new footer with the text "Built on: [current date and time]", demonstrating that your plugin successfully injected content into the HTML.
+
     
