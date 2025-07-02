@@ -31,7 +31,37 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         ```
 
     *   Install project dependencies.
+    
+        ```bash
+        cd vite-demo
+        npm install
+        ```
+        
+        **Expected output:**
+    
+        ```bash
+        added 44 packages, and audited 58 packages in 2s
+
+        5 packages are looking for funding
+          run `npm fund` for details
+        
+        found 0 vulnerabilities
+        ```
+
     *   Understand the project structure.
+
+        ```
+        vite-demo/
+        ├── public/             // Directory for static assets served directly
+        │   └── vite.svg        // Vite's SVG logo, a static asset
+        ├── index.html          // Main entry point of the application
+        ├── main.js             // The primary JavaScript entry point for your code
+        ├── style.css           // The main stylesheet for the application
+        ├── javascript.svg      // An SVG icon used within the generated example code
+        ├── package.json        // Project metadata and NPM scripts configuration
+        ├── vite.config.js      // Vite-specific configuration file for customization
+        └── README.md           // Project's readme file for documentation
+        ```
 
 2.  **Fast Development Server:**
     *   Start the Vite development server.
