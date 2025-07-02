@@ -2,6 +2,7 @@ import './style.scss'
 import javascriptLogo from '@/javascript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.js'
+import imageSrc from '@/image-src.svg'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -18,6 +19,7 @@ document.querySelector('#app').innerHTML = `
     <p class="read-the-docs">
       Click on the Vite logo to learn more
     </p>
+    <img src="${imageSrc}" alt="Image from src folder" />
   </div>
 `
 

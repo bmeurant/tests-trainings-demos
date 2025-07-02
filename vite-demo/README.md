@@ -262,3 +262,21 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         npm run dev
         ```
     *   **Expected Output:** The application should load without errors, indicating that Vite successfully resolved the path using the alias.
+
+9.  **Static Asset Handling:**
+    *   Place an image (e.g., `image-public.svg`) in the `public/` folder.
+    *   Open `index.html` and add an `<img>` tag for this image using an absolute path:
+        ```html
+        <img src="/image-public.svg" alt="Image from public folder" />
+        ```
+    *   Place another image (e.g., `image-src.svg`) in the `src/` folder.
+    *   Open `src/main.js` and import this image, then add it to the DOM:
+        ```javascript
+        import imageSrc from '@/image-src.svg'; // Or './image-src.png' if no alias
+
+        // Add this line somewhere in your innerHTML or create a new img tag
+        document.querySelector('#app').innerHTML += `
+          <img src="${imageSrc}" alt="Image from src folder" />
+        `;
+        ```
+    *   **Expected Output:** Both images should be displayed in the browser. The image from `public/` will have a direct path, while the image from `src/` will have a hashed filename (e.g., `assets/image-src-xxxx.png`) in the browser's developer tools, indicating it was processed by Vite.
