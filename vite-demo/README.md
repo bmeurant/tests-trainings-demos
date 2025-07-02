@@ -195,3 +195,77 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
      ```bash
      npm run build
      ```
+
+7.  **CSS Preprocessors (Sass):**
+    *   Install Sass as a development dependency.
+        ```bash
+        npm install -D sass
+        ```
+    *   Rename `src/style.css` to `src/style.scss`.
+    *   Update `src/main.js` to import `style.scss` instead of `style.css`.
+        ```javascript
+        // Before
+        import './style.css'
+        // After
+        import './style.scss'
+        ```
+    *   Add some Sass code to `src/style.scss` (e.g., variables, nesting).
+        ```scss
+        @use "sass:color";
+        
+        $primary-color: #42b883;
+
+        body {
+          font-family: sans-serif;
+        }
+
+        .card {
+          button {
+            background-color: $primary-color;
+            &:hover {
+              background-color: color.adjust($primary-color, 10%);
+            }
+          }
+        }
+        ```
+    *   Restart the development server.
+        ```bash
+        npm run dev
+        ```
+    *   **Expected Output:** The application should reload, and the styles defined in Sass (e.g., button background color) should be applied, demonstrating Vite's native Sass compilation.
+
+7.  **CSS Preprocessors (Sass):**
+    *   Install Sass as a development dependency.
+        ```bash
+        npm install -D sass
+        ```
+    *   Rename `src/style.css` to `src/style.scss`.
+    *   Update `src/main.js` to import `style.scss` instead of `style.css`.
+        ```javascript
+        // Before
+        import './style.scss'
+        // After
+        import './style.scss'
+        ```
+    *   Add some Sass code to `src/style.scss` (e.g., variables, nesting).
+        ```scss
+        $primary-color: #42b883;
+
+        body {
+          font-family: sans-serif;
+        }
+
+        .card {
+          button {
+            background-color: $primary-color;
+            &:hover {
+              background-color: darken($primary-color, 10%);
+            }
+          }
+        }
+        ```
+    *   Restart the development server.
+        ```bash
+        npm run dev
+        ```
+    *   **Expected Output:** The application should reload, and the styles defined in Sass (e.g., button background color) should be applied, demonstrating Vite's native Sass compilation.
