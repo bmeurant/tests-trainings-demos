@@ -65,7 +65,24 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
 
 2.  **Fast Development Server:**
     *   Start the Vite development server.
+    
+        ```bash
+        npm run dev &
+        ```
+
     *   Observe the near-instantaneous startup time.
+
+        **Expected output:**
+    
+        ```bash
+        VITE v7.0.0  ready in 132 ms
+
+        ➜  Local:   http://localhost:5173/
+        ➜  Network: use --host to expose
+        ➜  press h + enter to show help
+        ```
+        
+    *   Open the [provided URL](http://localhost:5173/) in your web browser to view the application
 
 3.  **Hot Module Replacement (HMR):**
     *   Make changes to source code (e.g., `main.js`, `style.css`, `index.html`).
