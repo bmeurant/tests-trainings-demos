@@ -234,38 +234,31 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
         ```
     *   **Expected Output:** The application should reload, and the styles defined in Sass (e.g., button background color) should be applied, demonstrating Vite's native Sass compilation.
 
-7.  **CSS Preprocessors (Sass):**
-    *   Install Sass as a development dependency.
-        ```bash
-        npm install -D sass
+8.  **Path Aliases:**
+    *   **Create `vite.config.js` (if it doesn't exist) and add `resolve` configuration (or ensure it matches the content above):**
+        ```javascript
+        // vite.config.js
+        import { defineConfig } from 'vite'
+        import { resolve } from 'path'
+
+        export default defineConfig({
+          plugins: [],
+          resolve: {
+            alias: {
+              '@': resolve(__dirname, './src'),
+            },
+          },
+        })
         ```
-    *   Rename `src/style.css` to `src/style.scss`.
-    *   Update `src/main.js` to import `style.scss` instead of `style.css`.
+    *   Update an import in `src/main.js` to use the alias:
         ```javascript
         // Before
-        import './style.scss'
+        import javascriptLogo from './javascript.svg'
         // After
-        import './style.scss'
+        import javascriptLogo from '@/javascript.svg'
         ```
-    *   Add some Sass code to `src/style.scss` (e.g., variables, nesting).
-        ```scss
-        $primary-color: #42b883;
-
-        body {
-          font-family: sans-serif;
-        }
-
-        .card {
-          button {
-            background-color: $primary-color;
-            &:hover {
-              background-color: darken($primary-color, 10%);
-            }
-          }
-        }
-        ```
-    *   Restart the development server.
+    *   Restart the development server (mandatory).
         ```bash
         npm run dev
         ```
-    *   **Expected Output:** The application should reload, and the styles defined in Sass (e.g., button background color) should be applied, demonstrating Vite's native Sass compilation.
+    *   **Expected Output:** The application should load without errors, indicating that Vite successfully resolved the path using the alias.
