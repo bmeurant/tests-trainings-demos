@@ -601,38 +601,137 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
 16. **Integration with a Framework (e.g., React):**
     * **Description:** Vite offers first-class support for various frontend frameworks through dedicated plugins. This section demonstrates how effortlessly Vite integrates with React, enabling you to build powerful applications with familiar tooling and Vite's rapid development experience, including Hot Module Replacement (HMR) for components.
 
-        * **1. Install React and the Vite React Plugin:**
-            * Stop your development server (`Ctrl-C`).
-            * Install React, React DOM, and the official Vite React plugin as development dependencies:
-                ```bash
-                npm install react react-dom
-                npm install -D @vitejs/plugin-react
-                ```
+    * **1. Install React and the Vite React Plugin:**
+        * Stop your development server (`Ctrl-C`).
+        * Install React, React DOM, and the official Vite React plugin as development dependencies:
+            ```bash
+            npm install react react-dom
+            npm install -D @vitejs/plugin-react
+            ```
 
-        * **2. Configure Vite to Use the React Plugin:**
-            * Open `vite.config.js` and import the `react` plugin, then add it to your `plugins` array.
-                ```javascript
-                import react from '@vitejs/plugin-react'
+    * **2. Configure Vite to Use the React Plugin:**
+        * Open `vite.config.js` and import the `react` plugin, then add it to your `plugins` array.
+            ```javascript
+            import react from '@vitejs/plugin-react'
 
-                export default defineConfig({
-                  plugins: [
-                    react(),
-                    buildInfoPlugin(),
-                    ...
-                  ]
-                })
-                ```
+            export default defineConfig({
+              plugins: [
+                react(),
+                buildInfoPlugin(),
+                ...
+              ]
+            })
+            ```
 
-        * **3. Create a Simple React Component:**
-            * Create a new file `src/App.jsx` to house a basic React component (cf. [App.jsx](./src/App.jsx)).
+    * **3. Create a Simple React Component:**
+        * Create a new file `src/App.jsx` to house a basic React component (cf. [App.jsx](./src/App.jsx)).
 
-        * **4. Rename `main.js` to `main.jsx` to Render the React App:**
-            * Modify `src/main.jsx` to import and render your `App.jsx` component using React's client-side rendering API. cf. [main.jsx](./src/main.jsx).
+    * **4. Rename `main.js` to `main.jsx` to Render the React App:**
+        * Modify `src/main.jsx` to import and render your `App.jsx` component using React's client-side rendering API. cf. [main.jsx](./src/main.jsx).
 
-        * **5. Observe React Integration in Development:**
-            * Start the development server:
-                ```bash
-                npm run dev
-                ```
-            * **Expected Output:** Your browser should now display the content rendered by your React component.
-            * **Test HMR:** Make a small text change inside `src/App.jsx` and save the file. Observe that the changes are instantly reflected in the browser without a full page reload, demonstrating Vite's HMR working with React components.
+    * **5. Observe React Integration in Development:**
+        * Start the development server:
+            ```bash
+            npm run dev
+            ```
+        * **Expected Output:** Your browser should now display the content rendered by your React component.
+        * **Test HMR:** Make a small text change inside `src/App.jsx` and save the file. Observe that the changes are instantly reflected in the browser without a full page reload, demonstrating Vite's HMR working with React components.
+        
+    * **6. In case of issues:**
+      ```bash
+      rm -rf node_modules
+      rm package-lock.json
+      npm cache clean --force
+      npm install
+      ```
+      
+17. **Proxying API Requests (Mocking with Custom Plugin):**
+    *   **Description:** When developing a frontend application that interacts with a separate backend API, handling Cross-Origin Resource Sharing (CORS) issues can be tedious. While Vite's built-in proxy feature is useful, for scenarios where you want to completely mock an API endpoint without any backend connection, a custom Vite plugin offers a more robust and explicit solution. This approach ensures your mock response is served directly by Vite's development server.
+
+    *   **1. Create a Custom Vite Plugin for API Mocking:**
+        *   Create a new file named `vite-plugin-mock-api.js` in the root of your project with the following content. This plugin uses the `configureServer` hook to add a middleware that intercepts requests to `/api/data` and sends a mock JSON response.
+            ```javascript
+            // vite-plugin-mock-api.js
+            export default function mockApiPlugin() {
+              return {
+                name: 'mock-api',
+                configureServer(server) {
+                  server.middlewares.use('/api/data', (req, res) => {
+                    console.log('Intercepting /api/data request via custom plugin...');
+                    const mockData = {message: 'Hello from mocked API (via custom plugin)!'};
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify(mockData));
+                  });
+                },
+              };
+            }
+            ```
+
+    *   **2. Integrate the Custom Plugin into `vite.config.js`:**
+        *   Open `vite.config.js`. First, import the new `mockApiPlugin`. Then, add it to your `plugins` array. Ensure there is no `server.proxy` configuration for `/api/data` as the plugin will handle it.
+            ```javascript
+            // vite.config.js
+            import { defineConfig } from 'vite'
+            import { resolve } from 'path'
+            import buildInfoPlugin from './vite-plugin-build-info.js'
+            import { visualizer } from 'rollup-plugin-visualizer'
+            import react from '@vitejs/plugin-react'
+            import mockApiPlugin from './vite-plugin-mock-api.js' // NEW: Import your custom plugin
+
+
+            export default defineConfig({
+              plugins: [
+                react(),
+                buildInfoPlugin(),
+                visualizer({
+                  filename: './stats.html',
+                  open: false,
+                  gzipSize: true,
+                  brotliSize: true,
+                }),
+                mockApiPlugin(), // NEW: Add your custom plugin here
+              ],
+              // ... other configurations ...
+              server: {
+                // Ensure there is NO 'proxy' configuration for '/api/data' here.
+                // The custom plugin handles it.
+              },
+              // ... rest of your config ...
+            })
+            ```
+
+    *   **3. Simulate an API Call in React:**
+        *   Modify `src/App.jsx` to make a fetch request to `/api/data`. This part remains unchanged from previous steps.
+            ```javascript
+            // src/App.jsx
+            // ...
+            useEffect(() => {
+                const fetchData = async () => {
+                    try {
+                        const response = await fetch('/api/data'); // Request to our mocked endpoint
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        setApiData(data.message);
+                    } catch (error) {
+                        console.error('Error fetching API data:', error);
+                        setApiError('Failed to fetch data from API.');
+                    }
+                };
+                fetchData();
+            }, []);
+            // ...
+            ```
+
+    *   **4. Run and Observe the Mocked API:**
+        *   Start the development server:
+            ```bash
+            npm run dev
+            ```
+        *   **Expected Output:**
+            1.  Open your browser to `http://localhost:5173/`.
+            2.  Open your browser's **developer tools** (F12) and go to the **Network** tab.
+            3.  You should see a request to `http://localhost:5173/api/data` that successfully returns the mock JSON response (`{"message": "Hello from mocked API (via custom plugin)!"}`).
+            4.  In your terminal where Vite is running, you should see the log message: `Intercepting /api/data request via custom plugin...`.
+            5.  The application should display "Data from Backend: Hello from mocked API (via custom plugin)!". This demonstrates that your custom plugin successfully intercepted and handled the request, providing a clean mock without any proxy errors.

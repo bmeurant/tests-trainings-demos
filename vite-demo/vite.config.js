@@ -3,12 +3,14 @@ import { resolve } from 'path'
 import buildInfoPlugin from './vite-plugin-build-info.js'
 import { visualizer } from 'rollup-plugin-visualizer'
 import react from '@vitejs/plugin-react'
+import mockApiPlugin from './vite-plugin-mock-api.js'
 
 
 export default defineConfig({
   plugins: [
     react(),
     buildInfoPlugin(),
+    mockApiPlugin(),
     // Add the visualizer plugin
     visualizer({
       filename: './stats.html', // Output file for the visualization
@@ -28,6 +30,9 @@ export default defineConfig({
         additionalData: `@use "sass:color"; @use "${resolve(__dirname, 'src/styles/_global.scss')}" as *;`
       }
     }
+  },
+  server: {
+
   },
   build: {
     rollupOptions: {
