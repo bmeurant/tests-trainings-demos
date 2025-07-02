@@ -85,11 +85,24 @@ This tutorial will guide you through the basics of Vite, demonstrating its key f
     *   Open the [provided URL](http://localhost:5173/) in your web browser to view the application
 
 3.  **Hot Module Replacement (HMR):**
-    * Open the `src/main.js` file in your code editor.
-    * Locate the line that modifies the `<h1>` text (e.g., `document.querySelector('#app').innerHTML = ...`).
-    * Change the text, for example, from "Vite + JavaScript" to "Vite + HMR in action!".
-    * Save the file.
-    * Witness instant updates in the browser without a full page reload.
+    * **HTML**
+      * Open the `src/main.js` file in your code editor.
+      * Locate the line that modifies the `<h1>` text (e.g., `document.querySelector('#app').innerHTML = ...`).
+      * Change the text, for example, from "Vite + JavaScript" to "Vite + HMR in action!".
+      * Save the file.
+      * Witness instant updates in the browser without a full page reload.
+      
+    * **CSS**
+      * Open the `style.css` file.
+      * Change the h1 color to `red`: `color: red;`
+      * Save the file.
+      * Observe that the background color updates immediately in the browser.
+
+    * **CSS**
+      * Open the `counter.js` file.
+      * Change the count message from `counter is` to `counter:`
+      * Save the file.
+      * Observe that the background color updates immediately in the browser.
 
 4.  **Building for Production:**
     * Stop server with `Ctrl-C`.
