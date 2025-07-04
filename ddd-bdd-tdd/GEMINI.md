@@ -1,32 +1,19 @@
 # Gemini Project Configuration
 
-This file provides context for the Gemini AI assistant to understand the project's technical details and conventions.
+This file provides context for the Gemini AI assistant to understand the project and its specific interaction rules.
 
-- **Gemini Responses:** All responses from the Gemini assistant must be in French.
+## 1. Gemini's Behavior
 
-## Project Overview
+- **Responses:** All responses from the Gemini assistant must be in French.
+- **Development Workflow:** I will follow a strict, iterative, and review-driven process:
+    - **Granular Steps:** I will break down tasks into the smallest possible, self-contained, and testable units (e.g., a single feature, one API endpoint).
+    - **Definition of "Done":** A step is considered complete only when the production code is written, all corresponding tests (unit and integration) are passing, code coverage is preserved, and all public methods and classes are documented with Javadoc.
+    - **Review Cycle:** After each completed step, I will systematically return control to you for review. I will only proceed to the next step upon your explicit instruction.
 
-- **Language:** Java 21
-- **Framework:** Spring Boot
-- **Architecture:** Domain-Driven Design (DDD).
-- **Business domain**: Business domain is briefly described in the `architecture.md` file.
-- **BDD (Behavior-Driven Development):** All new features and bug fixes should be driven by BDD. This means starting
-  with clear, executable specifications (features) written in Gherkin, followed by implementing the steps and then the
-  underlying code.
-- **TDD (Test-Driven Development):** For all code development, TDD should be applied. Write a failing test first, then
-  write the minimum code to make the test pass, and finally refactor the code.
+## 2. Project Documentation and Guidelines
 
-## Development Conventions
+As the AI assistant for this project, I must adhere to all conventions and architectural decisions documented in the following files. I will consult them as a source of truth.
 
-- **Code and Comments:** All code and comments should be written in English.
-- **Logging:** Add relevant logs using `org.slf4j.Logger` at appropriate levels (DEBUG for detailed flow, INFO for key
-  events).
-- **Assertion Messages:** All assertions in tests must include a descriptive message (e.g.,
-  `assertEquals(expected, actual, "Descriptive message");`).
-- **Testing:** The project uses Cucumber for BDD (Behavior-Driven Development) tests. Additionally, ensure unit tests
-  are provided for every new or modified domain method, repository implementation, or service, utilizing mocking where
-  appropriate for lightweight and efficient testing.
-- **Lombok:** Use Lombok but only when it is really necessary.
-- **JavaDoc:** All public classes and public methods must have a JavaDoc. Do not add Javadoc to private methods or fields unless strictly necessary. Javadoc should not simply reiterate what the code already clearly expresses.
-- **Maven POM:** Use properties for dependency versions in the `pom.xml` file.
-- **Workflow:** Always return control to the user before implementing a new step from a `PendingException`.
+- **Overall Architecture:** See `architecture.md`.
+- **REST API Architecture:** See `architecture-api.md`.
+- **Coding Guidelines & Testing Strategy:** See `coding-guidelines.md`.
