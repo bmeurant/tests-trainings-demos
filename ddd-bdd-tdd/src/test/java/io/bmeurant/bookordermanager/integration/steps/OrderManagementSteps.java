@@ -126,17 +126,17 @@ public class OrderManagementSteps {
 
         // Create books and inventory items if they don't exist
         for (OrderItemRequest itemRequest : itemRequests) {
-            if (bookRepository.findById(itemRequest.getIsbn()).isEmpty()) {
-                bookRepository.save(new Book(itemRequest.getIsbn(), "Test Book", "Test Author", BigDecimal.TEN));
+            if (bookRepository.findById(itemRequest.isbn()).isEmpty()) {
+                bookRepository.save(new Book(itemRequest.isbn(), "Test Book", "Test Author", BigDecimal.TEN));
             }
-            if (inventoryItemRepository.findById(itemRequest.getIsbn()).isEmpty()) {
-                inventoryItemRepository.save(new InventoryItem(itemRequest.getIsbn(), 100)); // Default large stock
+            if (inventoryItemRepository.findById(itemRequest.isbn()).isEmpty()) {
+                inventoryItemRepository.save(new InventoryItem(itemRequest.isbn(), 100)); // Default large stock
             }
         }
 
         // Create the order directly in the desired state
         currentOrder = new Order(customerName, itemRequests.stream()
-                .map(req -> new OrderLine(req.getIsbn(), req.getQuantity(), BigDecimal.TEN))
+                .map(req -> new OrderLine(req.isbn(), req.quantity(), BigDecimal.TEN))
                 .collect(java.util.ArrayList::new, java.util.ArrayList::add, java.util.ArrayList::addAll));
         orderRepository.save(currentOrder);
 
@@ -145,7 +145,7 @@ public class OrderManagementSteps {
             if ("CONFIRMED".equals(status)) {
                 // Simulate stock deduction for confirmed orders
                 for (OrderItemRequest itemRequest : itemRequests) {
-                    inventoryService.deductStock(itemRequest.getIsbn(), itemRequest.getQuantity());
+                    inventoryService.deductStock(itemRequest.isbn(), itemRequest.quantity());
                 }
                 currentOrder.confirm();
             }

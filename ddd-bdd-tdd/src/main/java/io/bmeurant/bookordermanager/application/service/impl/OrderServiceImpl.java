@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Check stock for each item before creating the order
         for (OrderItemRequest itemRequest : items) {
-            inventoryService.checkStock(itemRequest.getIsbn(), itemRequest.getQuantity());
+            inventoryService.checkStock(itemRequest.isbn(), itemRequest.quantity());
         }
 
         Order order = new Order(customerName, buildOrderLines(items));
@@ -171,8 +171,8 @@ public class OrderServiceImpl implements OrderService {
      */
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
-        Book book = bookService.findBookByIsbn(itemRequest.getIsbn());
+        Book book = bookService.findBookByIsbn(itemRequest.isbn());
 
-        return new OrderLine(itemRequest.getIsbn(), itemRequest.getQuantity(), book.getPrice());
+        return new OrderLine(itemRequest.isbn(), itemRequest.quantity(), book.getPrice());
     }
 }

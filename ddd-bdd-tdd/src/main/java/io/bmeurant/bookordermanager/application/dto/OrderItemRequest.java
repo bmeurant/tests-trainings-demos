@@ -1,17 +1,19 @@
 package io.bmeurant.bookordermanager.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Represents a request for an item within an order.
- * This is a Data Transfer Object (DTO) used for input to the OrderService.
+ * Represents a request item within an order creation request.
+ *
+ * @param isbn     The ISBN of the product.
+ * @param quantity The quantity of the product.
  */
-@AllArgsConstructor
-@Getter
-@ToString
-public class OrderItemRequest {
-    private String isbn;
-    private int quantity;
+public record OrderItemRequest(
+        @NotBlank(message = "Product ISBN cannot be blank")
+        String isbn,
+        @NotNull(message = "Quantity cannot be null")
+        @Min(value = 1, message = "Quantity must be at least 1")
+        Integer quantity) {
 }
