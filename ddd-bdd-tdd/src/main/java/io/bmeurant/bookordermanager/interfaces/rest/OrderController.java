@@ -83,4 +83,24 @@ public class OrderController {
         return orderResponse.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    /**
+     * Cancels a specific order by its unique identifier.
+     *
+     * @param orderId The unique identifier of the order to cancel.
+     * @return A {@link ResponseEntity} with the cancelled {@link OrderResponse} if found (HTTP status 200 OK),
+     *         or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be cancelled.
+     */
+    @PostMapping("/{orderId}/cancel")
+    @Operation(summary = "Cancel an order by ID", description = "Cancels a specific order by its unique identifier.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order cancelled successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Order cannot be cancelled (e.g., already delivered)", content = @Content)
+    })
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable String orderId) {
+        OrderResponse orderResponse = orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(orderResponse);
+    }
 }

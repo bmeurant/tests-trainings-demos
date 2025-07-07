@@ -184,13 +184,13 @@ class OrderServiceTest {
         when(inventoryService.deductStock(isbn1, quantity1)).thenReturn(new InventoryItem(isbn1, 10 - quantity1));
 
         // When
-        Order confirmedOrder = orderService.confirmOrder(orderId);
+        OrderResponse confirmedOrderResponse = orderService.confirmOrder(orderId);
 
         // Then
-        assertNotNull(confirmedOrder, "Confirmed order should not be null.");
-        assertEquals(Order.OrderStatus.CONFIRMED, confirmedOrder.getStatus(), "Order status should be CONFIRMED.");
+        assertNotNull(confirmedOrderResponse, "Confirmed order response should not be null.");
+        assertEquals(Order.OrderStatus.CONFIRMED.name(), confirmedOrderResponse.status(), "Order status should be CONFIRMED.");
         verify(inventoryService, times(1)).deductStock(isbn1, quantity1);
-        verify(orderRepository, times(1)).save(confirmedOrder);
+        verify(orderRepository, times(1)).save(order);
     }
 
     @Test
@@ -239,13 +239,13 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        Order cancelledOrder = orderService.cancelOrder(orderId);
+        OrderResponse cancelledOrderResponse = orderService.cancelOrder(orderId);
 
         // Then
-        assertNotNull(cancelledOrder, "Cancelled order should not be null.");
-        assertEquals(Order.OrderStatus.CANCELLED, cancelledOrder.getStatus(), "Order status should be CANCELLED.");
+        assertNotNull(cancelledOrderResponse, "Cancelled order response should not be null.");
+        assertEquals(Order.OrderStatus.CANCELLED.name(), cancelledOrderResponse.status(), "Order status should be CANCELLED.");
         verify(inventoryService, times(1)).releaseStock(isbn1, quantity1);
-        verify(orderRepository, times(1)).save(cancelledOrder);
+        verify(orderRepository, times(1)).save(order);
         verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCancelledEvent.class));
     }
 
@@ -265,13 +265,13 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        Order cancelledOrder = orderService.cancelOrder(orderId);
+        OrderResponse cancelledOrderResponse = orderService.cancelOrder(orderId);
 
         // Then
-        assertNotNull(cancelledOrder, "Cancelled order should not be null.");
-        assertEquals(Order.OrderStatus.CANCELLED, cancelledOrder.getStatus(), "Order status should be CANCELLED.");
+        assertNotNull(cancelledOrderResponse, "Cancelled order should not be null.");
+        assertEquals(Order.OrderStatus.CANCELLED.name(), cancelledOrderResponse.status(), "Order status should be CANCELLED.");
         verify(inventoryService, never()).releaseStock(anyString(), anyInt()); // No stock release for PENDING order
-        verify(orderRepository, times(1)).save(cancelledOrder);
+        verify(orderRepository, times(1)).save(order);
         verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCancelledEvent.class));
     }
 

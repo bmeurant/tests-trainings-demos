@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order confirmOrder(String orderId) {
+    public OrderResponse confirmOrder(String orderId) {
         log.debug("Attempting to confirm order with ID: {}", orderId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
@@ -97,12 +97,12 @@ public class OrderServiceImpl implements OrderService {
         order.confirm();
         Order confirmedOrder = orderRepository.save(order);
         log.info("Order {} successfully confirmed.", orderId);
-        return confirmedOrder;
+        return orderMapper.mapOrderToResponse(confirmedOrder);
     }
 
     @Override
     @Transactional
-    public Order cancelOrder(String orderId) {
+    public OrderResponse cancelOrder(String orderId) {
         log.debug("Attempting to cancel order with ID: {}", orderId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
@@ -112,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         Order cancelledOrder = orderRepository.save(order);
         log.info("Order {} successfully cancelled.", orderId);
         applicationEventPublisher.publishEvent(new io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent(cancelledOrder));
-        return cancelledOrder;
+        return orderMapper.mapOrderToResponse(cancelledOrder);
     }
 
     /**

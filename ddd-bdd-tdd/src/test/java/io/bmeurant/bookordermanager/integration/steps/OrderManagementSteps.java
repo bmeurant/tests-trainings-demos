@@ -294,9 +294,12 @@ public class OrderManagementSteps {
     }
 
     @When("I cancel the order")
-    public void i_cancel_the_order() {
+    public void i_cancel_the_order() throws IOException {
         assertNotNull(currentOrder, "Current order should not be null for cancellation.");
-        orderService.cancelOrder(currentOrder.getOrderId());
+        lastResponse = testRestTemplate.postForEntity("/api/orders/" + currentOrder.getOrderId() + "/cancel", null, String.class);
+        if (lastResponse.getStatusCode() == HttpStatus.OK) {
+            retrievedOrder = objectMapper.readValue(lastResponse.getBody(), OrderResponse.class);
+        }
     }
 
     @Then("the order should have status {string}")
