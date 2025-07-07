@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.catalog.domain.service;
 
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 
 /**
@@ -11,7 +12,7 @@ public interface BookService {
      *
      * @param isbn The ISBN of the book to find.
      * @return The Book object if found.
-     * @throws io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException if the book with the given ISBN is not found.
+     * @throws BookNotFoundException if the book with the given ISBN is not found.
      */
     Book findBookByIsbn(String isbn);
 }

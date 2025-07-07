@@ -2,6 +2,11 @@ package io.bmeurant.bookordermanager.application.service;
 
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 
 import java.util.Optional;
 
@@ -15,6 +20,10 @@ public interface OrderService {
      *
      * @param createOrderRequest The request containing customer name and order items.
      * @return The created OrderResponse object.
+     * @throws BookNotFoundException if a book specified in the order items is not found in the catalog.
+     * @throws InventoryItemNotFoundException if an inventory item for an order line is not found.
+     * @throws InsufficientStockException if stock is insufficient for one or more books.
+     * @throws ValidationException if the order request is invalid (e.g., empty items, invalid quantities).
      */
     OrderResponse createOrder(CreateOrderRequest createOrderRequest);
 
@@ -23,6 +32,7 @@ public interface OrderService {
      *
      * @param orderId The unique identifier of the order.
      * @return An Optional containing the OrderResponse if found, otherwise empty.
+     * @throws OrderNotFoundException if the order with the given ID is not found.
      */
     Optional<OrderResponse> getOrderById(String orderId);
 
@@ -31,11 +41,11 @@ public interface OrderService {
      * Confirms an existing order, transitioning its status to CONFIRMED.
      *
      * @param orderId The ID of the order to confirm.
-     * @return The confirmed Order object.
-     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException             if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException                      if the order cannot be confirmed (e.g., wrong status) or if stock deduction quantity is invalid.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if an inventory item for an order line is not found.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException     if stock is insufficient for an order line.
+     * @return The confirmed OrderResponse object.
+     * @throws OrderNotFoundException if the order is not found.
+     * @throws ValidationException if the order cannot be confirmed (e.g., wrong status) or if stock deduction quantity is invalid.
+     * @throws InventoryItemNotFoundException if an inventory item for an order line is not found.
+     * @throws InsufficientStockException if stock is insufficient for an order line.
      */
     OrderResponse confirmOrder(String orderId);
 
@@ -43,9 +53,10 @@ public interface OrderService {
      * Cancels an existing order, transitioning its status to CANCELLED and releasing stock if necessary.
      *
      * @param orderId The ID of the order to cancel.
-     * @return The cancelled Order object.
-     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException          if the order cannot be cancelled (e.g., wrong status).
+     * @return The cancelled OrderResponse object.
+     * @throws OrderNotFoundException if the order is not found.
+     * @throws ValidationException if the order cannot be cancelled (e.g., wrong status).
+     * @throws InventoryItemNotFoundException if an inventory item for an order line is not found during stock release.
      */
     OrderResponse cancelOrder(String orderId);
 }
