@@ -1,5 +1,7 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
+import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
@@ -83,8 +85,11 @@ public class OrderManagementSteps {
             int quantity = Integer.parseInt(row.get("quantity"));
             itemRequests.add(new OrderItemRequest(isbn, quantity));
         }
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest(customerName, itemRequests);
         try {
-            currentOrder = orderService.createOrder(customerName, itemRequests);
+            OrderResponse orderResponse = orderService.createOrder(createOrderRequest);
+            currentOrder = orderRepository.findById(orderResponse.orderId())
+                    .orElseThrow(() -> new AssertionError("Order not found after creation"));
         } catch (Exception e) {
             caughtException = e;
         }
@@ -165,9 +170,9 @@ public class OrderManagementSteps {
     public void the_order_should_transition_to_status(String expectedStatus) {
         assertNotNull(currentOrder, "Current order should not be null for status transition verification.");
         await().atMost(5, SECONDS).untilAsserted(() -> {
-            Order updatedOrder = orderService.findOrderById(currentOrder.getOrderId())
+            OrderResponse updatedOrderResponse = orderService.getOrderById(currentOrder.getOrderId())
                     .orElseThrow(() -> new AssertionError("Order not found"));
-            assertEquals(Order.OrderStatus.valueOf(expectedStatus), updatedOrder.getStatus(), "Order status should be updated as expected.");
+            assertEquals(Order.OrderStatus.valueOf(expectedStatus), Order.OrderStatus.valueOf(updatedOrderResponse.status()), "Order status should be updated as expected.");
         });
     }
 
@@ -194,9 +199,9 @@ public class OrderManagementSteps {
     public void the_order_should_have_status(String expectedStatus) {
         assertNotNull(currentOrder, "Current order should not be null for status verification.");
         await().atMost(5, SECONDS).untilAsserted(() -> {
-            Order updatedOrder = orderRepository.findById(currentOrder.getOrderId())
+            OrderResponse updatedOrder = orderService.getOrderById(currentOrder.getOrderId())
                     .orElseThrow(() -> new AssertionError("Order not found"));
-            assertEquals(Order.OrderStatus.valueOf(expectedStatus), updatedOrder.getStatus(), "Order status should be updated as expected.");
+            assertEquals(Order.OrderStatus.valueOf(expectedStatus), Order.OrderStatus.valueOf(updatedOrder.status()), "Order status should be updated as expected.");
         });
     }
 

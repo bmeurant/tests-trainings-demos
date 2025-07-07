@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.catalog.domain.repository;
+package io.bmeurant.bookordermanager.unit.domain.repository;
 
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;

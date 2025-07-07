@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.order.domain.model;
+package io.bmeurant.bookordermanager.unit.domain.model;
 
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.order.domain.model.Order;

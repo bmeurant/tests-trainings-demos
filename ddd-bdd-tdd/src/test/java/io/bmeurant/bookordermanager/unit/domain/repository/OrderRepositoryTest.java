@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.order.domain.repository;
+package io.bmeurant.bookordermanager.unit.domain.repository;
 
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;

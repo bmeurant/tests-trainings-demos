@@ -19,7 +19,7 @@ This document provides the development conventions and standards for this projec
 - **Logging:** Add relevant logs using `org.slf4j.Logger` at appropriate levels (DEBUG for detailed flow, INFO for key events).
 - **Assertion Messages:** All assertions in tests must include a descriptive message (e.g., `assertEquals(expected, actual, "Descriptive message");`).
 - **Lombok:** Use Lombok but only when it is really necessary.
-- **JavaDoc:** All public classes and public methods must have a JavaDoc. Do not add Javadoc to private methods or fields unless strictly necessary. Javadoc should not simply reiterate what the code already clearly expresses.
+- **JavaDoc:** All public classes and public methods must have a JavaDoc. For methods defined in an interface, the Javadoc should reside solely in the interface. The implementing class should not duplicate this Javadoc; instead, it should use `@Override` and rely on the interface's documentation. Do not add Javadoc to private methods or fields unless strictly necessary. Javadoc should not simply reiterate what the code already clearly expresses.
 - **Maven POM:** Use properties for dependency versions in the `pom.xml` file.
 
 ## 4. Testing Strategy
@@ -28,6 +28,7 @@ A comprehensive, multi-tiered testing strategy is adopted to ensure application 
 
 - **Unit Tests:**
     - **Goal:** To test the isolated logic of individual classes or small components. Each layer (domain, application service, controller, repository) is tested independently.
+    - **Location:** Unit tests reside in the same package structure as the source code they test, but under `src/test/java/` (e.g., `src/main/java/com/example/Service.java` is tested by `src/test/java/com/example/ServiceTest.java`). This allows testing of `package-private` methods.
     - **Approach:** Dependencies are mocked to ensure isolation.
     - **Tools:** JUnit 5, Mockito, `MockMvc` (for controllers).
     - **Coverage:** Aim for 100% code coverage for new or modified code.

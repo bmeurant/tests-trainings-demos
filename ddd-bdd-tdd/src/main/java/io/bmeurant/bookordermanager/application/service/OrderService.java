@@ -1,9 +1,9 @@
 package io.bmeurant.bookordermanager.application.service;
 
-import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
+import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
+import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,21 +12,22 @@ import java.util.Optional;
 public interface OrderService {
 
     /**
-     * Creates a new order for a given customer with the specified items.
+     * Creates a new order based on the provided request.
      *
-     * @param customerName The name of the customer.
-     * @param items        The list of items to include in the order.
-     * @return The created Order object.
+     * @param createOrderRequest The request containing customer name and order items.
+     * @return The created OrderResponse object.
      */
-    Order createOrder(String customerName, List<OrderItemRequest> items);
+    OrderResponse createOrder(CreateOrderRequest createOrderRequest);
 
     /**
-     * Finds an order by its unique identifier.
+     * Finds an order by its unique identifier and returns it as an OrderResponse.
      *
-     * @param id The unique identifier of the order.
-     * @return An Optional containing the Order if found, otherwise empty.
+     * @param orderId The unique identifier of the order.
+     * @return An Optional containing the OrderResponse if found, otherwise empty.
      */
-    Optional<Order> findOrderById(String id);
+    Optional<OrderResponse> getOrderById(String orderId);
+
+    
 
     /**
      * Confirms an existing order, transitioning its status to CONFIRMED.

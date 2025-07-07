@@ -1,6 +1,8 @@
 package io.bmeurant.bookordermanager.interfaces.rest.advice;
 
 import io.bmeurant.bookordermanager.application.dto.ErrorResponse;
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,34 @@ import java.time.LocalDateTime;
 public class RestExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, WebRequest request) {
+        logger.warn("Validation failed: {}", ex.getMessage());
+
+        final ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Error",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException ex, WebRequest request) {
+        logger.warn("Book not found: {}", ex.getMessage());
+
+        final ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
     /**
      * Handles any unhandled exception as a last resort, mapping it to a 500 Internal Server Error.

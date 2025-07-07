@@ -1,6 +1,9 @@
 package io.bmeurant.bookordermanager.application.service.impl;
 
+import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
+import io.bmeurant.bookordermanager.application.dto.OrderResponse;
+import io.bmeurant.bookordermanager.application.mapper.OrderMapper;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
@@ -34,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final InventoryService inventoryService;
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final OrderMapper orderMapper;
 
     /**
      * Constructs an {@code OrderServiceImpl} with the necessary dependencies.
@@ -42,60 +46,42 @@ public class OrderServiceImpl implements OrderService {
      * @param inventoryService          The service for managing inventory stock.
      * @param orderRepository           The repository for persisting and retrieving orders.
      * @param applicationEventPublisher The publisher for application events.
+     * @param orderMapper               The mapper for converting Order domain objects to DTOs.
      */
     @Autowired
-    public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository, ApplicationEventPublisher applicationEventPublisher) {
+    public OrderServiceImpl(BookService bookService, InventoryService inventoryService, OrderRepository orderRepository, ApplicationEventPublisher applicationEventPublisher, OrderMapper orderMapper) {
         this.bookService = bookService;
         this.inventoryService = inventoryService;
         this.orderRepository = orderRepository;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.orderMapper = orderMapper;
     }
 
-    /**
-     * Creates a new order for a given customer with the specified items.
-     * This method is transactional and publishes an {@link OrderCreatedEvent} upon successful order creation.
-     *
-     * @param customerName The name of the customer.
-     * @param items        The list of items to include in the order.
-     * @return The created and saved Order object.
-     */
     @Override
     @Transactional
-    public Order createOrder(String customerName, List<OrderItemRequest> items) {
-        log.debug("Creating order for customer: {} with {} items.", customerName, items.size());
+    public OrderResponse createOrder(CreateOrderRequest createOrderRequest) {
+        log.debug("Creating order for customer: {} with {} items.", createOrderRequest.customerName(), createOrderRequest.items().size());
 
         // Check stock for each item before creating the order
-        for (OrderItemRequest itemRequest : items) {
+        for (OrderItemRequest itemRequest : createOrderRequest.items()) {
             inventoryService.checkStock(itemRequest.isbn(), itemRequest.quantity());
         }
 
-        Order order = new Order(customerName, buildOrderLines(items));
+        Order order = new Order(createOrderRequest.customerName(), buildOrderLines(createOrderRequest.items()));
         Order savedOrder = orderRepository.save(order);
         log.info("Order created and saved: {}", savedOrder);
         applicationEventPublisher.publishEvent(new OrderCreatedEvent(savedOrder));
-        return savedOrder;
+        return orderMapper.mapOrderToResponse(savedOrder);
     }
 
-    /**
-     * Finds an order by its unique identifier.
-     *
-     * @param id The unique identifier of the order.
-     * @return An Optional containing the Order if found, otherwise empty.
-     */
     @Override
-    public Optional<Order> findOrderById(String id) {
-        return orderRepository.findById(id);
+    @Transactional(readOnly = true)
+    public Optional<OrderResponse> getOrderById(String orderId) {
+        log.debug("Finding order by ID: {}", orderId);
+        return orderRepository.findById(orderId)
+                .map(orderMapper::mapOrderToResponse);
     }
 
-    /**
-     * Confirms an existing order, transitioning its status to CONFIRMED.
-     * This method performs the final stock deduction for each order line.
-     *
-     * @param orderId The ID of the order to confirm.
-     * @return The confirmed Order object.
-     * @throws OrderNotFoundException                                            if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status).
-     */
     @Override
     @Transactional
     public Order confirmOrder(String orderId) {
@@ -114,14 +100,6 @@ public class OrderServiceImpl implements OrderService {
         return confirmedOrder;
     }
 
-    /**
-     * Cancels an existing order, transitioning its status to CANCELLED and releasing stock if necessary.
-     *
-     * @param orderId The ID of the order to cancel.
-     * @return The cancelled Order object.
-     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException          if the order cannot be cancelled (e.g., wrong status).
-     */
     @Override
     @Transactional
     public Order cancelOrder(String orderId) {
@@ -137,6 +115,11 @@ public class OrderServiceImpl implements OrderService {
         return cancelledOrder;
     }
 
+    /**
+     * Releases stock for items in a cancelled order.
+     *
+     * @param order The order for which to release stock.
+     */
     private void releaseStocks(Order order) {
         List<OrderLine> itemsToRelease = order.cancel();
 

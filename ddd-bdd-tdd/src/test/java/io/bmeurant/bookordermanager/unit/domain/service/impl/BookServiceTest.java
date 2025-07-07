@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.catalog.domain.service.impl;
+package io.bmeurant.bookordermanager.unit.domain.service.impl;
 
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;

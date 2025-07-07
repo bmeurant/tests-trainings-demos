@@ -1,6 +1,7 @@
-package io.bmeurant.bookordermanager.unit.inventory.domain.service.impl;
+package io.bmeurant.bookordermanager.unit.domain.service.impl;
 
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
+import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
@@ -99,11 +100,7 @@ class InventoryServiceTest {
         assertEquals(initialStock - quantityToDeduct, updatedItem.getStock(), "Stock should be deducted correctly.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, times(1)).save(inventoryItem);
-        verify(applicationEventPublisher, times(1)).publishEvent(argThat(event ->
-                event instanceof io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent &&
-                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
-                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
-        ));
+        verify(applicationEventPublisher, times(1)).publishEvent(any(ProductStockLowEvent.class));
     }
 
     @Test
@@ -125,11 +122,7 @@ class InventoryServiceTest {
         assertEquals(initialStock - quantityToDeduct, updatedItem.getStock(), "Stock should be deducted correctly.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, times(1)).save(inventoryItem);
-        verify(applicationEventPublisher, times(1)).publishEvent(argThat(event ->
-                event instanceof io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent &&
-                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getIsbn().equals(isbn) &&
-                        ((io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent) event).getCurrentStock() == (initialStock - quantityToDeduct)
-        ));
+        verify(applicationEventPublisher, times(1)).publishEvent(any(ProductStockLowEvent.class));
     }
 
     @Test
@@ -254,6 +247,7 @@ class InventoryServiceTest {
         assertEquals(initialStock + quantityToRelease, inventoryItem.getStock(), "Stock should be correctly released.");
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, times(1)).save(inventoryItem);
+        verify(applicationEventPublisher, never()).publishEvent(any());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.order.domain.event;
+package io.bmeurant.bookordermanager.unit.domain.event;
 
 import io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;

@@ -117,4 +117,18 @@ class AssertionsTest {
         assertTrue(exception.getMessage().contains("List cannot be null or empty"));
         assertEquals(TEST_CLASS.getSimpleName(), exception.getDomainClassName());
     }
+
+    @Test
+    @DisplayName("assertIsTrue should not throw exception for true condition")
+    void assertIsTrue_true_noException() {
+        assertDoesNotThrow(() -> Assertions.assertIsTrue(true, "Condition should be true", TEST_CLASS));
+    }
+
+    @Test
+    @DisplayName("assertIsTrue should throw ValidationException for false condition")
+    void assertIsTrue_false_throwsException() {
+        ValidationException exception = assertThrows(ValidationException.class, () -> Assertions.assertIsTrue(false, "Condition should be true", TEST_CLASS));
+        assertEquals("Condition should be true", exception.getMessage());
+        assertEquals(TEST_CLASS.getSimpleName(), exception.getDomainClassName());
+    }
 }

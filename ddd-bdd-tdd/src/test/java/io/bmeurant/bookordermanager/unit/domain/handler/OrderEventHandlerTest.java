@@ -1,4 +1,4 @@
-package io.bmeurant.bookordermanager.unit.order.domain.handler;
+package io.bmeurant.bookordermanager.unit.domain.handler;
 
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.handler.OrderEventHandler;
