@@ -1,8 +1,9 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
-import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
+import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.application.service.OrderService;
 import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
@@ -11,8 +12,8 @@ import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
 import io.bmeurant.bookordermanager.inventory.domain.repository.InventoryItemRepository;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
-import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCancelledEvent;
+import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;
 import io.bmeurant.bookordermanager.order.domain.model.Order;
 import io.bmeurant.bookordermanager.order.domain.model.OrderLine;
 import io.bmeurant.bookordermanager.order.domain.repository.OrderRepository;
@@ -24,13 +25,17 @@ import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationEvent;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -39,7 +44,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @CucumberContextConfiguration
-@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class)
+@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OrderManagementSteps {
 
     @Autowired
@@ -54,14 +59,21 @@ public class OrderManagementSteps {
     private InventoryService inventoryService;
     @Autowired
     private TestEventListener testEventListener;
+    @Autowired
+    private TestRestTemplate testRestTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private Order currentOrder;
-    private Exception caughtException;
+    private Order currentOrder; // Keep for steps not related to API
+    private ResponseEntity<String> lastResponse;
+    private OrderResponse lastSuccessfulOrder;
+
 
     @Before
     public void setup() {
         currentOrder = null;
-        caughtException = null;
+        lastResponse = null;
+        lastSuccessfulOrder = null;
         testEventListener.clearEvents();
     }
 
@@ -78,7 +90,7 @@ public class OrderManagementSteps {
     }
 
     @When("I try to create an order for {string} with the following items:")
-    public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) {
+    public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) throws IOException {
         List<OrderItemRequest> itemRequests = new ArrayList<>();
         for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
             String isbn = row.get("productId");
@@ -86,38 +98,52 @@ public class OrderManagementSteps {
             itemRequests.add(new OrderItemRequest(isbn, quantity));
         }
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(customerName, itemRequests);
-        try {
-            OrderResponse orderResponse = orderService.createOrder(createOrderRequest);
-            currentOrder = orderRepository.findById(orderResponse.orderId())
-                    .orElseThrow(() -> new AssertionError("Order not found after creation"));
-        } catch (Exception e) {
-            caughtException = e;
+
+        lastResponse = testRestTemplate.postForEntity("/api/orders", createOrderRequest, String.class);
+
+        if (lastResponse.getStatusCode() == HttpStatus.CREATED) {
+            lastSuccessfulOrder = objectMapper.readValue(lastResponse.getBody(), OrderResponse.class);
         }
     }
 
     @Then("the order creation should fail with message {string}")
     public void the_order_creation_should_fail_with_message(String expectedMessage) {
-        assertNotNull(caughtException, "An exception should have been caught.");
-        assertTrue(caughtException.getMessage().contains(expectedMessage), "Exception message should contain: " + expectedMessage + ". Actual: " + caughtException.getMessage());
-        assertNull(currentOrder, "Order should not be created on failure.");
+        assertNotNull(lastResponse, "No response was received from the API.");
+        assertTrue(lastResponse.getStatusCode().isError(), "HTTP status should indicate an error.");
+        assertNull(lastSuccessfulOrder, "Order should not be created on failure.");
+
+        String responseBody = lastResponse.getBody();
+        assertNotNull(responseBody);
+
+        // In a real-world scenario, you might deserialize to a specific ErrorResponse DTO
+        // For this test, we'll check if the raw JSON string contains the expected message.
+        assertTrue(responseBody.contains(expectedMessage),
+                "Error response body should contain the expected message. Actual: " + responseBody);
     }
+
 
     @Then("the order should be created successfully with status {string}")
     public void the_order_should_be_created_successfully_with_status(String expectedStatus) {
-        assertNotNull(currentOrder, "Current order should not be null after creation.");
-        assertEquals(Order.OrderStatus.valueOf(expectedStatus), currentOrder.getStatus(), "Order status should match the expected status.");
+        assertNotNull(lastResponse, "No response was received from the API.");
+        assertEquals(HttpStatus.CREATED, lastResponse.getStatusCode(), "HTTP status should be 201 Created.");
+        assertNotNull(lastSuccessfulOrder, "The order response body should not be null.");
+        assertEquals(expectedStatus, lastSuccessfulOrder.status(), "Order status in the response should match.");
+        assertNotNull(lastSuccessfulOrder.orderId(), "The order ID in the response should not be null.");
+        assertTrue(Objects.requireNonNull(lastResponse.getHeaders().getLocation()).toString().endsWith("/api/orders/" + lastSuccessfulOrder.orderId()));
     }
 
     @Then("an {string} event should have been published for the order of {string}")
     public void an_event_should_have_been_published_for_the_order_of(String eventType, String customerName) {
-        boolean eventFound = false;
-        for (ApplicationEvent event : testEventListener.getCapturedEvents()) {
-            if (event instanceof OrderCreatedEvent orderCreatedEvent && orderCreatedEvent.getOrder().getCustomerName().equals(customerName)) {
-                eventFound = true;
-                break;
-            }
-        }
-        assertTrue(eventFound, String.format("Expected %s event for customer %s not found.", eventType, customerName));
+        assertNotNull(lastSuccessfulOrder, "Cannot verify event for a failed order creation.");
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            boolean eventFound = testEventListener.getCapturedEvents().stream()
+                    .filter(OrderCreatedEvent.class::isInstance)
+                    .map(OrderCreatedEvent.class::cast)
+                    .anyMatch(orderCreatedEvent ->
+                            orderCreatedEvent.getOrder().getOrderId().equals(lastSuccessfulOrder.orderId()) &&
+                                    orderCreatedEvent.getOrder().getCustomerName().equals(customerName));
+            assertTrue(eventFound, String.format("Expected %s event for customer %s not found.", eventType, customerName));
+        });
     }
 
     @Given("an existing order for {string} with status {string} and items:")
@@ -243,5 +269,3 @@ public class OrderManagementSteps {
         });
     }
 }
-
-
