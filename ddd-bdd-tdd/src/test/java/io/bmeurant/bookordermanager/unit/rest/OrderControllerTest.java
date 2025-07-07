@@ -147,4 +147,19 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.orderId").value(orderId))
                 .andExpect(jsonPath("$.status").value("CONFIRMED"));
     }
+
+    @Test
+    void cancelOrder_whenValidRequest_shouldReturn200Ok() throws Exception {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        OrderResponse orderResponse = new OrderResponse(orderId, "Customer Name", "CANCELLED", Collections.emptyList());
+
+        when(orderService.cancelOrder(orderId)).thenReturn(orderResponse);
+
+        // When & Then
+        mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(orderId))
+                .andExpect(jsonPath("$.status").value("CANCELLED"));
+    }
 }
