@@ -5,14 +5,18 @@ import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.application.service.OrderService;
+import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.interfaces.rest.OrderController;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import io.bmeurant.bookordermanager.interfaces.rest.advice.RestExceptionHandler;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -69,5 +73,37 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createOrder_whenBookNotFound_shouldReturn404NotFound() throws Exception {
+        // Given
+        OrderItemRequest itemRequest = new OrderItemRequest("nonExistentIsbn", 1);
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest("Customer Name", Collections.singletonList(itemRequest));
+
+        when(orderService.createOrder(any(CreateOrderRequest.class)))
+                .thenThrow(new BookNotFoundException("nonExistentIsbn"));
+
+        // When & Then
+        mockMvc.perform(post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createOrderRequest)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createOrder_whenInsufficientStock_shouldReturn409Conflict() throws Exception {
+        // Given
+        OrderItemRequest itemRequest = new OrderItemRequest("978-0134786275", 5); // Request 5, but assume only 2 in stock
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest("Customer Name", Collections.singletonList(itemRequest));
+
+        when(orderService.createOrder(any(CreateOrderRequest.class)))
+                .thenThrow(new InsufficientStockException("978-0134786275", 5, 2));
+
+        // When & Then
+        mockMvc.perform(post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createOrderRequest)))
+                .andExpect(status().isConflict());
     }
 }
