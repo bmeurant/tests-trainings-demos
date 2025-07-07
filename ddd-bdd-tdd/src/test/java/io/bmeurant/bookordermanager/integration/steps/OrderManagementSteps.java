@@ -32,10 +32,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -44,7 +41,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @CucumberContextConfiguration
-@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OrderManagementSteps {
 
     @Autowired
@@ -67,6 +65,8 @@ public class OrderManagementSteps {
     private Order currentOrder; // Keep for steps not related to API
     private ResponseEntity<String> lastResponse;
     private OrderResponse lastSuccessfulOrder;
+    private OrderResponse retrievedOrder;
+    private String errorMessage;
 
 
     @Before
@@ -74,6 +74,8 @@ public class OrderManagementSteps {
         currentOrder = null;
         lastResponse = null;
         lastSuccessfulOrder = null;
+        retrievedOrder = null;
+        errorMessage = null;
         testEventListener.clearEvents();
     }
 
@@ -192,6 +194,64 @@ public class OrderManagementSteps {
         an_existing_order_for_with_status_and_items(customerName, "CONFIRMED", dataTable);
     }
 
+    @When("I view the order with ID of the last created order")
+    public void i_view_the_order_with_id_of_the_last_created_order() throws IOException {
+        assertNotNull(lastSuccessfulOrder, "No order was successfully created to view.");
+        lastResponse = testRestTemplate.getForEntity("/api/orders/" + lastSuccessfulOrder.orderId(), String.class);
+        if (lastResponse.getStatusCode() == HttpStatus.OK) {
+            retrievedOrder = objectMapper.readValue(lastResponse.getBody(), OrderResponse.class);
+        }
+    }
+
+    @When("I view the order with ID {string}")
+    public void i_view_the_order_with_id(String orderId) throws IOException {
+        lastResponse = testRestTemplate.getForEntity("/api/orders/" + orderId, String.class);
+        if (lastResponse.getStatusCode() == HttpStatus.OK) {
+            retrievedOrder = objectMapper.readValue(lastResponse.getBody(), OrderResponse.class);
+        }
+    }
+
+    @Then("the retrieved order should have customer name {string} and status {string}")
+    public void the_retrieved_order_should_have_customer_name_and_status(String customerName, String status) {
+        assertNotNull(retrievedOrder, "No order was retrieved.");
+        assertEquals(customerName, retrievedOrder.customerName(), "Customer name should match.");
+        assertEquals(status, retrievedOrder.status(), "Order status should match.");
+    }
+
+    @Then("it should contain the following items:")
+    public void it_should_contain_the_following_items(DataTable dataTable) {
+        assertNotNull(retrievedOrder, "No order was retrieved to check items.");
+        List<OrderItemRequest> expectedItems = new ArrayList<>();
+        for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
+            String isbn = row.get("productId");
+            int quantity = Integer.parseInt(row.get("quantity"));
+            expectedItems.add(new OrderItemRequest(isbn, quantity));
+        }
+
+        List<io.bmeurant.bookordermanager.application.dto.OrderLineResponse> actualItems = retrievedOrder.orderLines();
+
+        assertNotNull(actualItems, "Retrieved order should have order lines.");
+        assertEquals(expectedItems.size(), actualItems.size(), "Number of items should match.");
+
+        // Sort both lists for reliable comparison
+        expectedItems.sort(Comparator.comparing(OrderItemRequest::isbn));
+        actualItems.sort(Comparator.comparing(io.bmeurant.bookordermanager.application.dto.OrderLineResponse::isbn));
+
+        for (int i = 0; i < expectedItems.size(); i++) {
+            OrderItemRequest expected = expectedItems.get(i);
+            io.bmeurant.bookordermanager.application.dto.OrderLineResponse actual = actualItems.get(i);
+            assertEquals(expected.isbn(), actual.isbn(), "ISBN should match for item " + i);
+            assertEquals(expected.quantity(), actual.quantity(), "Quantity should match for item " + i);
+        }
+    }
+
+    @Then("the order retrieval should fail with status {int}")
+    public void the_order_retrieval_should_fail_with_status(int expectedStatus) {
+        assertNotNull(lastResponse, "No response was received from the API.");
+        assertEquals(expectedStatus, lastResponse.getStatusCode().value(), "HTTP status should match expected failure status.");
+        assertNull(retrievedOrder, "No order should be retrieved on failure.");
+    }
+
     @Then("the order should transition to status {string}")
     public void the_order_should_transition_to_status(String expectedStatus) {
         assertNotNull(currentOrder, "Current order should not be null for status transition verification.");
@@ -213,6 +273,24 @@ public class OrderManagementSteps {
     public void the_external_system_confirms_the_order() {
         assertNotNull(currentOrder, "Current order should not be null for confirmation.");
         orderService.confirmOrder(currentOrder.getOrderId());
+    }
+
+    @When("I try to confirm the order")
+    public void i_try_to_confirm_the_order() {
+        assertNotNull(currentOrder, "Current order should not be null for confirmation attempt.");
+        try {
+            orderService.confirmOrder(currentOrder.getOrderId());
+            fail("Expected confirmation to fail, but it succeeded.");
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+        }
+    }
+
+    @Then("the confirmation should fail with message {string}")
+    public void the_confirmation_should_fail_with_message(String expectedMessage) {
+        assertNotNull(errorMessage, "No error message was captured.");
+        assertTrue(errorMessage.contains(expectedMessage),
+                "Error message should contain: '" + expectedMessage + "'. Actual: '" + errorMessage + "'");
     }
 
     @When("I cancel the order")

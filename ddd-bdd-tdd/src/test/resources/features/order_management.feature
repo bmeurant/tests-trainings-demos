@@ -48,3 +48,30 @@ Feature: Order Management
     And an "OrderCancelledEvent" event should have been published for the order
     And the inventory service receives the stock release request for the order
     And the stock for product "978-1491904244" should be 5
+
+  Scenario: Order confirmation fails due to insufficient stock (concurrent update)
+    Given an existing order for "Eve" with status "PENDING" and items:
+      | productId      | quantity |
+      | 978-0321765723 | 2        |
+    And the stock for product "978-0321765723" is 1
+    When I try to confirm the order
+    Then the confirmation should fail with message "Not enough stock for ISBN 978-0321765723. Requested: 2, Available: 1."
+    And the order should have status "PENDING"
+    And the stock for product "978-0321765723" should be 1
+
+  Scenario: Successfully viewing an existing order
+    Given a book with ISBN "978-1234567890", title "Test Book", author "Test Author", price 10.00
+    And an inventory item "978-1234567890" with initial stock of 5
+    When I try to create an order for "Viewer Customer" with the following items:
+      | productId      | quantity |
+      | 978-1234567890 | 1        |
+    Then the order should be created successfully with status "PENDING"
+    When I view the order with ID of the last created order
+    Then the retrieved order should have customer name "Viewer Customer" and status "PENDING"
+    And it should contain the following items:
+      | productId      | quantity |
+      | 978-1234567890 | 1        |
+
+  Scenario: Attempting to view a non-existent order
+    When I view the order with ID "nonExistentOrderId"
+    Then the order retrieval should fail with status 404
