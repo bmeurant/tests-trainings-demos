@@ -24,8 +24,20 @@ This document provides the development conventions and standards for this projec
 
 ## 4. Testing Strategy
 
-A three-tiered approach is required to ensure quality:
+A comprehensive, multi-tiered testing strategy is adopted to ensure application quality and adherence to business requirements.
 
-- **Unit Tests:** For isolated class logic (e.g., controllers, services, domain models), using mocks for dependencies.
-- **API Integration Tests:** To validate the full HTTP contract (endpoints, serialization, error handling) using a running server context (`@SpringBootTest`). These are separate from Cucumber tests.
-- **Behavior Tests (Cucumber):** To validate business scenarios by driving the application layer directly. The `.feature` files act as a contract and should not be tied to API implementation details.
+- **Unit Tests:**
+    - **Goal:** To test the isolated logic of individual classes or small components. Each layer (domain, application service, controller, repository) is tested independently.
+    - **Approach:** Dependencies are mocked to ensure isolation.
+    - **Tools:** JUnit 5, Mockito, `MockMvc` (for controllers).
+    - **Coverage:** Aim for 100% code coverage for new or modified code.
+
+- **Behavior Tests (Cucumber - API-driven End-to-End):**
+    - **Goal:** To validate the functional business scenarios from an external client's perspective, ensuring the entire application stack (including the API layer) works as expected for defined behaviors.
+    - **Approach:** These tests interact with the application through its public REST API endpoints (making actual HTTP calls). The `.feature` files serve as the primary business contract and remain unchanged. The step definitions (`OrderManagementSteps`) will be adapted to make these API calls.
+    - **Tools:** Cucumber, `@SpringBootTest`, `TestRestTemplate` or `WebTestClient`.
+
+- **API Contract Tests:**
+    - **Goal:** To rigorously validate the technical contract of the REST API, focusing on aspects like request/response schemas, specific HTTP status codes for various inputs (including validation errors), and edge cases at the API boundary. These tests complement the broader behavior tests by providing more granular, technical verification of the API.
+    - **Approach:** These tests make direct HTTP calls to API endpoints, often with specific payloads, and assert on the exact structure of responses and HTTP status codes.
+    - **Tools:** `@SpringBootTest`, `TestRestTemplate` or `WebTestClient`.
