@@ -12,17 +12,17 @@ import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStock
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import io.bmeurant.bookordermanager.interfaces.rest.advice.RestExceptionHandler;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,7 +35,7 @@ class OrderControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private OrderService orderService;
 
     @Test
@@ -105,5 +105,31 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createOrderRequest)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void getOrderById_whenOrderExists_shouldReturn200Ok() throws Exception {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        OrderResponse orderResponse = new OrderResponse(orderId, "Test Customer", "PENDING", Collections.emptyList());
+
+        when(orderService.getOrderById(orderId)).thenReturn(Optional.of(orderResponse));
+
+        // When & Then
+        mockMvc.perform(get("/api/orders/{orderId}", orderId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(orderId))
+                .andExpect(jsonPath("$.customerName").value("Test Customer"));
+    }
+
+    @Test
+    void getOrderById_whenOrderDoesNotExist_shouldReturn404NotFound() throws Exception {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        when(orderService.getOrderById(orderId)).thenReturn(Optional.empty());
+
+        // When & Then
+        mockMvc.perform(get("/api/orders/{orderId}", orderId))
+                .andExpect(status().isNotFound());
     }
 }
