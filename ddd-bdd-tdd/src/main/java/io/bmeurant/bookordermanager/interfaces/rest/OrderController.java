@@ -103,4 +103,24 @@ public class OrderController {
         OrderResponse orderResponse = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(orderResponse);
     }
+
+    /**
+     * Confirms an existing order, transitioning its status to CONFIRMED.
+     *
+     * @param orderId The ID of the order to confirm.
+     * @return A {@link ResponseEntity} with the confirmed {@link OrderResponse} if found (HTTP status 200 OK),
+     *         or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be confirmed.
+     */
+    @PostMapping("/{orderId}/confirm")
+    @Operation(summary = "Confirm an order by ID", description = "Confirms a specific order by its unique identifier.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order confirmed successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Order cannot be confirmed (e.g., insufficient stock)", content = @Content)
+    })
+    public ResponseEntity<OrderResponse> confirmOrder(@PathVariable String orderId) {
+        OrderResponse orderResponse = orderService.confirmOrder(orderId);
+        return ResponseEntity.ok(orderResponse);
+    }
 }

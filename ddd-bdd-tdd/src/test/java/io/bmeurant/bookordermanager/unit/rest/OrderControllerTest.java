@@ -132,4 +132,19 @@ class OrderControllerTest {
         mockMvc.perform(get("/api/orders/{orderId}", orderId))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void confirmOrder_whenValidRequest_shouldReturn200Ok() throws Exception {
+        // Given
+        String orderId = UUID.randomUUID().toString();
+        OrderResponse orderResponse = new OrderResponse(orderId, "Customer Name", "CONFIRMED", Collections.emptyList());
+
+        when(orderService.confirmOrder(orderId)).thenReturn(orderResponse);
+
+        // When & Then
+        mockMvc.perform(post("/api/orders/{orderId}/confirm", orderId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(orderId))
+                .andExpect(jsonPath("$.status").value("CONFIRMED"));
+    }
 }

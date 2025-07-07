@@ -2,7 +2,6 @@ package io.bmeurant.bookordermanager.application.service;
 
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
-import io.bmeurant.bookordermanager.order.domain.model.Order;
 
 import java.util.Optional;
 
@@ -27,17 +26,16 @@ public interface OrderService {
      */
     Optional<OrderResponse> getOrderById(String orderId);
 
-    
 
     /**
      * Confirms an existing order, transitioning its status to CONFIRMED.
      *
      * @param orderId The ID of the order to confirm.
      * @return The confirmed Order object.
-     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be confirmed (e.g., wrong status) or if stock deduction quantity is invalid.
+     * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException             if the order is not found.
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException                      if the order cannot be confirmed (e.g., wrong status) or if stock deduction quantity is invalid.
      * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if an inventory item for an order line is not found.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient for an order line.
+     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException     if stock is insufficient for an order line.
      */
     OrderResponse confirmOrder(String orderId);
 
@@ -47,7 +45,7 @@ public interface OrderService {
      * @param orderId The ID of the order to cancel.
      * @return The cancelled Order object.
      * @throws io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException if the order is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if the order cannot be cancelled (e.g., wrong status).
+     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException          if the order cannot be cancelled (e.g., wrong status).
      */
     OrderResponse cancelOrder(String orderId);
 }

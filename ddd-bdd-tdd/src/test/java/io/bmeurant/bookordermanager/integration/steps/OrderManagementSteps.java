@@ -270,9 +270,12 @@ public class OrderManagementSteps {
     }
 
     @When("the external system confirms the order")
-    public void the_external_system_confirms_the_order() {
+    public void the_external_system_confirms_the_order() throws IOException {
         assertNotNull(currentOrder, "Current order should not be null for confirmation.");
-        orderService.confirmOrder(currentOrder.getOrderId());
+        lastResponse = testRestTemplate.postForEntity("/api/orders/" + currentOrder.getOrderId() + "/confirm", null, String.class);
+        if (lastResponse.getStatusCode() == HttpStatus.OK) {
+            retrievedOrder = objectMapper.readValue(lastResponse.getBody(), OrderResponse.class);
+        }
     }
 
     @When("I try to confirm the order")
