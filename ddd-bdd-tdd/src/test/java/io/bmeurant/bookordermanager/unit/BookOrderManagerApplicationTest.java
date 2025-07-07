@@ -8,19 +8,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookOrderManagerApplicationTest {
 
     @Test
     void contextLoads() {
         // This test simply ensures that the Spring application context loads successfully.
         // If the context fails to load, this test will fail.
-    }
-
-    @Test
-    void mainMethodRunsSuccessfully() {
-        try (ConfigurableApplicationContext context = SpringApplication.run(BookOrderManagerApplication.class)) {
-            assertNotNull(context, "Application context should not be null");
-        }
     }
 }

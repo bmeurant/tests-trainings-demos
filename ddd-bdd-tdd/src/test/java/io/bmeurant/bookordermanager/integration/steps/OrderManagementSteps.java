@@ -117,8 +117,19 @@ public class OrderManagementSteps {
         String responseBody = lastResponse.getBody();
         assertNotNull(responseBody);
 
-        // In a real-world scenario, you might deserialize to a specific ErrorResponse DTO
-        // For this test, we'll check if the raw JSON string contains the expected message.
+        assertTrue(responseBody.contains(expectedMessage),
+                "Error response body should contain the expected message. Actual: " + responseBody);
+    }
+
+    @Then("the order creation should fail with status {int} with message {string}")
+    public void the_order_creation_should_fail_with_status_with_message(int expectedStatus, String expectedMessage) {
+        assertNotNull(lastResponse, "No response was received from the API.");
+        assertEquals(expectedStatus, lastResponse.getStatusCode().value(), "HTTP status should match expected status.");
+        assertNull(lastSuccessfulOrder, "Order should not be created on failure.");
+
+        String responseBody = lastResponse.getBody();
+        assertNotNull(responseBody);
+
         assertTrue(responseBody.contains(expectedMessage),
                 "Error response body should contain the expected message. Actual: " + responseBody);
     }

@@ -75,3 +75,9 @@ Feature: Order Management
   Scenario: Attempting to view a non-existent order
     When I view the order with ID "nonExistentOrderId"
     Then the order retrieval should fail with status 404
+
+  Scenario: Order creation fails due to non-existent book
+    When I try to create an order for "NonExistentBookCustomer" with the following items:
+      | productId      | quantity |
+      | 978-9999999999 | 1        |
+    Then the order creation should fail with status 404 with message "Book with ISBN 978-9999999999 not found in catalog."

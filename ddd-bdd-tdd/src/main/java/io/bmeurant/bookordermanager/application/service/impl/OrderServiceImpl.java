@@ -62,12 +62,16 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse createOrder(CreateOrderRequest createOrderRequest) {
         log.debug("Creating order for customer: {} with {} items.", createOrderRequest.customerName(), createOrderRequest.items().size());
 
-        // Check stock for each item before creating the order
+        // First, build order lines. This will validate if books exist.
+        // BookNotFoundException will be thrown here if a book is not found.
+        List<OrderLine> orderLines = buildOrderLines(createOrderRequest.items());
+
+        // Then, check stock for each item
         for (OrderItemRequest itemRequest : createOrderRequest.items()) {
             inventoryService.checkStock(itemRequest.isbn(), itemRequest.quantity());
         }
 
-        Order order = new Order(createOrderRequest.customerName(), buildOrderLines(createOrderRequest.items()));
+        Order order = new Order(createOrderRequest.customerName(), orderLines);
         Order savedOrder = orderRepository.save(order);
         log.info("Order created and saved: {}", savedOrder);
         applicationEventPublisher.publishEvent(new OrderCreatedEvent(savedOrder));

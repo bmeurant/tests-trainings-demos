@@ -22,4 +22,6 @@ public class TestEventListener {
     public void clearEvents() {
         capturedEvents.clear();
     }
+
+    // Temporary comment to force recompilation
 }
