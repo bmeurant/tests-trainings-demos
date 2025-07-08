@@ -158,8 +158,8 @@ public class OrderServiceImpl implements OrderService {
      */
     private OrderLine createOrderLine(OrderItemRequest itemRequest) {
         log.debug("Processing item request: {}", itemRequest);
-        Book book = bookService.findBookByIsbn(itemRequest.isbn());
+        io.bmeurant.bookordermanager.application.dto.BookResponse bookResponse = bookService.findBookByIsbn(itemRequest.isbn());
 
-        return new OrderLine(itemRequest.isbn(), itemRequest.quantity(), book.getPrice());
+        return new OrderLine(itemRequest.isbn(), itemRequest.quantity(), bookResponse.price());
     }
 }

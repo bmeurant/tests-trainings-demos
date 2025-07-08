@@ -3,6 +3,7 @@ package io.bmeurant.bookordermanager.unit.application.service.impl;
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
+import io.bmeurant.bookordermanager.application.dto.BookResponse;
 import io.bmeurant.bookordermanager.application.mapper.OrderMapper;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
@@ -76,13 +77,13 @@ class OrderServiceTest {
         List<OrderItemRequest> itemRequests = Arrays.asList(itemRequest1, itemRequest2);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(customerName, itemRequests);
 
-        Book book1 = new Book(isbn1, "Book One", "Author One", price1);
-        Book book2 = new Book(isbn2, "Book Two", "Author Two", price2);
+        BookResponse bookResponse1 = new BookResponse(isbn1, "Book One", "Author One", price1);
+        BookResponse bookResponse2 = new BookResponse(isbn2, "Book Two", "Author Two", price2);
 
         Order order = new Order(customerName, List.of(new OrderLine(isbn1, quantity1, price1), new OrderLine(isbn2, quantity2, price2)));
 
-        when(bookService.findBookByIsbn(isbn1)).thenReturn(book1);
-        when(bookService.findBookByIsbn(isbn2)).thenReturn(book2);
+        when(bookService.findBookByIsbn(isbn1)).thenReturn(bookResponse1);
+        when(bookService.findBookByIsbn(isbn2)).thenReturn(bookResponse2);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
         // Mock checkStock calls
