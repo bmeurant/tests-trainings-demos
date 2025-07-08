@@ -295,4 +295,33 @@ class InventoryServiceTest {
         verify(inventoryItemRepository, times(1)).findById(isbn);
         verify(inventoryItemRepository, never()).save(any(InventoryItem.class));
     }
+
+    @Test
+    void getStockByIsbn_shouldReturnStockWhenItemFound() {
+        // Given
+        String isbn = "978-0321765723";
+        int stock = 100;
+        InventoryItem inventoryItem = new InventoryItem(isbn, stock);
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.of(inventoryItem));
+
+        // When
+        io.bmeurant.bookordermanager.application.dto.InventoryResponse response = inventoryService.getStockByIsbn(isbn);
+
+        // Then
+        assertNotNull(response);
+        assertEquals(isbn, response.isbn());
+        assertEquals(stock, response.stock());
+        verify(inventoryItemRepository, times(1)).findById(isbn);
+    }
+
+    @Test
+    void getStockByIsbn_shouldThrowInventoryItemNotFoundExceptionWhenItemNotFound() {
+        // Given
+        String isbn = "nonExistentISBN";
+        when(inventoryItemRepository.findById(isbn)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(InventoryItemNotFoundException.class, () -> inventoryService.getStockByIsbn(isbn));
+        verify(inventoryItemRepository, times(1)).findById(isbn);
+    }
 }

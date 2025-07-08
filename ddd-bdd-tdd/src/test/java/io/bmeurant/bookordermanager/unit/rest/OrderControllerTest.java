@@ -9,17 +9,16 @@ import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundExcepti
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.interfaces.rest.OrderController;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;

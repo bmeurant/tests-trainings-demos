@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.inventory.domain.service.impl;
 
+import io.bmeurant.bookordermanager.application.dto.InventoryResponse;
 import io.bmeurant.bookordermanager.inventory.domain.event.ProductStockLowEvent;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
@@ -85,5 +86,17 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryItem.releaseStock(quantity);
         inventoryItemRepository.save(inventoryItem);
         log.info("Stock for ISBN {} released to: {}.", isbn, inventoryItem.getStock());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public InventoryResponse getStockByIsbn(String isbn) {
+        log.debug("Attempting to retrieve stock for ISBN {}.", isbn);
+        InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
+                .orElseThrow(() -> {
+                    log.warn("Inventory item with ISBN {} not found.", isbn);
+                    return new InventoryItemNotFoundException(isbn);
+                });
+        return new InventoryResponse(inventoryItem.getIsbn(), inventoryItem.getStock());
     }
 }

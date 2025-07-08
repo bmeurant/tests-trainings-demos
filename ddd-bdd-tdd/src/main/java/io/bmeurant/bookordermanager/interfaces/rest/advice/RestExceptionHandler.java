@@ -4,6 +4,7 @@ import io.bmeurant.bookordermanager.application.dto.ErrorResponse;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class RestExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
+    public static final String NOT_FOUND = "Not Found";
 
     /**
      * Handles {@link ValidationException} and returns a 400 Bad Request status.
@@ -65,7 +67,7 @@ public class RestExceptionHandler {
         final ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                "Not Found",
+                NOT_FOUND,
                 ex.getMessage(),
                 request.getDescription(false)
         );
@@ -87,7 +89,7 @@ public class RestExceptionHandler {
         final ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                "Not Found",
+                NOT_FOUND,
                 ex.getMessage(),
                 request.getDescription(false)
         );
@@ -115,6 +117,28 @@ public class RestExceptionHandler {
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handles {@link InventoryItemNotFoundException} and returns a 404 Not Found status.
+     * This indicates that the requested inventory item resource could not be found.
+     *
+     * @param ex      The InventoryItemNotFoundException that was thrown.
+     * @param request The current web request.
+     * @return A {@link ResponseEntity} containing a standardized error response with HTTP status 404 Not Found.
+     */
+    @ExceptionHandler(InventoryItemNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInventoryItemNotFoundException(InventoryItemNotFoundException ex, WebRequest request) {
+        logger.warn("Inventory item not found: {}", ex.getMessage());
+
+        final ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                NOT_FOUND,
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     /**

@@ -77,13 +77,6 @@ public class OrderManagementSteps {
         testEventListener.clearEvents();
     }
 
-
-    @Given("an inventory item {string} with initial stock of {int}")
-    public void an_inventory_item_with_initial_stock_of(String isbn, Integer stock) {
-        InventoryItem item = new InventoryItem(isbn, stock);
-        inventoryItemRepository.save(item);
-    }
-
     @When("I try to create an order for {string} with the following items:")
     public void i_try_to_create_an_order_for_with_the_following_items(String customerName, DataTable dataTable) throws IOException {
         List<OrderItemRequest> itemRequests = new ArrayList<>();
@@ -265,13 +258,6 @@ public class OrderManagementSteps {
         });
     }
 
-    @Given("the stock for product {string} is {int}")
-    public void the_stock_for_product_is(String isbn, Integer stock) {
-        inventoryItemRepository.findById(isbn).ifPresent(inventoryItemRepository::delete);
-        InventoryItem newItem = new InventoryItem(isbn, stock);
-        inventoryItemRepository.save(newItem);
-    }
-
     @When("the external system confirms the order")
     public void the_external_system_confirms_the_order() throws IOException {
         assertNotNull(currentOrder, "Current order should not be null for confirmation.");
@@ -335,15 +321,6 @@ public class OrderManagementSteps {
         }
     }
 
-    @Then("the stock for product {string} should be {int}")
-    public void the_stock_for_product_should_be(String isbn, Integer expectedStock) {
-        await().atMost(5, SECONDS).untilAsserted(() -> {
-            InventoryItem inventoryItem = inventoryItemRepository.findById(isbn)
-                    .orElseThrow(() -> new AssertionError("Inventory item not found"));
-            assertEquals(expectedStock, inventoryItem.getStock(), "Stock level should be updated as expected.");
-        });
-    }
-
     @Then("a {string} event should have been published for product {string} with stock {int}")
     public void a_event_should_have_been_published_for_product_with_stock(String eventType, String isbn, Integer stock) {
         await().atMost(5, SECONDS).untilAsserted(() -> {
@@ -364,7 +341,8 @@ public class OrderManagementSteps {
     public void i_request_the_list_of_all_orders() throws IOException {
         lastResponse = testRestTemplate.getForEntity("/api/orders", String.class);
         if (lastResponse.getStatusCode() == HttpStatus.OK) {
-            retrievedOrderList = objectMapper.readValue(lastResponse.getBody(), new TypeReference<List<OrderResponse>>() {});
+            retrievedOrderList = objectMapper.readValue(lastResponse.getBody(), new TypeReference<List<OrderResponse>>() {
+            });
         }
     }
 

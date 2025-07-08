@@ -11,17 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing book orders.
@@ -70,7 +64,7 @@ public class OrderController {
      *
      * @param orderId The unique identifier of the order to retrieve.
      * @return A {@link ResponseEntity} with the {@link OrderResponse} if found (HTTP status 200 OK),
-     *         or HTTP status 404 Not Found if the order does not exist.
+     * or HTTP status 404 Not Found if the order does not exist.
      */
     @GetMapping("/{orderId}")
     @Operation(summary = "Get order by ID", description = "Retrieves the details of a specific order by its unique identifier.")
@@ -89,7 +83,7 @@ public class OrderController {
      *
      * @param orderId The unique identifier of the order to cancel.
      * @return A {@link ResponseEntity} with the cancelled {@link OrderResponse} if found (HTTP status 200 OK),
-     *         or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be cancelled.
+     * or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be cancelled.
      */
     @PostMapping("/{orderId}/cancel")
     @Operation(summary = "Cancel an order by ID", description = "Cancels a specific order by its unique identifier.")
@@ -109,7 +103,7 @@ public class OrderController {
      *
      * @param orderId The ID of the order to confirm.
      * @return A {@link ResponseEntity} with the confirmed {@link OrderResponse} if found (HTTP status 200 OK),
-     *         or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be confirmed.
+     * or HTTP status 404 Not Found if the order does not exist, or 409 Conflict if the order cannot be confirmed.
      */
     @PostMapping("/{orderId}/confirm")
     @Operation(summary = "Confirm an order by ID", description = "Confirms a specific order by its unique identifier.")

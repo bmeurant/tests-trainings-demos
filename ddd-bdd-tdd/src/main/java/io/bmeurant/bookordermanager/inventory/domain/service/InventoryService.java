@@ -1,6 +1,10 @@
 package io.bmeurant.bookordermanager.inventory.domain.service;
 
+import io.bmeurant.bookordermanager.application.dto.InventoryResponse;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.inventory.domain.model.InventoryItem;
+import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 
 /**
  * Domain service for managing inventory-related operations.
@@ -12,9 +16,9 @@ public interface InventoryService {
      * @param isbn The ISBN of the inventory item.
      * @param quantity The quantity to deduct.
      * @return The updated InventoryItem.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if the item is not found.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
+     * @throws InventoryItemNotFoundException if the item is not found.
+     * @throws InsufficientStockException if stock is insufficient.
+     * @throws ValidationException if quantity is not positive.
      */
     InventoryItem deductStock(String isbn, int quantity);
 
@@ -23,9 +27,9 @@ public interface InventoryService {
      * This method does not modify the stock level.
      * @param isbn The ISBN of the inventory item.
      * @param quantity The quantity to check.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if the item is not found.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException if stock is insufficient for the requested quantity.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
+     * @throws InventoryItemNotFoundException if the item is not found.
+     * @throws InsufficientStockException if stock is insufficient for the requested quantity.
+     * @throws ValidationException if quantity is not positive.
      */
     void checkStock(String isbn, int quantity);
 
@@ -34,8 +38,17 @@ public interface InventoryService {
      * This is typically used when an order is cancelled.
      * @param isbn The ISBN of the inventory item.
      * @param quantity The quantity to release.
-     * @throws io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException if the item is not found.
-     * @throws io.bmeurant.bookordermanager.domain.exception.ValidationException if quantity is not positive.
+     * @throws InventoryItemNotFoundException if the item is not found.
+     * @throws ValidationException if quantity is not positive.
      */
     void releaseStock(String isbn, int quantity);
+
+    /**
+     * Retrieves the stock level for a specific inventory item by its ISBN.
+     *
+     * @param isbn The ISBN of the inventory item to retrieve stock for.
+     * @return The InventoryResponse containing the stock level.
+     * @throws InventoryItemNotFoundException if the item is not found.
+     */
+    InventoryResponse getStockByIsbn(String isbn);
 }
