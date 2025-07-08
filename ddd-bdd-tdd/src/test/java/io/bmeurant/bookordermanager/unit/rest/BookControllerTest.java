@@ -39,7 +39,7 @@ class BookControllerTest {
         String isbn = "978-0321765723";
         BookResponse bookResponse = new BookResponse(isbn, "The Lord of the Rings", "J.R.R. Tolkien", new BigDecimal("25.00"));
 
-        when(bookService.findBookByIsbn(isbn)).thenReturn(bookResponse);
+        when(bookService.getBookByIsbn(isbn)).thenReturn(bookResponse);
 
         // When & Then
         mockMvc.perform(get("/api/books/{isbn}", isbn))
@@ -54,7 +54,7 @@ class BookControllerTest {
     void getBookByIsbn_whenBookDoesNotExist_shouldReturn404NotFound() throws Exception {
         // Given
         String isbn = "nonExistentIsbn";
-        when(bookService.findBookByIsbn(isbn)).thenThrow(new BookNotFoundException(isbn));
+        when(bookService.getBookByIsbn(isbn)).thenThrow(new BookNotFoundException(isbn));
 
         // When & Then
         mockMvc.perform(get("/api/books/{isbn}", isbn))

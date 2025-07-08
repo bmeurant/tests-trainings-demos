@@ -34,7 +34,7 @@ class BookServiceTest {
 
     @Test
     @DisplayName("Should find a book by ISBN when it exists")
-    void findBookByIsbn_shouldReturnBookResponseWhenExists() {
+    void getBookByIsbn_shouldReturnBookResponseWhenExists() {
         // Given
         String isbn = "978-0321765723";
         Book book = new Book(isbn, "Effective Java", "Joshua Bloch", new BigDecimal("45.00"));
@@ -44,7 +44,7 @@ class BookServiceTest {
         when(bookMapper.mapBookToResponse(book)).thenReturn(expectedBookResponse);
 
         // When
-        BookResponse actualBookResponse = bookService.findBookByIsbn(isbn);
+        BookResponse actualBookResponse = bookService.getBookByIsbn(isbn);
 
         // Then
         assertNotNull(actualBookResponse, "The returned book response should not be null.");
@@ -55,13 +55,13 @@ class BookServiceTest {
 
     @Test
     @DisplayName("Should throw BookNotFoundException when book is not found by ISBN")
-    void findBookByIsbn_shouldThrowExceptionWhenNotFound() {
+    void getBookByIsbn_shouldThrowExceptionWhenNotFound() {
         // Given
         String isbn = "978-0321765723";
         when(bookRepository.findById(isbn)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(BookNotFoundException.class, () -> bookService.findBookByIsbn(isbn),
+        Exception exception = assertThrows(BookNotFoundException.class, () -> bookService.getBookByIsbn(isbn),
                 "Should throw BookNotFoundException when book is not found.");
         assertTrue(exception.getMessage().contains("Book with ISBN " + isbn + " not found in catalog."),
                 "Exception message should indicate book not found.");

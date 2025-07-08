@@ -16,7 +16,7 @@ public interface BookService {
      * @return The BookResponse object if found.
      * @throws BookNotFoundException if the book with the given ISBN is not found.
      */
-    BookResponse findBookByIsbn(String isbn);
+    BookResponse getBookByIsbn(String isbn);
 
     /**
      * Finds all books in the catalog.

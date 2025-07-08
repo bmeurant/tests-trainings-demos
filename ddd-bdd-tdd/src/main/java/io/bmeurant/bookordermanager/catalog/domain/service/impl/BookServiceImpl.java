@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponse findBookByIsbn(String isbn) {
+    public BookResponse getBookByIsbn(String isbn) {
         log.debug("Attempting to find book with ISBN: {}.", isbn);
         return bookRepository.findById(isbn)
                 .map(bookMapper::mapBookToResponse)

@@ -33,7 +33,7 @@ public class BookController {
      *
      * @param isbn The unique ISBN of the book to retrieve.
      * @return A {@link ResponseEntity} with the {@link BookResponse} if found (HTTP status 200 OK),
-     *         or HTTP status 404 Not Found if the book does not exist.
+     * or HTTP status 404 Not Found if the book does not exist.
      */
     @GetMapping("/{isbn}")
     @Operation(summary = "Get book by ISBN", description = "Retrieves the details of a specific book by its unique ISBN.")
@@ -43,7 +43,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)
     })
     public ResponseEntity<BookResponse> getBookByIsbn(@PathVariable String isbn) {
-        BookResponse bookResponse = bookService.findBookByIsbn(isbn);
+        BookResponse bookResponse = bookService.getBookByIsbn(isbn);
         return ResponseEntity.ok(bookResponse);
     }
 

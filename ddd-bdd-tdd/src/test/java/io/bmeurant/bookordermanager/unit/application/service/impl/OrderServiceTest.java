@@ -81,8 +81,8 @@ class OrderServiceTest {
 
         Order order = new Order(customerName, List.of(new OrderLine(isbn1, quantity1, price1), new OrderLine(isbn2, quantity2, price2)));
 
-        when(bookService.findBookByIsbn(isbn1)).thenReturn(bookResponse1);
-        when(bookService.findBookByIsbn(isbn2)).thenReturn(bookResponse2);
+        when(bookService.getBookByIsbn(isbn1)).thenReturn(bookResponse1);
+        when(bookService.getBookByIsbn(isbn2)).thenReturn(bookResponse2);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
         // Mock checkStock calls
@@ -100,8 +100,8 @@ class OrderServiceTest {
         assertEquals(2, createdOrderResponse.orderLines().size(), "Should have two order lines.");
 
         // Verify service interactions
-        verify(bookService, times(1)).findBookByIsbn(isbn1);
-        verify(bookService, times(1)).findBookByIsbn(isbn2);
+        verify(bookService, times(1)).getBookByIsbn(isbn1);
+        verify(bookService, times(1)).getBookByIsbn(isbn2);
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(applicationEventPublisher, times(1)).publishEvent(any(OrderCreatedEvent.class));
         verify(inventoryService, times(1)).checkStock(isbn1, quantity1);
@@ -120,7 +120,7 @@ class OrderServiceTest {
         List<OrderItemRequest> itemRequests = List.of(itemRequest1);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(customerName, itemRequests);
 
-        when(bookService.findBookByIsbn(isbn1)).thenThrow(new BookNotFoundException(isbn1));
+        when(bookService.getBookByIsbn(isbn1)).thenThrow(new BookNotFoundException(isbn1));
 
         // When & Then
         assertThrows(BookNotFoundException.class, () -> orderService.createOrder(createOrderRequest), "Should throw BookNotFoundException when book is not found.");
