@@ -8,6 +8,7 @@ import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStock
 import io.bmeurant.bookordermanager.inventory.domain.exception.InventoryItemNotFoundException;
 import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -59,4 +60,11 @@ public interface OrderService {
      * @throws InventoryItemNotFoundException if an inventory item for an order line is not found during stock release.
      */
     OrderResponse cancelOrder(String orderId);
+
+    /**
+     * Retrieves all orders.
+     *
+     * @return A list of all orders as OrderResponse objects.
+     */
+    List<OrderResponse> findAllOrders();
 }

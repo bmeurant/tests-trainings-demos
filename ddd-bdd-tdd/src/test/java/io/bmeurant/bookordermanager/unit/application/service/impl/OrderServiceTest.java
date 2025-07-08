@@ -332,4 +332,22 @@ class OrderServiceTest {
         verify(applicationEventPublisher, never()).publishEvent(any());
     }
 
+    @Test
+    void findAllOrders_shouldReturnAllOrders() {
+        // Given
+        Order order1 = new Order("Customer A", List.of(new OrderLine("123", 1, BigDecimal.TEN)));
+        Order order2 = new Order("Customer B", List.of(new OrderLine("456", 2, BigDecimal.ONE)));
+        List<Order> orders = Arrays.asList(order1, order2);
+        when(orderRepository.findAll()).thenReturn(orders);
+
+        // When
+        List<OrderResponse> orderResponses = orderService.findAllOrders();
+
+        // Then
+        assertNotNull(orderResponses, "The list of order responses should not be null.");
+        assertEquals(2, orderResponses.size(), "The size of the list should be 2.");
+        verify(orderRepository, times(1)).findAll();
+        verify(orderMapper, times(2)).mapOrderToResponse(any(Order.class));
+    }
+
 }

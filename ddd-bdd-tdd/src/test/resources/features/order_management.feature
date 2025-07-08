@@ -81,3 +81,17 @@ Feature: Order Management
       | productId      | quantity |
       | 978-9999999999 | 1        |
     Then the order creation should fail with status 404 with message "Book with ISBN 978-9999999999 not found in catalog."
+
+  Scenario: Successfully listing all existing orders
+    Given a book with ISBN "978-0321765723", title "The Lord of the Rings", author "J.R.R. Tolkien", price 25.00
+    And an inventory item "978-0321765723" with initial stock of 10
+    And an order exists for "Customer A" with items:
+      | productId      | quantity |
+      | 978-0321765723 | 1        |
+    And an order exists for "Customer B" with items:
+      | productId      | quantity |
+      | 978-0321765723 | 2        |
+    When I request the list of all orders
+    Then the response should contain 2 orders
+    And one order should be for "Customer A"
+    And one order should be for "Customer B"

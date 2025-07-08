@@ -118,6 +118,15 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.mapOrderToResponse(cancelledOrder);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderResponse> findAllOrders() {
+        log.debug("Retrieving all orders.");
+        return orderRepository.findAll().stream()
+                .map(orderMapper::mapOrderToResponse)
+                .toList();
+    }
+
     /**
      * Releases stock for items in a cancelled order.
      *

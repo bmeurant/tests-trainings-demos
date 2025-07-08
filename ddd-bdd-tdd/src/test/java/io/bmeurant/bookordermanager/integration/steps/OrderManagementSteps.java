@@ -1,5 +1,6 @@
 package io.bmeurant.bookordermanager.integration.steps;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
@@ -61,6 +62,7 @@ public class OrderManagementSteps {
     private ResponseEntity<String> lastResponse;
     private OrderResponse lastSuccessfulOrder;
     private OrderResponse retrievedOrder;
+    private List<OrderResponse> retrievedOrderList;
     private String errorMessage;
 
 
@@ -70,6 +72,7 @@ public class OrderManagementSteps {
         lastResponse = null;
         lastSuccessfulOrder = null;
         retrievedOrder = null;
+        retrievedOrderList = null;
         errorMessage = null;
         testEventListener.clearEvents();
     }
@@ -352,5 +355,31 @@ public class OrderManagementSteps {
                             && ((ProductStockLowEvent) event).getCurrentStock() == stock);
             assertTrue(eventFound, String.format("Expected %s event for product %s with stock %d not found.", eventType, isbn, stock));
         });
+    }
+
+    @Given("an order exists for {string} with items:")
+    public void an_order_exists_for_with_items(String customerName, DataTable dataTable) {
+        an_existing_order_for_with_status_and_items(customerName, "PENDING", dataTable);
+    }
+
+    @When("I request the list of all orders")
+    public void i_request_the_list_of_all_orders() throws IOException {
+        lastResponse = testRestTemplate.getForEntity("/api/orders", String.class);
+        if (lastResponse.getStatusCode() == HttpStatus.OK) {
+            retrievedOrderList = objectMapper.readValue(lastResponse.getBody(), new TypeReference<List<OrderResponse>>() {});
+        }
+    }
+
+    @Then("the response should contain {int} orders")
+    public void the_response_should_contain_orders(int count) {
+        assertNotNull(retrievedOrderList, "The retrieved order list should not be null.");
+        assertEquals(count, retrievedOrderList.size(), "The number of orders should match.");
+    }
+
+    @Then("one order should be for {string}")
+    public void one_order_should_be_for(String customerName) {
+        assertNotNull(retrievedOrderList, "The retrieved order list should not be null.");
+        assertTrue(retrievedOrderList.stream().anyMatch(o -> o.customerName().equals(customerName)),
+                "An order for customer " + customerName + " should exist in the list.");
     }
 }

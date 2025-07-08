@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -122,5 +123,19 @@ public class OrderController {
     public ResponseEntity<OrderResponse> confirmOrder(@PathVariable String orderId) {
         OrderResponse orderResponse = orderService.confirmOrder(orderId);
         return ResponseEntity.ok(orderResponse);
+    }
+
+    /**
+     * Retrieves a list of all orders.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link OrderResponse} objects and HTTP status 200 OK.
+     */
+    @GetMapping
+    @Operation(summary = "Get all orders", description = "Retrieves a list of all existing orders.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved list of orders",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponse.class)))
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        List<OrderResponse> orders = orderService.findAllOrders();
+        return ResponseEntity.ok(orders);
     }
 }

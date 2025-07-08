@@ -17,6 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -161,5 +162,22 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(orderId))
                 .andExpect(jsonPath("$.status").value("CANCELLED"));
+    }
+
+    @Test
+    void getAllOrders_shouldReturn200OkWithOrderList() throws Exception {
+        // Given
+        OrderResponse order1 = new OrderResponse(UUID.randomUUID().toString(), "Customer A", "PENDING", Collections.emptyList());
+        OrderResponse order2 = new OrderResponse(UUID.randomUUID().toString(), "Customer B", "CONFIRMED", Collections.emptyList());
+        List<OrderResponse> orders = List.of(order1, order2);
+
+        when(orderService.findAllOrders()).thenReturn(orders);
+
+        // When & Then
+        mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].customerName").value("Customer A"))
+                .andExpect(jsonPath("$[1].customerName").value("Customer B"));
     }
 }
