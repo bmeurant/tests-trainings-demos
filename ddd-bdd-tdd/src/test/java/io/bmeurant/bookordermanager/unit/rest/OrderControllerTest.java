@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -114,7 +115,7 @@ class OrderControllerTest {
         String orderId = UUID.randomUUID().toString();
         OrderResponse orderResponse = new OrderResponse(orderId, "Test Customer", "PENDING", Collections.emptyList());
 
-        when(orderService.getOrderById(orderId)).thenReturn(Optional.of(orderResponse));
+        when(orderService.getOrderById(orderId)).thenReturn(orderResponse);
 
         // When & Then
         mockMvc.perform(get("/api/orders/{orderId}", orderId))
@@ -127,7 +128,7 @@ class OrderControllerTest {
     void getOrderById_whenOrderDoesNotExist_shouldReturn404NotFound() throws Exception {
         // Given
         String orderId = UUID.randomUUID().toString();
-        when(orderService.getOrderById(orderId)).thenReturn(Optional.empty());
+        when(orderService.getOrderById(orderId)).thenThrow(new OrderNotFoundException(orderId));
 
         // When & Then
         mockMvc.perform(get("/api/orders/{orderId}", orderId))

@@ -80,9 +80,8 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
     })
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable String orderId) {
-        Optional<OrderResponse> orderResponse = orderService.getOrderById(orderId);
-        return orderResponse.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        OrderResponse orderResponse = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(orderResponse);
     }
 
     /**

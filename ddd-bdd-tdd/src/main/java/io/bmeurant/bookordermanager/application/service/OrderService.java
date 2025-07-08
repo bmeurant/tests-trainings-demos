@@ -32,10 +32,10 @@ public interface OrderService {
      * Finds an order by its unique identifier and returns it as an OrderResponse.
      *
      * @param orderId The unique identifier of the order.
-     * @return An Optional containing the OrderResponse if found, otherwise empty.
+     * @return The OrderResponse if found.
      * @throws OrderNotFoundException if the order with the given ID is not found.
      */
-    Optional<OrderResponse> getOrderById(String orderId);
+    OrderResponse getOrderById(String orderId);
 
 
     /**

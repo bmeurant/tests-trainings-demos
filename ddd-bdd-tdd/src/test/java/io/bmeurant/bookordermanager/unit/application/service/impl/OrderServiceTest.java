@@ -136,36 +136,33 @@ class OrderServiceTest {
     }
 
     @Test
-    void findOrderById_shouldReturnOrderWhenFound() {
+    void getOrderById_shouldReturnOrderWhenFound() {
         // Given
         String orderId = UUID.randomUUID().toString();
         Order order = new Order("Test Customer", List.of(new OrderLine("123", 1, BigDecimal.ONE)));
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
         // When
-        Optional<OrderResponse> foundOrderResponse = orderService.getOrderById(orderId);
+        OrderResponse foundOrderResponse = orderService.getOrderById(orderId);
 
         // Then
-        assertTrue(foundOrderResponse.isPresent(), "Order response should be found.");
-        assertEquals(order.getOrderId(), foundOrderResponse.get().orderId(), "Order ID should match.");
-        assertEquals(order.getCustomerName(), foundOrderResponse.get().customerName(), "Customer name should match.");
-        assertEquals(order.getStatus().name(), foundOrderResponse.get().status(), "Order status should match.");
-        assertNotNull(foundOrderResponse.get().orderLines(), "Order lines should not be null.");
-        assertEquals(order.getOrderLines().size(), foundOrderResponse.get().orderLines().size(), "Order line count should match.");
+        assertNotNull(foundOrderResponse, "Order response should not be null.");
+        assertEquals(order.getOrderId(), foundOrderResponse.orderId(), "Order ID should match.");
+        assertEquals(order.getCustomerName(), foundOrderResponse.customerName(), "Customer name should match.");
+        assertEquals(order.getStatus().name(), foundOrderResponse.status(), "Order status should match.");
+        assertNotNull(foundOrderResponse.orderLines(), "Order lines should not be null.");
+        assertEquals(order.getOrderLines().size(), foundOrderResponse.orderLines().size(), "Order line count should match.");
         verify(orderRepository, times(1)).findById(orderId);
     }
 
     @Test
-    void findOrderById_shouldReturnEmptyWhenNotFound() {
+    void getOrderById_shouldThrowOrderNotFoundExceptionWhenNotFound() {
         // Given
         String orderId = UUID.randomUUID().toString();
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
-        // When
-        Optional<OrderResponse> foundOrderResponse = orderService.getOrderById(orderId);
-
-        // Then
-        assertFalse(foundOrderResponse.isPresent(), "Order response should not be found.");
+        // When & Then
+        assertThrows(OrderNotFoundException.class, () -> orderService.getOrderById(orderId));
         verify(orderRepository, times(1)).findById(orderId);
     }
 

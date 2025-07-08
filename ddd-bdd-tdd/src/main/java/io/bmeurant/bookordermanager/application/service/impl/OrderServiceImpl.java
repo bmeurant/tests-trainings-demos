@@ -79,10 +79,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<OrderResponse> getOrderById(String orderId) {
+    public OrderResponse getOrderById(String orderId) {
         log.debug("Finding order by ID: {}", orderId);
         return orderRepository.findById(orderId)
-                .map(orderMapper::mapOrderToResponse);
+                .map(orderMapper::mapOrderToResponse)
+                .orElseThrow(() -> {
+                    log.warn("Order with ID {} not found.", orderId);
+                    return new OrderNotFoundException(orderId);
+                });
     }
 
     @Override

@@ -4,6 +4,7 @@ import io.bmeurant.bookordermanager.application.dto.ErrorResponse;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;
+import io.bmeurant.bookordermanager.order.domain.exception.OrderNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,28 @@ public class RestExceptionHandler {
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException ex, WebRequest request) {
         logger.warn("Book not found: {}", ex.getMessage());
+
+        final ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handles {@link OrderNotFoundException} and returns a 404 Not Found status.
+     * This indicates that the requested order resource could not be found.
+     *
+     * @param ex      The OrderNotFoundException that was thrown.
+     * @param request The current web request.
+     * @return A {@link ResponseEntity} containing a standardized error response with HTTP status 404 Not Found.
+     */
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex, WebRequest request) {
+        logger.warn("Order not found: {}", ex.getMessage());
 
         final ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),

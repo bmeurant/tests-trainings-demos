@@ -260,8 +260,7 @@ public class OrderManagementSteps {
     public void the_order_should_transition_to_status(String expectedStatus) {
         assertNotNull(currentOrder, "Current order should not be null for status transition verification.");
         await().atMost(5, SECONDS).untilAsserted(() -> {
-            OrderResponse updatedOrderResponse = orderService.getOrderById(currentOrder.getOrderId())
-                    .orElseThrow(() -> new AssertionError("Order not found"));
+            OrderResponse updatedOrderResponse = orderService.getOrderById(currentOrder.getOrderId());
             assertEquals(Order.OrderStatus.valueOf(expectedStatus), Order.OrderStatus.valueOf(updatedOrderResponse.status()), "Order status should be updated as expected.");
         });
     }
@@ -313,8 +312,7 @@ public class OrderManagementSteps {
     public void the_order_should_have_status(String expectedStatus) {
         assertNotNull(currentOrder, "Current order should not be null for status verification.");
         await().atMost(5, SECONDS).untilAsserted(() -> {
-            OrderResponse updatedOrder = orderService.getOrderById(currentOrder.getOrderId())
-                    .orElseThrow(() -> new AssertionError("Order not found"));
+            OrderResponse updatedOrder = orderService.getOrderById(currentOrder.getOrderId());
             assertEquals(Order.OrderStatus.valueOf(expectedStatus), Order.OrderStatus.valueOf(updatedOrder.status()), "Order status should be updated as expected.");
         });
     }
