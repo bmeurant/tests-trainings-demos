@@ -1,12 +1,7 @@
 package io.bmeurant.bookordermanager.unit;
 
-import io.bmeurant.bookordermanager.BookOrderManagerApplication;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookOrderManagerApplicationTest {

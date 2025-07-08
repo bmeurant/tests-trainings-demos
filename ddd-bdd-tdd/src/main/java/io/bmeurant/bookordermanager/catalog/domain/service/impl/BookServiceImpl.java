@@ -3,7 +3,6 @@ package io.bmeurant.bookordermanager.catalog.domain.service.impl;
 import io.bmeurant.bookordermanager.application.dto.BookResponse;
 import io.bmeurant.bookordermanager.application.mapper.BookMapper;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
-import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.repository.BookRepository;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ public class BookServiceImpl implements BookService {
      * Constructs a new {@code BookServiceImpl} with the given {@link BookRepository}.
      *
      * @param bookRepository The repository for accessing book data.
-     * @param bookMapper The mapper for converting Book domain objects to DTOs.
+     * @param bookMapper     The mapper for converting Book domain objects to DTOs.
      */
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper) {
@@ -44,5 +43,13 @@ public class BookServiceImpl implements BookService {
                     log.warn("Book with ISBN {} not found in catalog.", isbn);
                     return new BookNotFoundException(isbn);
                 });
+    }
+
+    @Override
+    public java.util.List<BookResponse> findAllBooks() {
+        log.debug("Retrieving all books from the catalog.");
+        return bookRepository.findAll().stream()
+                .map(bookMapper::mapBookToResponse)
+                .toList();
     }
 }

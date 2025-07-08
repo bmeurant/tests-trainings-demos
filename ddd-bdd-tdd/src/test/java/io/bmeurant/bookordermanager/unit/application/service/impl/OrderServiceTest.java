@@ -1,13 +1,12 @@
 package io.bmeurant.bookordermanager.unit.application.service.impl;
 
+import io.bmeurant.bookordermanager.application.dto.BookResponse;
 import io.bmeurant.bookordermanager.application.dto.CreateOrderRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
-import io.bmeurant.bookordermanager.application.dto.BookResponse;
 import io.bmeurant.bookordermanager.application.mapper.OrderMapper;
 import io.bmeurant.bookordermanager.application.service.impl.OrderServiceImpl;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
-import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.domain.exception.ValidationException;
 import io.bmeurant.bookordermanager.inventory.domain.exception.InsufficientStockException;

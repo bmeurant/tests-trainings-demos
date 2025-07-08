@@ -5,7 +5,6 @@ import io.bmeurant.bookordermanager.application.dto.OrderItemRequest;
 import io.bmeurant.bookordermanager.application.dto.OrderResponse;
 import io.bmeurant.bookordermanager.application.mapper.OrderMapper;
 import io.bmeurant.bookordermanager.application.service.OrderService;
-import io.bmeurant.bookordermanager.catalog.domain.model.Book;
 import io.bmeurant.bookordermanager.catalog.domain.service.BookService;
 import io.bmeurant.bookordermanager.inventory.domain.service.InventoryService;
 import io.bmeurant.bookordermanager.order.domain.event.OrderCreatedEvent;

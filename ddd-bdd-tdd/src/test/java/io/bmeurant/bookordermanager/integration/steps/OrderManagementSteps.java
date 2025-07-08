@@ -22,13 +22,10 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -40,9 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@CucumberContextConfiguration
-@SpringBootTest(classes = io.bmeurant.bookordermanager.integration.TestApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class OrderManagementSteps {
 
     @Autowired
@@ -53,8 +48,8 @@ public class OrderManagementSteps {
     private OrderService orderService;
     @Autowired
     private OrderRepository orderRepository;
-    @MockitoSpyBean
-    private InventoryService inventoryService;
+    @Autowired
+    private InventoryService mockedInventoryService;
     @Autowired
     private TestEventListener testEventListener;
     @Autowired
@@ -79,11 +74,6 @@ public class OrderManagementSteps {
         testEventListener.clearEvents();
     }
 
-    @Given("a book with ISBN {string}, title {string}, author {string}, price {bigdecimal}")
-    public void a_book_with_isbn_title_author_price(String isbn, String title, String author, BigDecimal price) {
-        Book book = new Book(isbn, title, author, price);
-        bookRepository.save(book);
-    }
 
     @Given("an inventory item {string} with initial stock of {int}")
     public void an_inventory_item_with_initial_stock_of(String isbn, Integer stock) {
@@ -189,7 +179,7 @@ public class OrderManagementSteps {
             if ("CONFIRMED".equals(status)) {
                 // Simulate stock deduction for confirmed orders
                 for (OrderItemRequest itemRequest : itemRequests) {
-                    inventoryService.deductStock(itemRequest.isbn(), itemRequest.quantity());
+                    mockedInventoryService.deductStock(itemRequest.isbn(), itemRequest.quantity());
                 }
                 currentOrder.confirm();
             }
@@ -340,7 +330,7 @@ public class OrderManagementSteps {
     public void the_inventory_service_receives_the_stock_release_request_for_the_order() {
         // Verify that releaseStock was called for each item in the order
         for (OrderLine orderLine : currentOrder.getOrderLines()) {
-            verify(inventoryService, times(1)).releaseStock(orderLine.getIsbn(), orderLine.getQuantity());
+            verify(mockedInventoryService, times(1)).releaseStock(orderLine.getIsbn(), orderLine.getQuantity());
         }
     }
 

@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,5 +67,34 @@ class BookServiceTest {
                 "Exception message should indicate book not found.");
         verify(bookRepository, times(1)).findById(isbn);
         verify(bookMapper, never()).mapBookToResponse(any(Book.class));
+    }
+
+    @Test
+    @DisplayName("Should return all books when findAllBooks is called")
+    void findAllBooks_shouldReturnAllBooks() {
+        // Given
+        Book book1 = new Book("isbn1", "Title 1", "Author 1", new BigDecimal("10.00"));
+        Book book2 = new Book("isbn2", "Title 2", "Author 2", new BigDecimal("20.00"));
+        List<Book> books = Arrays.asList(book1, book2);
+
+        BookResponse bookResponse1 = new BookResponse("isbn1", "Title 1", "Author 1", new BigDecimal("10.00"));
+        BookResponse bookResponse2 = new BookResponse("isbn2", "Title 2", "Author 2", new BigDecimal("20.00"));
+        List<BookResponse> expectedBookResponses = Arrays.asList(bookResponse1, bookResponse2);
+
+        when(bookRepository.findAll()).thenReturn(books);
+        when(bookMapper.mapBookToResponse(book1)).thenReturn(bookResponse1);
+        when(bookMapper.mapBookToResponse(book2)).thenReturn(bookResponse2);
+
+        // When
+        List<BookResponse> actualBookResponses = bookService.findAllBooks();
+
+        // Then
+        assertNotNull(actualBookResponses, "The returned list should not be null.");
+        assertEquals(expectedBookResponses.size(), actualBookResponses.size(), "The size of the returned list should match.");
+        assertTrue(actualBookResponses.containsAll(expectedBookResponses) && expectedBookResponses.containsAll(actualBookResponses),
+                "The returned list of book responses should match the expected list.");
+        verify(bookRepository, times(1)).findAll();
+        verify(bookMapper, times(1)).mapBookToResponse(book1);
+        verify(bookMapper, times(1)).mapBookToResponse(book2);
     }
 }

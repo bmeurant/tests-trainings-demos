@@ -46,4 +46,20 @@ public class BookController {
         BookResponse bookResponse = bookService.findBookByIsbn(isbn);
         return ResponseEntity.ok(bookResponse);
     }
+
+    /**
+     * Retrieves all books in the catalog.
+     *
+     * @return A {@link ResponseEntity} with a list of {@link BookResponse} objects (HTTP status 200 OK).
+     */
+    @GetMapping
+    @Operation(summary = "Get all books", description = "Retrieves a list of all books in the catalog.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of books retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookResponse.class)))
+    })
+    public ResponseEntity<java.util.List<BookResponse>> getAllBooks() {
+        java.util.List<BookResponse> books = bookService.findAllBooks();
+        return ResponseEntity.ok(books);
+    }
 }

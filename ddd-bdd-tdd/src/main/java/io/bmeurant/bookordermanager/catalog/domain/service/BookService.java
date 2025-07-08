@@ -2,7 +2,8 @@ package io.bmeurant.bookordermanager.catalog.domain.service;
 
 import io.bmeurant.bookordermanager.application.dto.BookResponse;
 import io.bmeurant.bookordermanager.catalog.domain.exception.BookNotFoundException;
-import io.bmeurant.bookordermanager.catalog.domain.model.Book;
+
+import java.util.List;
 
 /**
  * Service interface for managing books in the catalog.
@@ -16,4 +17,11 @@ public interface BookService {
      * @throws BookNotFoundException if the book with the given ISBN is not found.
      */
     BookResponse findBookByIsbn(String isbn);
+
+    /**
+     * Finds all books in the catalog.
+     *
+     * @return A list of all BookResponse objects.
+     */
+    List<BookResponse> findAllBooks();
 }
