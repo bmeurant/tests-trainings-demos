@@ -2,7 +2,7 @@
 
 ## Set up Environment & Install ADK
 
-1. Set up Environment & Install ADK
+1. Set up Environment
 
 ```bash
 # Create
