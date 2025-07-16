@@ -10,6 +10,7 @@ export function demonstrateFundamentalTypes(): void {
 
     demonstrateNumberType();
     demonstrateStringType();
+    demonstrateBooleanType();
 
     console.log("--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
 }
@@ -73,5 +74,33 @@ ${productName} from ${manufacturer}.`;
     // 💡 EXPERIMENT: Uncomment to see a compile-time error.
     // TypeScript ensures that only string values are assigned to string variables.
     // productName = 123; // Error: Type 'number' is not assignable to type 'string'.
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'boolean' type, showing how to declare boolean variables
+ * and their use in conditional logic.
+ */
+function demonstrateBooleanType(): void {
+    console.log("--- Exploring 'boolean' Type --------------------");
+
+    // Explicitly declaring 'isAvailable' as a boolean.
+    let isAvailable: boolean = true;
+    console.log(`Is Product Available: ${isAvailable}`);
+
+    // Type inference for boolean.
+    let hasStock = false; // Inferred as 'boolean'
+    console.log(`Has Stock: ${hasStock}`);
+
+    // Booleans are fundamental for control flow.
+    if (isAvailable && hasStock) {
+        console.log("Product is ready for sale!");
+    } else {
+        console.log("Product is currently unavailable or out of stock.");
+    }
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // TypeScript prevents assigning non-boolean values to a boolean variable.
+    // isAvailable = 1; // Error: Type '1' is not assignable to type 'boolean'.
     console.log("-------------------------------------------------\n");
 }
