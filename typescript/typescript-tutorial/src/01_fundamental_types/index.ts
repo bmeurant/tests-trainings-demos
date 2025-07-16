@@ -11,6 +11,7 @@ export function demonstrateFundamentalTypes(): void {
     demonstrateNumberType();
     demonstrateStringType();
     demonstrateBooleanType();
+    demonstrateAnyType();
 
     console.log("--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
 }
@@ -102,5 +103,42 @@ function demonstrateBooleanType(): void {
     // 💡 EXPERIMENT: Uncomment to see a compile-time error.
     // TypeScript prevents assigning non-boolean values to a boolean variable.
     // isAvailable = 1; // Error: Type '1' is not assignable to type 'boolean'.
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'any' type, highlighting its flexibility and the
+ * associated risks due to bypassing type checks.
+ */
+function demonstrateAnyType(): void {
+    console.log("--- Exploring 'any' Type ------------------------");
+    console.log("(Use with extreme caution! Bypasses type checking)");
+
+    let unknownValue: any = "This can be a string";
+    console.log(`Any type (string): ${unknownValue}`);
+
+    unknownValue = 123.45; // No compile-time error!
+    console.log(`Any type (number): ${unknownValue}`);
+
+    unknownValue = { name: "Mystery", value: true }; // No compile-time error!
+    console.log(`Any type (object):`, unknownValue);
+
+    // With 'any', you can call any method. This can lead to runtime errors.
+    // Example: This line will work if unknownValue is a string (like its initial value).
+    // unknownValue.toUpperCase();
+
+    // Example of a potential runtime error if the type isn't what's expected:
+    // 💡 EXPERIMENT: Uncomment the lines below AFTER the object assignment to see a runtime error.
+    unknownValue = { data: "some data" };
+    console.log("Attempting to call .toUpperCase() on an object of type 'any':");
+    try {
+        unknownValue.toUpperCase(); // This will throw a runtime error: unknownValue.toUpperCase is not a function
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            console.error("Runtime Error:", error.message);
+        }
+    }
+
     console.log("-------------------------------------------------\n");
 }
