@@ -13,6 +13,7 @@ export function demonstrateFundamentalTypes(): void {
     demonstrateBooleanType();
     demonstrateAnyType();
     demonstrateVoidType();
+    demonstrateNullUndefinedTypes();
 
     console.log("--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
 }
@@ -167,6 +168,48 @@ function demonstrateVoidType(): void {
     let noReturn: void = undefined;
     // let noReturnNull: void = null; // Only valid if strictNullChecks is false in tsconfig.json
     console.log(`void variable:`, noReturn);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'null' and 'undefined' types, highlighting their use
+ * and the impact of 'strictNullChecks' in tsconfig.json.
+ */
+function demonstrateNullUndefinedTypes(): void {
+    console.log("--- Exploring 'null' and 'undefined' Types -------");
+    console.log("(Impacted by 'strictNullChecks' in tsconfig.json)");
+
+    // By default, with 'strictNullChecks: true', variables must explicitly allow null/undefined.
+    let userName: string | null = "Jane Doe"; // Union type: can be string OR null
+    console.log(`User Name (initial): ${userName}`);
+    userName = null; // Valid assignment due to union type
+    // userName = undefined; // Error: Type 'undefined' is not assignable to type 'string' | `null`.
+    console.log(`User Name after null assignment: ${userName}`);
+
+    let userAge: number | undefined; // Union type: can be number OR undefined
+    console.log(`User Age (initial, undefined): ${userAge}`);
+    userAge = 25;
+    console.log(`User Age after assignment: ${userAge}`);
+    userAge = undefined; // Valid assignment
+    // userAge = null; // Error: Type 'undefined' is not assignable to type 'string' | `undefined`.
+    console.log(`User Age after undefined assignment: ${userAge}`);
+
+    let userGender: string | null | undefined = 'M'; // Union type: can be number OR undefined OR null
+    console.log(`User Gender (initial): ${userGender}`);
+    userGender = null; // Valid assignment
+    console.log(`User Gender after null assignment: ${userGender}`);
+    userGender = undefined; // Valid assignment
+    console.log(`User Gender after undefined assignment: ${userGender}`);
+
+    // 💡 EXPERIMENT: Uncomment the lines below to see compile-time errors.
+    // With 'strictNullChecks: true', you cannot assign null/undefined to a
+    // variable unless its type explicitly includes null/undefined.
+    // let score: number = null; // Error: Type 'null' is not assignable to type 'number'.
+    // let descriptionText: string = undefined; // Error: Type 'undefined' is not assignable to type 'string'.
+
+    let email: string | null = null;
+    console.log(`User Email: ${email}`);
 
     console.log("-------------------------------------------------\n");
 }
