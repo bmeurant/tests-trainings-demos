@@ -12,6 +12,7 @@ export function demonstrateFundamentalTypes(): void {
     demonstrateStringType();
     demonstrateBooleanType();
     demonstrateAnyType();
+    demonstrateVoidType();
 
     console.log("--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
 }
@@ -139,6 +140,33 @@ function demonstrateAnyType(): void {
             console.error("Runtime Error:", error.message);
         }
     }
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'void' type, used for functions that do not return a value.
+ */
+function demonstrateVoidType(): void {
+    console.log("--- Exploring 'void' Type -----------------------");
+
+    function logActivity(activity: string): void {
+        console.log(`Activity logged: ${activity}`);
+        // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+        // return "some value"; // Error: Type '"some value"' is not assignable to type 'void'.
+    }
+    logActivity("User logged in.");
+
+    // Functions without an explicit return statement implicitly return 'void'.
+    function performTask() {
+        console.log("Performing a task...");
+    }
+    performTask();
+
+    // Variables of type void are generally not useful, as they can only hold 'undefined' or 'null' (if strictNullChecks is off).
+    let noReturn: void = undefined;
+    // let noReturnNull: void = null; // Only valid if strictNullChecks is false in tsconfig.json
+    console.log(`void variable:`, noReturn);
 
     console.log("-------------------------------------------------\n");
 }
