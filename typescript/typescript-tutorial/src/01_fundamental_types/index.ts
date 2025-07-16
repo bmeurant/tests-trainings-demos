@@ -9,8 +9,9 @@ export function demonstrateFundamentalTypes(): void {
     console.log("=================================================\n");
 
     demonstrateNumberType();
+    demonstrateStringType();
 
-    console.log("\n--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
+    console.log("--------- END OF STEP 1 DEMONSTRATIONS ----------\n");
 }
 
 /**
@@ -41,5 +42,36 @@ function demonstrateNumberType(): void {
     // Mathematical operations work as expected with numeric types.
     let sum = age + price;
     console.log(`Sum of age and price: ${sum}`);
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'string' type in TypeScript, covering different declaration
+ * methods (single/double quotes, template literals) and type safety.
+ */
+function demonstrateStringType(): void {
+    console.log("--- Exploring 'string' Type ---------------------");
+
+    // Using double quotes for string declaration.
+    let productName: string = "Laptop Pro";
+    console.log(`Product Name: ${productName}`);
+
+    // Using single quotes; type is inferred as 'string'.
+    let manufacturer = 'TechCorp';
+    console.log(`Manufacturer: ${manufacturer}`);
+
+    // Using backticks for template literals. These support multi-line strings
+    // and embedding expressions using ${}.
+    let description: string = `This is a high-performance
+${productName} from ${manufacturer}.`;
+    console.log(`Description:\n${description}`);
+
+    // Standard string concatenation.
+    let welcomeMessage = "Hello, " + "TypeScript!";
+    console.log(`Concatenated string: ${welcomeMessage}`);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // TypeScript ensures that only string values are assigned to string variables.
+    // productName = 123; // Error: Type 'number' is not assignable to type 'string'.
     console.log("-------------------------------------------------\n");
 }
