@@ -8,6 +8,7 @@ export function demonstrateEnumsAndObjects(): void {
     console.log("=================================================\n");
 
     demonstrateNumericEnums();
+    demonstrateStringEnums();
 
     console.log("--- END OF STEP 3 DEMONSTRATIONS ----------------\n");
 }
@@ -53,6 +54,43 @@ function demonstrateNumericEnums(): void {
     // 💡 EXPERIMENT: Try assigning a number that is not explicitly part of the enum.
     // TypeScript allows this, which can be a trap! Use string enums for better safety.
     // let unknownStatus: HttpStatusCode = 999; // This is technically allowed in numeric enums at compile time
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates String Enums.
+ * String enums are generally preferred as they offer better readability and
+ * prevent common runtime bugs by not allowing arbitrary numbers.
+ */
+function demonstrateStringEnums(): void {
+    console.log("--- Exploring String Enums ----------------------");
+
+    // Define a string enum for user roles.
+    enum UserRole {
+        Admin = "ADMIN",
+        Editor = "EDITOR",
+        Viewer = "VIEWER"
+    }
+
+    let currentUserRole: UserRole = UserRole.Admin;
+    console.log(`Current user role: ${currentUserRole}`);
+
+    // String enums provide better compile-time safety.
+    function checkAccess(role: UserRole): void {
+        if (role === UserRole.Admin) {
+            console.log("Admin access granted.");
+        } else if (role === UserRole.Editor) {
+            console.log("Editor access granted.");
+        } else {
+            console.log("Viewer access granted.");
+        }
+    }
+    checkAccess(UserRole.Editor);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // You cannot assign an arbitrary string value to a string enum type.
+    // let invalidRole: UserRole = "VIEWER"; // Error: Type '"VIEWER"' is not assignable to type 'UserRole'.
 
     console.log("-------------------------------------------------\n");
 }
