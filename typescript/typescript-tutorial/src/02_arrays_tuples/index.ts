@@ -128,3 +128,5 @@ function demonstrateTupleType(): void {
 
     console.log("-------------------------------------------------\n");
 }
+
+demonstrateArraysAndTuples();

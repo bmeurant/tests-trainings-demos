@@ -213,3 +213,5 @@ function demonstrateNullUndefinedTypes(): void {
 
     console.log("-------------------------------------------------\n");
 }
+
+demonstrateFundamentalTypes();
