@@ -9,6 +9,7 @@ export function demonstrateEnumsAndObjects(): void {
 
     demonstrateNumericEnums();
     demonstrateStringEnums();
+    demonstrateObjectTypes();
 
     console.log("--- END OF STEP 3 DEMONSTRATIONS ----------------\n");
 }
@@ -91,6 +92,48 @@ function demonstrateStringEnums(): void {
     // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
     // You cannot assign an arbitrary string value to a string enum type.
     // let invalidRole: UserRole = "VIEWER"; // Error: Type '"VIEWER"' is not assignable to type 'UserRole'.
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates how to define and use objects with explicit types.
+ * This ensures that objects conform to a predefined structure.
+ */
+function demonstrateObjectTypes(): void {
+    console.log("--- Exploring Object Types ----------------------");
+
+    // Define an object type using an inline type annotation.
+    // This object must have a 'name' (string) and an 'age' (number).
+    let person: { name: string; age: number };
+
+    // Assign a value that matches the defined type.
+    person = { name: "John Doe", age: 30 };
+    console.log(`Person object: Name - ${person.name}, Age - ${person.age}`);
+
+    // 💡 EXPERIMENT: Uncomment to see compile-time errors.
+    // Type checking prevents incorrect assignments:
+    // person = { name: "Jane" }; // Error: Property 'age' is missing.
+    // person = { name: "Bob", age: "twenty" }; // Error: Type 'string' is not assignable to type 'number'.
+    // person = { name: "Alice", age: 25, email: "alice@example.com" }; // Error: Object literal may only specify known properties.
+
+    // Using an optional property (with '?')
+    let car: { make: string; model: string; year?: number };
+    car = { make: "Toyota", model: "Camry" }; // 'year' is optional
+    console.log(`Car 1: ${car.make} ${car.model} (${car.year})`);
+    car = { make: "Honda", model: "Civic", year: 2020 }; // 'year' is present
+    console.log(`Car 2: ${car.make} ${car.model} (${car.year})`);
+
+    // Using a 'readonly' property.
+    // The property can only be assigned during initialization.
+    let product: { readonly id: number; name: string; price: number };
+    product = { id: 101, name: "Keyboard", price: 75.00 };
+    console.log(`Product: ID - ${product.id}, Name - ${product.name}, Price - ${product.price}`);
+    product.price = 65.00; // Valid: 'price' is not readonly
+    console.log(`Product: ID - ${product.id}, Name - ${product.name}, Price - ${product.price}`);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // product.id = 102; // Error: Cannot assign to 'id' because it is a read-only property.
 
     console.log("-------------------------------------------------\n");
 }
