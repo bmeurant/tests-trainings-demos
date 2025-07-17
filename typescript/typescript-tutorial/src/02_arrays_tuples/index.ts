@@ -8,6 +8,7 @@ export function demonstrateArraysAndTuples(): void {
     console.log("=================================================\n");
 
     demonstrateArrayType();
+    demonstrateTupleType();
 
     console.log("--- END OF STEP 2 DEMONSTRATIONS ----------------\n");
 }
@@ -68,6 +69,62 @@ function demonstrateArrayType(): void {
     // An array that can contain multiple types (using Union Types, covered more later!)
     let mixedArray: (string | number)[] = ["apple", 123, "banana", 456];
     console.log(`Mixed array: ${mixedArray}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'Tuple' type in TypeScript.
+ * Tuples are arrays with a fixed number of elements, where each element
+ * can have a different, predefined type.
+ */
+function demonstrateTupleType(): void {
+    console.log("--- Exploring 'Tuple' Type ----------------------");
+
+    // Declares a tuple 'personInfo'.
+    // It must contain exactly two elements: a 'string' followed by a 'number'.
+    let personInfo: [string, number] = ["Alice", 30];
+    console.log(`Person Info Tuple: Name - ${personInfo[0]}, Age - ${personInfo[1]}`);
+
+    // Accessing elements by index
+    const personName = personInfo[0]; // Type is 'string'
+    const personAge = personInfo[1];   // Type is 'number'
+    console.log(`Accessed by index: ${personName} is ${personAge} years old.`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // Attempting to assign elements with incorrect types.
+    // personInfo = [30, "Alice"]; // Error: Type 'number' is not assignable to type 'string' for element 0.
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // Attempting to assign a tuple with an incorrect number of elements.
+    // personInfo = ["Bob", 25, true]; // Error: Source has 3 elements, but target allows only 2.
+
+    // Tuples are useful for functions returning multiple distinct values.
+    function getUserStatus(userId: number): [string, boolean] {
+        if (userId === 101) {
+            return ["Active", true];
+        }
+        return ["Inactive", false];
+    }
+
+    let [statusText, isActiveUser] = getUserStatus(101);
+    console.log(`User Status: ${statusText}, Is Active: ${isActiveUser}`);
+
+    let [statusText2, isActiveUser2] = getUserStatus(200);
+    console.log(`User Status 2: ${statusText2}, Is Active 2: ${isActiveUser2}`);
+
+    // A tuple with three elements: a number, a string, and a boolean.
+    let productDetails: [number, string, boolean] = [101, "Widget", true];
+    console.log(`Product Details: ID=${productDetails[0]}, Name=${productDetails[1]}, InStock=${productDetails[2]}`);
+
+
+    // Note: While you can push elements to a tuple (if its type definition allows, like [string, number?]),
+    // it's generally discouraged as it defeats the purpose of a fixed-size, fixed-type structure.
+    // TypeScript allows pushing elements of a union type of the tuple's members.
+    // personInfo.push("extra item"); // This actually IS allowed if 'string | number' is a valid type for the elements of the tuple.
+    // However, trying to access personInfo[2] would be a compile-time error.
+    // This is a known nuance in TS, where push/pop on tuples might not fully enforce length.
+    // It's best to treat tuples as immutable for their defined length.
 
     console.log("-------------------------------------------------\n");
 }
