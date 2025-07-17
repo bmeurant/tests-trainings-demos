@@ -1,4 +1,5 @@
 import { demonstrateFundamentalTypes } from './01_fundamental_types';
+import {demonstrateArraysAndTuples} from "./02_arrays_tuples";
 
 /**
  * This is the main entry point for the TypeScript tutorial.
@@ -11,6 +12,9 @@ function runTutorial(): void {
 
     // --- 01 Fundamental Types ---
     demonstrateFundamentalTypes();
+
+    // --- 02 Arrays and Tuples ---
+    demonstrateArraysAndTuples();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
