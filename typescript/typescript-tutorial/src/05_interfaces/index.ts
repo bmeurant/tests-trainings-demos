@@ -8,6 +8,7 @@ export function demonstrateInterfaces(): void {
     console.log("=================================================\n");
 
     demonstrateBasicInterfaces();
+    demonstrateOptionalAndReadonlyProperties();
 
     console.log("--- END OF STEP 5 DEMONSTRATIONS ----------------\n");
 }
@@ -44,6 +45,51 @@ function demonstrateBasicInterfaces(): void {
     // let user2: User = { id: 2, name: "Bob", email: "bob@example.com" }; // Error: Object literal may only specify known properties.
     // let user3: User = { id: 3 }; // Error: Property 'name' is missing.
     // let user4: User = { id: "4", name: "Charlie" }; // Error: Type 'string' is not assignable to type 'number'.
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates optional and readonly properties in interfaces.
+ */
+function demonstrateOptionalAndReadonlyProperties(): void {
+    console.log("--- Exploring Optional & Readonly Properties ----");
+
+    // Interface with optional and readonly properties.
+    interface Product {
+        readonly productId: string; // Cannot be changed after creation.
+        name: string;
+        price: number;
+        description?: string;     // Optional property (may or may not be present).
+    }
+
+    function printProduct(product : Product): void {
+        console.log(`Product: ID - ${product.productId}, Name - ${product.name}, Price - ${product.price},  Desc - ${product.description}`);
+    }
+
+    let product1: Product = {
+        productId: "P001",
+        name: "Laptop",
+        price: 1200
+    };
+
+    printProduct(product1);
+
+    let product2: Product = {
+        productId: "P002",
+        name: "Mouse",
+        price: 25,
+        description: "Wireless optical mouse."
+    };
+
+    printProduct(product2);
+
+    // Update a mutable property.
+    product1.price = 1150;
+    printProduct(product1);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // product1.productId = "P003"; // Error: Cannot assign to 'productId' because it is a read-only property.
 
     console.log("-------------------------------------------------\n");
 }
