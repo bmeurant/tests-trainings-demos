@@ -10,6 +10,7 @@ export function demonstrateFunctions(): void {
     demonstrateBasicFunctions();
     demonstrateOptionalAndDefaultParameters();
     demonstrateArrowFunctions();
+    demonstrateFunctionOverloads();
 
     console.log("--- END OF STEP 4 DEMONSTRATIONS ----------------\n");
 }
@@ -100,6 +101,49 @@ function demonstrateArrowFunctions(): void {
         console.log(`INFO: ${info}`);
     };
     logInfo("Using an arrow function for logging.");
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Function Overloads.
+ * Allows defining multiple function signatures for a single function
+ * to handle different input types or numbers of arguments.
+ */
+function demonstrateFunctionOverloads(): void {
+    console.log("--- Exploring Function Overloads ----------------");
+
+    // Overload signatures (no implementation)
+    function combine(a: number, b: number): number;
+    function combine(a: string, b: string): string;
+    function combine(a: (number | string), b: (number | string)): (number | string) {
+        if (typeof a === 'number' && typeof b === 'number') {
+            return a + b;
+        }
+        if (typeof a === 'string' && typeof b === 'string') {
+            return a + b;
+        }
+        throw new Error("Parameters must both be numbers or both be strings.");
+    }
+
+    console.log(`combine(10, 20) = ${combine(10, 20)}`);
+    console.log(`combine("Hello ", "World") = ${combine("Hello ", "World")}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // combine(10, "world"); // Error: No overload matches this call.
+
+    // Another overload example: calculateArea for square or rectangle
+    function calculateArea(side: number): number;
+    function calculateArea(length: number, width: number): number;
+    function calculateArea(arg1: number, arg2?: number): number {
+        if (arg2 !== undefined) {
+            return arg1 * arg2; // Rectangle
+        }
+        return arg1 * arg1; // Square
+    }
+
+    console.log(`Area of square (side 5): ${calculateArea(5)}`);
+    console.log(`Area of rectangle (5x10): ${calculateArea(5, 10)}`);
 
     console.log("-------------------------------------------------\n");
 }
