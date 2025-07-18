@@ -9,6 +9,7 @@ export function demonstrateInterfaces(): void {
 
     demonstrateBasicInterfaces();
     demonstrateOptionalAndReadonlyProperties();
+    demonstrateFunctionInterfaces();
 
     console.log("--- END OF STEP 5 DEMONSTRATIONS ----------------\n");
 }
@@ -90,6 +91,73 @@ function demonstrateOptionalAndReadonlyProperties(): void {
 
     // 💡 EXPERIMENT: Uncomment to see a compile-time error.
     // product1.productId = "P003"; // Error: Cannot assign to 'productId' because it is a read-only property.
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates how interfaces can define function types.
+ * This is useful for ensuring functions adhere to a specific signature.
+ */
+/**
+ * Demonstrates how interfaces can define function types AND
+ * introduces the recommended 'type' alias for pure function signatures.
+ */
+function demonstrateFunctionInterfaces(): void {
+    console.log("--- Exploring Function Interfaces & Type Aliases for Functions ---");
+
+    // Old way (valid, but less idiomatic if only a call signature)
+    interface MathOperationOldWay {
+         (x: number, y: number): number;
+    }
+    let addNumbersOld: MathOperationOldWay = function(a: number, b: number): number {
+         return a + b;
+    };
+    console.log(`Add using old interface way: ${addNumbersOld(10, 5)}`);
+
+    // RECOMMENDED WAY: Using a 'type' alias for a function signature.
+    // This is clearer when the only purpose is to define a function's shape.
+    type MathOperation = (x: number, y: number) => number;
+
+    // Implement the type alias with a function expression.
+    let addNumbers: MathOperation = function(a: number, b: number): number {
+        return a + b;
+    };
+    console.log(`Add using type alias: ${addNumbers(10, 5)}`);
+
+    // Implement the type alias with an arrow function.
+    let subtractNumbers: MathOperation = (a, b) => a - b;
+    console.log(`Subtract using type alias: ${subtractNumbers(10, 5)}`);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // let multiplyNumbers: MathOperation = (a: string, b: number) => a.length * b; // Error: Type '(a: string, b: number) => number' is not assignable to type 'MathOperation'.
+
+    // When an interface also has properties AND a call signature, it's still appropriate:
+    interface DisposableFunction {
+        (message: string): void;
+        wasDisposed: boolean;
+        dispose(): void;
+    }
+
+    const myDisposableFunc: DisposableFunction = Object.assign(
+        (msg: string) => {
+            console.log(`Disposable Func: ${msg}`);
+            myDisposableFunc.wasDisposed = false;
+        },
+        {
+            wasDisposed: false,
+            dispose() {
+                console.log("Disposable function disposed.");
+                myDisposableFunc.wasDisposed = true;
+            }
+        }
+    );
+
+    myDisposableFunc("Hello from disposable func");
+    console.log(`Is disposable func disposed? ${myDisposableFunc.wasDisposed}`);
+    myDisposableFunc.dispose();
+    console.log(`Is disposable func disposed? ${myDisposableFunc.wasDisposed}`);
+
 
     console.log("-------------------------------------------------\n");
 }
