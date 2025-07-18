@@ -78,7 +78,6 @@ function demonstrateOptionalAndDefaultParameters(): void {
 
 /**
  * Demonstrates Arrow Functions (Fat Arrow Functions) with TypeScript.
- * They provide a more concise syntax and lexical 'this' binding.
  */
 function demonstrateArrowFunctions(): void {
     console.log("--- Exploring Arrow Functions -------------------");

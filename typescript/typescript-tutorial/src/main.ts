@@ -2,6 +2,7 @@ import { demonstrateFundamentalTypes } from './01_fundamental_types';
 import {demonstrateArraysAndTuples} from "./02_arrays_tuples";
 import { demonstrateEnumsAndObjects } from './03_enums_objects';
 import { demonstrateFunctions } from './04_functions';
+import { demonstrateInterfaces } from './05_interfaces';
 
 /**
  * This is the main entry point for the TypeScript tutorial.
@@ -23,6 +24,9 @@ function runTutorial(): void {
 
     // --- 04 Functions ---
     demonstrateFunctions();
+
+    // --- 05 Interfaces ---
+    demonstrateInterfaces();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
