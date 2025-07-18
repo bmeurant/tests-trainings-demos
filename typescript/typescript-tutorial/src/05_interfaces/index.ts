@@ -10,6 +10,7 @@ export function demonstrateInterfaces(): void {
     demonstrateBasicInterfaces();
     demonstrateOptionalAndReadonlyProperties();
     demonstrateFunctionInterfaces();
+    demonstrateExtendingInterfaces();
 
     console.log("--- END OF STEP 5 DEMONSTRATIONS ----------------\n");
 }
@@ -158,6 +159,49 @@ function demonstrateFunctionInterfaces(): void {
     myDisposableFunc.dispose();
     console.log(`Is disposable func disposed? ${myDisposableFunc.wasDisposed}`);
 
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates extending interfaces.
+ * Interfaces can extend one or more other interfaces, inheriting their members.
+ */
+function demonstrateExtendingInterfaces(): void {
+    console.log("--- Exploring Extending Interfaces --------------");
+
+    interface Shape {
+        color: string;
+    }
+
+    // Circle extends Shape, so it must have 'color' and 'radius'.
+    interface Circle extends Shape {
+        radius: number;
+    }
+
+    let myCircle: Circle = {
+        color: "blue",
+        radius: 10
+    };
+    console.log(`My Circle: Color - ${myCircle.color}, Radius - ${myCircle.radius}`);
+
+    // An interface can extend multiple interfaces.
+    interface Printable {
+        print(): void;
+    }
+
+    interface ColoredAndPrintableCircle extends Circle, Printable {
+        // No new members needed, just combines the others.
+    }
+
+    let fancyCircle: ColoredAndPrintableCircle = {
+        color: "red",
+        radius: 15,
+        print: () => {
+            console.log(`Printing a ${fancyCircle.color} circle with radius ${fancyCircle.radius}.`);
+        }
+    };
+    fancyCircle.print();
 
     console.log("-------------------------------------------------\n");
 }
