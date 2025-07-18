@@ -11,6 +11,7 @@ export function demonstrateFunctions(): void {
     demonstrateOptionalAndDefaultParameters();
     demonstrateArrowFunctions();
     demonstrateFunctionOverloads();
+    demonstrateRestParameters();
 
     console.log("--- END OF STEP 4 DEMONSTRATIONS ----------------\n");
 }
@@ -144,6 +145,33 @@ function demonstrateFunctionOverloads(): void {
 
     console.log(`Area of square (side 5): ${calculateArea(5)}`);
     console.log(`Area of rectangle (5x10): ${calculateArea(5, 10)}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Rest Parameters.
+ * Allow a function to accept an indefinite number of arguments as an array.
+ */
+function demonstrateRestParameters(): void {
+    console.log("--- Exploring Rest Parameters -------------------");
+
+    // The '...numbers' syntax collects all remaining arguments into a 'number[]' array.
+    function sumAllNumbers(...numbers: number[]): number {
+        return numbers.reduce((total, num) => total + num, 0);
+    }
+
+    console.log(`Sum of (1, 2, 3): ${sumAllNumbers(1, 2, 3)}`);
+    console.log(`Sum of (10, 20, 30, 40): ${sumAllNumbers(10, 20, 30, 40)}`);
+    console.log(`Sum of (): ${sumAllNumbers()}`); // Returns 0
+
+    // Rest parameters can be combined with other parameters, but must be last.
+    function logArgs(label: string, ...values: any[]): void {
+        console.log(`${label}: ${values.join(", ")}`);
+    }
+
+    logArgs("Names", "Alice", "Bob", "Charlie");
+    logArgs("Scores", 95, 88, 72, 100);
 
     console.log("-------------------------------------------------\n");
 }
