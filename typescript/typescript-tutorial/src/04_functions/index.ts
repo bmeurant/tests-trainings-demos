@@ -8,6 +8,7 @@ export function demonstrateFunctions(): void {
     console.log("=================================================\n");
 
     demonstrateBasicFunctions();
+    demonstrateOptionalAndDefaultParameters();
 
     console.log("--- END OF STEP 4 DEMONSTRATIONS ----------------\n");
 }
@@ -40,6 +41,34 @@ function demonstrateBasicFunctions(): void {
         console.log(`LOG: ${message}`);
     }
     logMessage("This is a log entry.");
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates optional and default parameters in functions.
+ */
+function demonstrateOptionalAndDefaultParameters(): void {
+    console.log("--- Exploring Optional and Default Parameters ---");
+
+    // Optional parameter: 'lastName' might or might not be provided.
+    // Marked with '?' after the parameter name.
+    function buildFullName(firstName: string, lastName?: string): string {
+        if (lastName) {
+            return `${firstName} ${lastName}`;
+        }
+        return firstName;
+    }
+    console.log(`Full Name 1: ${buildFullName("John", "Doe")}`);
+    console.log(`Full Name 2: ${buildFullName("Jane")}`);
+
+    // Default parameter: 'greeting' defaults to "Hello" if not provided.
+    // Declared with an assignment operator '=' after the type.
+    function sayHello(name: string, greeting: string = "Hello"): string {
+        return `${greeting}, ${name}!`;
+    }
+    console.log(`Greeting 1: ${sayHello("Bob")}`);
+    console.log(`Greeting 2: ${sayHello("Charlie", "Hi")}`);
 
     console.log("-------------------------------------------------\n");
 }
