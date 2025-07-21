@@ -3,6 +3,8 @@ import {demonstrateArraysAndTuples} from "./02_arrays_tuples";
 import { demonstrateEnumsAndObjects } from './03_enums_objects';
 import { demonstrateFunctions } from './04_functions';
 import { demonstrateInterfaces } from './05_interfaces';
+import { demonstrateUnionAndLiteralTypes } from './06_union_literal_types';
+
 
 /**
  * This is the main entry point for the TypeScript tutorial.
@@ -27,6 +29,9 @@ function runTutorial(): void {
 
     // --- 05 Interfaces ---
     demonstrateInterfaces();
+
+    // --- 06 Union Types and Literal Types ---
+    demonstrateUnionAndLiteralTypes();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
