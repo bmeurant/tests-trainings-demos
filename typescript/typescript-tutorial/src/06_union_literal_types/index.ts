@@ -10,6 +10,7 @@ export function demonstrateUnionAndLiteralTypes(): void {
 
     demonstrateUnionTypes();
     demonstrateLiteralTypes();
+    demonstrateDiscriminatedUnions();
 
     console.log("--- END OF STEP 6 DEMONSTRATIONS ----------------\n");
 }
@@ -87,6 +88,71 @@ function demonstrateLiteralTypes(): void {
     type IsEnabled = true;
     let featureEnabled: IsEnabled = true;
     // featureEnabled = false; // Error: Type 'false' is not assignable to type 'true'.
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the powerful combination of Union Types and Literal Types.
+ * This allows defining complex, precise types.
+ */
+function demonstrateDiscriminatedUnions(): void {
+    console.log("-- Exploring Union & Literal Type Combination ---");
+
+    // Define an action type that describes different possible actions.
+    // Each action is an object with a specific 'type' literal property.
+    type Action =
+        | { type: "FETCH_START" }
+        | { type: "FETCH_SUCCESS"; payload: any }
+        | { type: "FETCH_ERROR"; error: string };
+
+    let startAction: Action = { type: "FETCH_START" };
+    console.log("Action 1:", startAction);
+
+    let successAction: Action = { type: "FETCH_SUCCESS", payload: { data: "some data" } };
+    console.log("Action 2:", successAction);
+
+    let errorAction: Action = { type: "FETCH_ERROR", error: "Network error" };
+    console.log("Action 3:", errorAction);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // let invalidAction: Action = { type: "FETCH_DONE" }; // Error: Type '"FETCH_DONE"' is not assignable to type '"FETCH_START" | "FETCH_SUCCESS" | "FETCH_ERROR"'.
+
+    // Function using a union of literal types for its parameter.
+    function setLightState(state: "on" | "off" | "dimmed"): void {
+        console.log(`Setting light state to: ${state}`);
+    }
+    setLightState("on");
+    setLightState("dimmed");
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // setLightState("bright"); // Error: Argument of type '"bright"' is not assignable to parameter of type '"on" | "off" | "dimmed"'.
+
+    // Combining with interfaces for more structured types
+    interface SuccessResponse {
+        status: "success";
+        data: any;
+    }
+
+    interface ErrorResponse {
+        status: "error";
+        message: string;
+        code: number;
+    }
+
+    type ApiResponse = SuccessResponse | ErrorResponse;
+
+    function handleResponse(response: ApiResponse): void {
+        if (response.status === "success") {
+            console.log(`API Response Success! Data:`, response.data);
+            // Type is narrowed to SuccessResponse here, so 'data' is accessible.
+        } else {
+            console.log(`API Response Error! Message: ${response.message}, Code: ${response.code}`);
+            // Type is narrowed to ErrorResponse here, so 'message' and 'code' are accessible.
+        }
+    }
+
+    handleResponse({ status: "success", data: { user: "Bob" } });
+    handleResponse({ status: "error", message: "Item not found", code: 404 });
 
     console.log("-------------------------------------------------\n");
 }
