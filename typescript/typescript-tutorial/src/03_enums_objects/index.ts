@@ -53,8 +53,8 @@ function demonstrateNumericEnums(): void {
     console.log(`Error Status: ${HttpStatusCode[errorStatus]} (code: ${errorStatus})`);
 
     // 💡 EXPERIMENT: Try assigning a number that is not explicitly part of the enum.
-    // TypeScript allows this, which can be a trap! Use string enums for better safety.
-    // let unknownStatus: HttpStatusCode = 999; // This is technically allowed in numeric enums at compile time
+    // TypeScript used to allows this, which can be a trap! Use string enums for better safety.
+    // let unknownStatus: HttpStatusCode = 999; // This used to be technically allowed in numeric enums at compile time
 
     console.log("-------------------------------------------------\n");
 }
