@@ -9,6 +9,7 @@ export function demonstrateUnionAndLiteralTypes(): void {
     console.log("=================================================\n");
 
     demonstrateUnionTypes();
+    demonstrateLiteralTypes();
 
     console.log("--- END OF STEP 6 DEMONSTRATIONS ----------------\n");
 }
@@ -49,6 +50,43 @@ function demonstrateUnionTypes(): void {
     // An array that can contain both numbers and booleans.
     let mixedData: (number | boolean)[] = [1, true, 2, false];
     console.log(`Mixed data array: ${mixedData}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Literal Types.
+ * Literal types allow you to define a type that accepts only one specific value.
+ * This is useful for creating highly specific types.
+ */
+function demonstrateLiteralTypes(): void {
+    console.log("--- Exploring Literal Types ---------------------");
+
+    // A variable whose type is literally the string "success".
+    type Status = "success" | "error" | "pending"; // Combination of literal types (also a union!)
+    let requestStatus: Status;
+
+    requestStatus = "success"; // Valid
+    console.log(`Request status: ${requestStatus}`);
+
+    requestStatus = "pending"; // Valid
+    console.log(`Request status: ${requestStatus}`);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // requestStatus = "failed"; // Error: Type '"failed"' is not assignable to type 'Status'.
+
+    // Numeric literal types.
+    type HttpCode = 200 | 400 | 404 | 500;
+    let statusCode: HttpCode = 200; // Valid
+    console.log(`HTTP Status Code: ${statusCode}`);
+
+    // 💡 EXPERIMENT: Uncomment to see a compile-time error.
+    // statusCode = 201; // Error: Type '201' is not assignable to type 'HttpCode'.
+
+    // Boolean literal types (less common as 'true' | 'false' is just 'boolean').
+    type IsEnabled = true;
+    let featureEnabled: IsEnabled = true;
+    // featureEnabled = false; // Error: Type 'false' is not assignable to type 'true'.
 
     console.log("-------------------------------------------------\n");
 }
