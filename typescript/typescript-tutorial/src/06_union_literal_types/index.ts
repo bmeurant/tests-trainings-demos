@@ -11,6 +11,7 @@ export function demonstrateUnionAndLiteralTypes(): void {
     demonstrateUnionTypes();
     demonstrateLiteralTypes();
     demonstrateDiscriminatedUnions();
+    demonstrateConstAssertions();
 
     console.log("--- END OF STEP 6 DEMONSTRATIONS ----------------\n");
 }
@@ -153,6 +154,83 @@ function demonstrateDiscriminatedUnions(): void {
 
     handleResponse({ status: "success", data: { user: "Bob" } });
     handleResponse({ status: "error", message: "Item not found", code: 404 });
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates 'const assertion' (suffix `as const`).
+ * This tells TypeScript to infer the narrowest possible literal type for an expression,
+ * making it immutable and deeply readonly. It's often used with literal types.
+ */
+function demonstrateConstAssertions(): void {
+    console.log("--- Exploring 'const assertion' (`as const`) ----");
+
+    // Without 'as const', 'status' would be inferred as 'string'
+    const statusWithoutConstAssertion = "active";
+    console.log(`Typescript's type of 'statusWithoutConstAssertion': 'string'`);
+    // At runtime, JavaScript's typeof operator will report 'string'.
+    console.log(`JavaScript's typeof for 'statusWithoutConstAssertion': '${typeof statusWithoutConstAssertion}'`);
+    // 💡 EXPERIMENT: Hover over 'statusWithoutConstAssertion' in your IDE to see TypeScript's inferred type (string).
+
+    // With 'as const', 'status' is inferred as the literal type '"active"' by TypeScript at compile-time.
+    const statusWithConstAssertion = "active" as const;
+    console.log(`\nTypescript's type of 'statusWithConstAssertion' (with 'as const'): '"active"'`);
+    // Even with 'as const', at runtime, JavaScript's typeof operator still reports 'string'.
+    // This highlights the distinction between TypeScript's compile-time types and JavaScript's runtime types.
+    console.log(`JavaScript's typeof for 'statusWithConstAssertion': '${typeof statusWithConstAssertion}'`);
+    // 💡 IMPORTANT: Hover over 'statusWithConstAssertion' in your IDE (e.g., IntelliJ)
+    //    You should see the precise literal type: 'const statusWithConstAssertion: "active"'.
+    //    This is where TypeScript's type-checking power truly lies.
+
+    // To demonstrate the compile-time type safety of 'as const':
+    // let forceLiteralType: "another" = statusWithConstAssertion; // 💡 EXPERIMENT: Uncomment this line.
+    // You will get a compile-time error:
+    // "Type '"active"' is not assignable to type '"another"'."
+    // This error proves that TypeScript is indeed treating 'statusWithConstAssertion' as the literal type '"active"'.
+
+    // Use case 1: Creating a literal type array (readonly tuple)
+    const COLORS = ["red", "green", "blue"] as const; // Type: readonly ["red", "green", "blue"] (a readonly tuple of literal types)
+    console.log(`\nArray with 'as const': ${JSON.stringify(COLORS)}`);
+    // COLORS.push("yellow"); // Error: Property 'push' does not exist on type 'readonly ["red", "green", "blue"]'. (Because it's a tuple, not a mutable array)
+
+    // Using 'typeof COLORS[number]' to create a union type from the tuple's elements
+    function acceptColor(color: typeof COLORS[number]): void {
+        console.log(`Accepted color from COLORS union: ${color}`);
+    }
+    acceptColor("red");
+    // 💡 EXPERIMENT: Uncomment to see error
+    // acceptColor("yellow"); // Error: Type '"yellow"' is not assignable to type '"red" | "green" | "blue"'.
+
+    // Use case 2: Literal type for object properties (deeply readonly)
+    const userSettings = {
+        theme: "dark",
+        fontSize: 16,
+        notifications: true
+    } as const;
+    // Type of userSettings is now deeply readonly and specific:
+    // { readonly theme: "dark"; readonly fontSize: 16; readonly notifications: true; }
+
+    console.log(`\nUser settings (with 'as const'): theme - ${userSettings.theme}, font - ${userSettings.fontSize}`);
+    // 💡 EXPERIMENT: Uncomment to see error
+    // userSettings.theme = "light"; // Error: Cannot assign to 'theme' because it is a read-only property.
+    // userSettings.fontSize = 18;  // Error: Cannot assign to 'fontSize' because it is a read-only property.
+
+    // Use case 3: Ensuring literal types are maintained in complex object structures
+    type TrafficLightState = "red" | "yellow" | "green";
+    interface TrafficLight {
+        color: TrafficLightState;
+        duration: number;
+    }
+
+    const redLight: TrafficLight = {
+        color: "red",
+        duration: 30
+    } as const; // 'as const' here makes 'color' literally "red" (and duration 30)
+    console.log(`\nTraffic light state: ${redLight.color} for ${redLight.duration}s`);
+    // Type of redLight.color is "red", not just TrafficLightState.
+    // 💡 EXPERIMENT: Uncomment to see type inference for redLight.color
+    // let literalRed: "red" = redLight.color; // No error!
 
     console.log("-------------------------------------------------\n");
 }
