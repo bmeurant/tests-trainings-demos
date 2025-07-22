@@ -12,6 +12,7 @@ export function demonstrateClasses(): void {
     demonstrateInheritance();
     demonstrateClassImplementsInterface();
     demonstrateParameterProperties();
+    demonstrateReadonlyProperties();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -293,6 +294,85 @@ function demonstrateParameterProperties(): void {
     let wc1 = new WeightedCoordinate(5, 5, "Key Location", 1.5);
     console.log(wc1.getWeightedDescription());
     console.log(`  Accessing public x from subclass: ${wc1.x}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'readonly' modifier for class properties.
+ * A readonly property can only be assigned during its declaration or in the constructor.
+ * After that, it cannot be changed.
+ */
+function demonstrateReadonlyProperties(): void {
+    console.log("--- Exploring Readonly Properties ----------------");
+
+    class Product {
+        readonly id: string;         // Readonly property, must be assigned in constructor or at declaration
+        public name: string;
+        private _price: number;
+        readonly createdAt: Date = new Date(); // Readonly property, initialized at declaration
+
+        constructor(id: string, name: string, price: number) {
+            this.id = id; // OK: Assignment in the constructor
+            this.name = name;
+            this._price = price;
+        }
+
+        public get Price(): number {
+            return this._price;
+        }
+
+        public set Price(newPrice: number) {
+            if (newPrice > 0) {
+                this._price = newPrice;
+            } else {
+                console.warn("  Price cannot be negative.");
+            }
+        }
+
+        // 💡 EXPERIMENT: Uncomment to see compile-time error.
+        // changeId(newId: string): void {
+        //     this.id = newId; // Error: Cannot assign to 'id' because it is a read-only property.
+        // }
+    }
+
+    let product1 = new Product("PROD-001", "Laptop", 1200);
+    console.log(`  Product: ${product1.name} (ID: ${product1.id}), Created: ${product1.createdAt.toLocaleDateString()}`);
+
+    product1.name = "Gaming Laptop"; // OK: 'name' is not readonly
+    // product1.id = "NEW-ID"; // Error: Cannot assign to 'id' because it is a read-only property.
+
+    console.log(`  Product name after modification: ${product1.name}`);
+    console.log(`  Product ID remains: ${product1.id}`); // ID remains the same
+
+    // Readonly with Parameter Properties (a common and concise pattern)
+    class UserProfile {
+        constructor(
+            public readonly userId: string, // Readonly and public
+            private _email: string,
+            public displayName: string
+        ) {}
+
+        get email(): string {
+            return this._email;
+        }
+        set email(newEmail: string) {
+            this._email = newEmail;
+        }
+
+        // 💡 EXPERIMENT: Uncomment to see compile-time error.
+        // setUserId(newId: string): void {
+        //     this.userId = newId; // Error: Cannot assign to 'userId' because it is a read-only property.
+        // }
+    }
+
+    let user = new UserProfile("USER-ALPHA", "alpha@example.com", "Alpha User");
+    console.log(`\n  User Profile - ID: ${user.userId}, Name: ${user.displayName}, Email: ${user.email}`);
+    user.displayName = "Beta User"; // OK
+    user.email = "beta@example.com"; // OK via setter
+    // user.userId = "USER-BETA"; // Error: Cannot assign to 'userId' because it is a read-only property.
+
+    console.log(`  User Profile after modification - ID: ${user.userId}, Name: ${user.displayName}, Email: ${user.email}`);
 
     console.log("-------------------------------------------------\n");
 }
