@@ -9,6 +9,7 @@ export function demonstrateClasses(): void {
 
     demonstrateBasicClasses();
     demonstrateAccessModifiers();
+    demonstrateInheritance();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -106,6 +107,58 @@ function demonstrateAccessModifiers(): void {
 
     let manager = new Manager("M001", 90000, "Engineering");
     console.log(manager.getManagerDetails());
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates class inheritance using 'extends' and 'super'.
+ * Subclasses (derived classes) inherit properties and methods from their base class.
+ */
+function demonstrateInheritance(): void {
+    console.log("--- Exploring Inheritance -----------------------");
+
+    // Base class
+    class Animal {
+        name: string;
+
+        constructor(name: string) {
+            this.name = name;
+        }
+
+        move(distanceInMeters: number = 0): void {
+            console.log(`  ${this.name} moved ${distanceInMeters}m.`);
+        }
+    }
+
+    // Derived class (subclass) 'Dog' extends 'Animal'.
+    class Dog extends Animal {
+        breed: string;
+
+        constructor(name: string, breed: string) {
+            super(name); // Call the constructor of the base class (Animal) using 'super()'.
+                         // This is mandatory in derived class constructors.
+            this.breed = breed;
+        }
+
+        bark(): void {
+            console.log(`  ${this.name} (${this.breed}) barks! Woof!`);
+        }
+
+        // Override the 'move' method from the base class.
+        // We can optionally call the base class method using 'super.methodName()'.
+        move(distanceInMeters = 5): void {
+            console.log(`  ${this.name} is running...`);
+            super.move(distanceInMeters); // Call the original 'move' method from 'Animal'
+        }
+    }
+
+    let myDog = new Dog("Buddy", "Golden Retriever");
+    myDog.bark();
+    myDog.move(10); // Calls the overridden 'move' method in 'Dog'
+
+    let genericAnimal = new Animal("Generic Beast");
+    genericAnimal.move(3);
 
     console.log("-------------------------------------------------\n");
 }
