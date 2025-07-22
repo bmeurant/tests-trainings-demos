@@ -4,6 +4,7 @@ import { demonstrateEnumsAndObjects } from './03_enums_objects';
 import { demonstrateFunctions } from './04_functions';
 import { demonstrateInterfaces } from './05_interfaces';
 import { demonstrateUnionAndLiteralTypes } from './06_union_literal_types';
+import { demonstrateClasses } from './07_classes';
 
 
 /**
@@ -32,6 +33,9 @@ function runTutorial(): void {
 
     // --- 06 Union Types and Literal Types ---
     demonstrateUnionAndLiteralTypes();
+
+    // --- 07 Classes ---
+    demonstrateClasses();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
