@@ -11,6 +11,7 @@ export function demonstrateClasses(): void {
     demonstrateAccessModifiers();
     demonstrateInheritance();
     demonstrateClassImplementsInterface();
+    demonstrateParameterProperties();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -229,6 +230,69 @@ function demonstrateClassImplementsInterface(): void {
     processLogs(new ConsoleLogger(), ["User logged in", "Data saved"]);
     processLogs(new FileLogger("debug.log"), ["Configuration loaded", "Service started"]);
 
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Parameter Properties (Constructor Shorthand).
+ * This is a convenient TypeScript-specific syntax for declaring class properties
+ * and initializing them directly within the constructor's parameter list.
+ */
+function demonstrateParameterProperties(): void {
+    console.log("--- Exploring Parameter Properties --------------");
+
+    // Define a class 'Coordinate' using parameter properties.
+    // By adding an access modifier (public, private, protected, readonly)
+    // before a constructor parameter, TypeScript automatically:
+    // 1. Declares a class property with that name and type.
+    // 2. Initializes that property with the value passed to the constructor.
+    class Coordinate {
+        // No need to explicitly declare 'x', 'y', 'description' as properties here.
+        // No need to explicitly write 'this.x = x;' inside the constructor body.
+        // TypeScript does it all for you!
+
+        constructor(public x: number, private y: number, protected description: string) {
+            // The constructor body can be empty if only parameter properties are used for initialization.
+            // Or it can contain additional logic if needed.
+        }
+
+        getPoint(): string {
+            // 'x' is public, 'y' is private (accessible inside the class).
+            return `  Point coordinates: (${this.x}, ${this.y}). Description: ${this.description}`;
+        }
+
+        // Public getter for the private 'y' property (controlled access).
+        get PrivateY(): number {
+            return this.y;
+        }
+    }
+
+    // Create an instance of 'Coordinate'.
+    let p1 = new Coordinate(10, 20, "Center Point");
+    console.log(p1.getPoint());
+    console.log(`  Accessing public x directly: ${p1.x}`);
+    console.log(`  Accessing private y via getter: ${p1.PrivateY}`);
+
+    // 💡 EXPERIMENT: Uncomment to see compile-time errors.
+    // console.log(p1.y); // Error: Property 'y' is private and only accessible within class 'Coordinate'.
+    // console.log(p1.description); // Error: Property 'description' is protected and only accessible within class 'Coordinate' and its subclasses.
+
+    // A subclass can access 'protected' properties.
+    class WeightedCoordinate extends Coordinate {
+        constructor(x: number, y: number, description: string, public weight: number) {
+            super(x, y, description); // Call the parent constructor
+        }
+
+        getWeightedDescription(): string {
+            // 'description' is protected and therefore accessible here.
+            return `  Weighted point: '${this.description}', Weight: ${this.weight}`;
+        }
+    }
+
+    let wc1 = new WeightedCoordinate(5, 5, "Key Location", 1.5);
+    console.log(wc1.getWeightedDescription());
+    console.log(`  Accessing public x from subclass: ${wc1.x}`);
 
     console.log("-------------------------------------------------\n");
 }
