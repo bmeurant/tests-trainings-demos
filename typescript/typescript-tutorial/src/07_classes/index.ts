@@ -10,6 +10,7 @@ export function demonstrateClasses(): void {
     demonstrateBasicClasses();
     demonstrateAccessModifiers();
     demonstrateInheritance();
+    demonstrateClassImplementsInterface();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -159,6 +160,75 @@ function demonstrateInheritance(): void {
 
     let genericAnimal = new Animal("Generic Beast");
     genericAnimal.move(3);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates how classes can implement interfaces.
+ * A class implementing an interface must guarantee that it has all the
+ * properties and methods defined by that interface. This enforces a contract.
+ */
+function demonstrateClassImplementsInterface(): void {
+    console.log("--- Exploring Class Implements Interface --------");
+
+    // Define an interface for a basic logger contract.
+    interface Logger {
+        log(message: string): void;
+        logError(message: string, error: Error): void;
+    }
+
+    // Implement the 'Logger' interface in a class.
+    // TypeScript will ensure 'ConsoleLogger' has 'log' and 'logError' methods.
+    class ConsoleLogger implements Logger {
+        log(message: string): void {
+            console.log(`  [CONSOLE LOG] ${message}`);
+        }
+
+        logError(message: string, error: Error): void {
+            console.error(`  [CONSOLE ERROR] ${message}: ${error.message}`);
+        }
+    }
+
+    // Another class implementing the same interface, perhaps writing to a file.
+    class FileLogger implements Logger {
+        private filePath: string; // Specific property for FileLogger
+
+        constructor(filePath: string) {
+            this.filePath = filePath;
+        }
+
+        log(message: string): void {
+            // In a real application, this would write to a file.
+            console.log(`  [FILE LOG - ${this.filePath}] ${message}`);
+        }
+
+        logError(message: string, error: Error): void {
+            // In a real application, this would write error details to a file.
+            console.error(`  [FILE ERROR - ${this.filePath}] ${message}: ${error.message}`);
+        }
+    }
+
+    let consoleLogger: Logger = new ConsoleLogger(); // Type: Logger, actual instance: ConsoleLogger
+    consoleLogger.log("This is a console message.");
+    try { throw new Error("Something went wrong with console!"); }
+    catch (e: any) { consoleLogger.logError("Failed console operation", e); }
+
+
+    let fileLogger: Logger = new FileLogger("/var/log/app.log"); // Type: Logger, actual instance: FileLogger
+    fileLogger.log("This message would theoretically go to a file.");
+    try { throw new Error("File system access error!"); }
+    catch (e: any) { fileLogger.logError("Critical file issue", e); }
+
+    // This demonstrates polymorphism: you can treat different logger implementations
+    // uniformly because they all adhere to the 'Logger' interface contract.
+    function processLogs(logger: Logger, messages: string[]): void {
+        console.log(`\n  Processing logs with ${logger.constructor.name}:`);
+        messages.forEach(msg => logger.log(msg));
+    }
+    processLogs(new ConsoleLogger(), ["User logged in", "Data saved"]);
+    processLogs(new FileLogger("debug.log"), ["Configuration loaded", "Service started"]);
+
 
     console.log("-------------------------------------------------\n");
 }
