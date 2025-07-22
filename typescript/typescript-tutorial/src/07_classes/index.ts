@@ -13,6 +13,7 @@ export function demonstrateClasses(): void {
     demonstrateClassImplementsInterface();
     demonstrateParameterProperties();
     demonstrateReadonlyProperties();
+    demonstrateStaticMembers();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -375,6 +376,50 @@ function demonstrateReadonlyProperties(): void {
     console.log(`  User Profile after modification - ID: ${user.userId}, Name: ${user.displayName}, Email: ${user.email}`);
 
     console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates static properties and methods.
+ * These members belong to the class itself, not to instances (objects) of the class.
+ * They are accessed directly on the class name.
+ */
+function demonstrateStaticMembers(): void {
+    console.log("--- Exploring Static Properties and Methods ------");
+
+    class MathUtility {
+        // A static property - shared across all instances (or accessed directly on the class).
+        static PI: number = 3.14159;
+        static readonly E: number = 2.71828; // Static and read-only
+
+        // A static method - called directly on the class name.
+        // It cannot access instance-specific properties (using 'this').
+        static add(x: number, y: number): number {
+            return x + y;
+        }
+
+        static multiply(x: number, y: number): number {
+            return x * y;
+        }
+
+        // 💡 EXPERIMENT: Uncomment to see compile-time error.
+        // instanceMethod(): void { console.log(this.PI); } // Error: Static property 'PI' cannot be accessed through non-static 'this'.
+    }
+
+    // Access static property directly on the class name.
+    console.log(`  The value of PI is: ${MathUtility.PI}`);
+    console.log(`  The value of E is: ${MathUtility.E}`);
+
+    // Call static method directly on the class name.
+    console.log(`  5 + 3 = ${MathUtility.add(5, 3)}`);
+    console.log(`  4 * 2 = ${MathUtility.multiply(4, 2)}`);
+
+    // 💡 EXPERIMENT: Uncomment to see compile-time error.
+    // You cannot access static members from an instance.
+    // let calculator = new MathUtility();
+    // console.log(calculator.PI); // Error: Property 'PI' does not exist on type 'MathUtility'.
+    // calculator.add(1, 2); // Error: Property 'add' does not exist on type 'MathUtility'.
+
+    console.log("--------------------------------------------------\n");
 }
 
 demonstrateClasses();
