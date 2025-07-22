@@ -8,6 +8,7 @@ export function demonstrateClasses(): void {
     console.log("=================================================\n");
 
     demonstrateBasicClasses();
+    demonstrateAccessModifiers();
 
     console.log("--- END OF STEP 7 DEMONSTRATIONS ----------------\n");
 }
@@ -46,6 +47,65 @@ function demonstrateBasicClasses(): void {
 
     // Accessing properties directly (if not private/protected).
     console.log(`  Person 1's name: ${person1.name}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates access modifiers: public, private, protected.
+ * These control the visibility of class members (properties and methods).
+ * This is a key feature provided by TypeScript, not natively in JavaScript.
+ */
+function demonstrateAccessModifiers(): void {
+    console.log("--- Exploring Access Modifiers ---");
+
+    class Employee {
+        public readonly id: string; // 'public': Accessible everywhere. 'readonly': Cannot be reassigned after initialization.
+        private salary: number;     // 'private': Only accessible within the 'Employee' class itself.
+        protected department: string; // 'protected': Accessible within 'Employee' and its subclasses.
+
+        constructor(id: string, salary: number, department: string) {
+            this.id = id;
+            this.salary = salary;
+            this.department = department;
+        }
+
+        public getDetails(): string {
+            // Inside the class, all members are accessible.
+            return `  ID: ${this.id}, Department: ${this.department}`;
+        }
+
+        // Public method to provide controlled access to the private 'salary'.
+        public getSalary(): number {
+            return this.salary;
+        }
+    }
+
+    // A subclass inheriting from 'Employee'.
+    class Manager extends Employee {
+        constructor(id: string, salary: number, department: string) {
+            super(id, salary, department); // Call the parent class's constructor
+        }
+
+        public getManagerDetails(): string {
+            // 'id' (public) is accessible.
+            // 'department' (protected) is accessible in subclasses.
+            return `  Manager ID: ${this.id}, Managing Department: ${this.department}`;
+        }
+
+        // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+        // public testSalaryAccess(): number { return this.salary; } // Error: Property 'salary' is private and only accessible within class 'Employee'.
+    }
+
+    let emp = new Employee("E001", 60000, "Sales");
+    console.log(emp.getDetails());
+    console.log(`  Employee salary (via public getter): ${emp.getSalary()}`);
+    // 💡 EXPERIMENT: Uncomment to see compile-time errors.
+    // console.log(emp.salary); // Error: Property 'salary' is private and only accessible within class 'Employee'.
+    // emp.id = "E002"; // Error: Cannot assign to 'id' because it is a read-only property.
+
+    let manager = new Manager("M001", 90000, "Engineering");
+    console.log(manager.getManagerDetails());
 
     console.log("-------------------------------------------------\n");
 }
