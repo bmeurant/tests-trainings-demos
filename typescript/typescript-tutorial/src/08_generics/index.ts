@@ -9,6 +9,7 @@ export function demonstrateGenerics(): void {
 
     demonstrateGenericFunctions();
     demonstrateGenericInterfaces();
+    demonstrateGenericClasses();
 
     console.log("--- END OF STEP 8 DEMONSTRATIONS ----------------\n");
 }
@@ -134,6 +135,61 @@ function demonstrateGenericInterfaces(): void {
 
     userRepo.add({ id: "u3", name: "Charlie", email: "charlie@example.com" });
     console.log(`  User with ID u2: ${userRepo.getById("u2")?.name}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Generic Classes.
+ * Generic classes allow you to define classes that can work with various types,
+ * making them reusable for different data structures.
+ */
+function demonstrateGenericClasses(): void {
+    console.log("--- Exploring Generic Classes -------------------");
+
+    // A generic class for a simple Stack data structure.
+    class Stack<T> {
+        readonly elements: T[] = [];
+
+        push(element: T): void {
+            this.elements.push(element);
+            console.log(`  Pushed: ${element}`);
+        }
+
+        pop(): T | undefined {
+            const popped = this.elements.pop();
+            console.log(`  Popped: ${popped}`);
+            return popped;
+        }
+
+        peek(): T | undefined {
+            return this.elements[this.elements.length - 1];
+        }
+
+        isEmpty(): boolean {
+            return this.elements.length === 0;
+        }
+
+        size(): number {
+            return this.elements.length;
+        }
+    }
+
+    // Create a stack of numbers.
+    let numberStack = new Stack<number>();
+    numberStack.push(10);
+    numberStack.push(20);
+    numberStack.pop();
+    console.log(`  Number stack size: ${numberStack.size()}`);
+
+    // Create a stack of strings.
+    let stringStack = new Stack<string>();
+    stringStack.push("Hello");
+    stringStack.push("World");
+    console.log(`  String stack peek: ${stringStack.peek()}`);
+    stringStack.pop();
+    stringStack.pop();
+    console.log(`  String stack is empty: ${stringStack.isEmpty()}`);
 
     console.log("-------------------------------------------------\n");
 }
