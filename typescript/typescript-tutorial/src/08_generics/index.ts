@@ -10,6 +10,7 @@ export function demonstrateGenerics(): void {
     demonstrateGenericFunctions();
     demonstrateGenericInterfaces();
     demonstrateGenericClasses();
+    demonstrateGenericConstraints();
 
     console.log("--- END OF STEP 8 DEMONSTRATIONS ----------------\n");
 }
@@ -193,5 +194,64 @@ function demonstrateGenericClasses(): void {
 
     console.log("-------------------------------------------------\n");
 }
+
+/**
+ * Demonstrates Type Constraints in Generics using the 'extends' keyword.
+ * Type constraints allow you to limit the types that can be used with a generic,
+ * ensuring that the generic type has certain required properties or methods.
+ */
+function demonstrateGenericConstraints(): void {
+    console.log("--- Exploring Generic Constraints ('extends') ---");
+
+    // Define an interface that all types used in our generic function must adhere to.
+    interface HasLength {
+        length: number;
+    }
+
+    // A generic function that takes an argument of type 'T' (which must extend HasLength).
+    // This means 'T' must have a 'length' property.
+    function logLength<T extends HasLength>(arg: T): T {
+        console.log(`  Length of '${JSON.stringify(arg)}' is: ${arg.length}`);
+        return arg;
+    }
+
+    // Valid uses:
+    logLength("Hello World");       // string has a 'length' property
+    logLength([1, 2, 3]);           // array has a 'length' property
+    logLength({ length: 5, value: "test" }); // object with a 'length' property
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // logLength(10); // Error: Argument of type 'number' is not assignable to parameter of type 'HasLength'.
+    // logLength(true); // Error: Argument of type 'boolean' is not assignable to parameter of type 'HasLength'.
+
+    // Another example: a function that merges two objects.
+    // It requires both objects to be of type 'object' (non-null).
+    function merge<T extends object, U extends object>(obj1: T, obj2: U): T & U {
+        return { ...obj1, ...obj2 }; // Uses spread syntax to merge objects
+    }
+
+    let mergedObject = merge({ name: "Alice", age: 30 }, { email: "alice@example.com" });
+    console.log(`  Merged object: ${JSON.stringify(mergedObject)}`);
+    console.log(`  Accessing merged property: ${mergedObject.email}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // merge(10, { key: "value" }); // Error: Argument of type 'number' is not assignable to parameter of type 'object'.
+
+    // A common pattern: working with an object property.
+    // 'K extends keyof T' ensures that K is a valid key (property name) of T.
+    function getProperty<T, K extends keyof T>(obj: T, key: K) {
+        return obj[key];
+    }
+
+    const user = { username: "devPartner", role: "admin" };
+    const username = getProperty(user, "username"); // 'username' is inferred as 'string'
+    console.log(`  User's username: ${username}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const invalidProperty = getProperty(user, "password"); // Error: Argument of type '"password"' is not assignable to parameter of type '"username" | "role"'.
+
+    console.log("-------------------------------------------------\n");
+}
+
 
 demonstrateGenerics();
