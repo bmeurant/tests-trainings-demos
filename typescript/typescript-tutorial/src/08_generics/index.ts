@@ -8,6 +8,7 @@ export function demonstrateGenerics(): void {
     console.log("=================================================\n");
 
     demonstrateGenericFunctions();
+    demonstrateGenericInterfaces();
 
     console.log("--- END OF STEP 8 DEMONSTRATIONS ----------------\n");
 }
@@ -55,6 +56,84 @@ function demonstrateGenericFunctions(): void {
     let emptyArray: number[] = [];
     let firstUndefined = getFirstElement(emptyArray); // Type inferred as number | undefined
     console.log(`  First element of empty array: ${firstUndefined}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Generic Interfaces.
+ * Generic interfaces allow you to define flexible data structures
+ * that can work with different types.
+ */
+function demonstrateGenericInterfaces(): void {
+    console.log("--- Exploring Generic Interfaces ----------------");
+
+    // Define a generic interface for a pair of values.
+    interface Pair<T1, T2> {
+        first: T1;
+        second: T2;
+    }
+
+    // Use the generic interface with specific types.
+    let numberAndString: Pair<number, string> = { first: 1, second: "one" };
+    console.log(`  Pair (number, string): ${numberAndString.first}, ${numberAndString.second}`);
+
+    let booleanAndBoolean: Pair<boolean, boolean> = { first: true, second: false };
+    console.log(`  Pair (boolean, boolean): ${booleanAndBoolean.first}, ${booleanAndBoolean.second}`);
+
+    // Define a generic interface for a key-value store.
+    interface KeyValuePair<K, V> {
+        key: K;
+        value: V;
+    }
+
+    let userConfig: KeyValuePair<string, number> = { key: "theme", value: 123 };
+    console.log(`  Key-Value Pair (string, number): ${userConfig.key} -> ${userConfig.value}`);
+
+    // A more complex generic interface, e.g., for a simple generic repository pattern.
+    interface Repository<T> {
+        getById(id: string): T | undefined;
+        add(item: T): void;
+        getAll(): T[];
+    }
+
+    // Implement the generic repository for a 'User' type.
+    interface User {
+        id: string;
+        name: string;
+        email: string;
+    }
+
+    class UserRepository implements Repository<User> {
+        readonly users: User[] = [];
+
+        constructor(initialUsers: User[] = []) {
+            this.users = initialUsers;
+        }
+
+        getById(id: string): User | undefined {
+            return this.users.find(u => u.id === id);
+        }
+
+        add(item: User): void {
+            this.users.push(item);
+            console.log(`    Added user: ${item.name}`);
+        }
+
+        getAll(): User[] {
+            return [...this.users]; // Return a copy
+        }
+    }
+
+    const myUsers = [
+        { id: "u1", name: "Alice", email: "alice@example.com" },
+        { id: "u2", name: "Bob", email: "bob@example.com" }
+    ];
+    let userRepo = new UserRepository(myUsers);
+    console.log(`\n  All users: ${userRepo.getAll().map(u => u.name).join(", ")}`);
+
+    userRepo.add({ id: "u3", name: "Charlie", email: "charlie@example.com" });
+    console.log(`  User with ID u2: ${userRepo.getById("u2")?.name}`);
 
     console.log("-------------------------------------------------\n");
 }
