@@ -5,6 +5,7 @@ import { demonstrateFunctions } from './04_functions';
 import { demonstrateInterfaces } from './05_interfaces';
 import { demonstrateUnionAndLiteralTypes } from './06_union_literal_types';
 import { demonstrateClasses } from './07_classes';
+import { demonstrateGenerics } from './08_generics';
 
 
 /**
@@ -36,6 +37,9 @@ function runTutorial(): void {
 
     // --- 07 Classes ---
     demonstrateClasses();
+
+    // --- 08 Generics ---
+    demonstrateGenerics();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
