@@ -9,6 +9,7 @@ export function demonstrateAdvancedTypes(): void {
 
     demonstrateIntersectionTypes();
     demonstrateTemplateLiteralTypes();
+    demonstrateConditionalTypes();
 
     console.log("--- END OF STEP 9 DEMONSTRATIONS ----------------\n");
 }
@@ -137,6 +138,62 @@ function demonstrateTemplateLiteralTypes(): void {
     // const shouldBeNeverAgain: ExtractedPrefixNoUnderscore = "no"; // Error: Type '"no"' is not assignable to type 'never'.
     console.log(`  Extracted prefix (from no_underscore_here): ${"This will also be 'never' type" as ExtractedPrefixNoUnderscore}`);
 
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Conditional Types.
+ * Conditional types allow you to choose a type based on a condition
+ * that checks the relationship between two types.
+ * Syntax: `SomeType extends OtherType ? TrueType : FalseType`
+ */
+function demonstrateConditionalTypes(): void {
+    console.log("--- Exploring Conditional Types -----------------");
+
+    // Example 1: Check if a type is a string
+    type IsString<T> = T extends string ? "Yes" : "No";
+
+    type Result1 = IsString<"hello">; // "Yes"
+    type Result2 = IsString<123>;     // "No"
+    type Result3 = IsString<string>;  // "Yes" (string extends string)
+    type Result4 = IsString<number>;  // "No"
+
+    // To demonstrate the *type* being "Yes" or "No", we should use a string literal.
+    const isHelloAString: Result1 = "Yes"; // This assignment is valid because "Yes" matches the Result1 type
+    console.log(`  Is "hello" a string? Result type is '${isHelloAString}'`);
+
+    const is123AString: Result2 = "No"; // This assignment is valid because "No" matches the Result2 type
+    console.log(`  Is 123 a string? Result type is '${is123AString}'`);
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const attemptWrongAssignment: Result2 = "Yes"; // Error: Type '"Yes"' is not assignable to type '"No"'.
+
+    // Example 2: Extracting return type of a function (often used in utility types)
+    type FunctionType = (a: number, b: string) => boolean;
+    type NotFunctionType = { prop: string };
+
+    type ReturnTypeIfFunction<T> = T extends (...args: any[]) => infer R ? R : never;
+
+    type MyReturnType = ReturnTypeIfFunction<FunctionType>;     // Type is boolean
+    type MyOtherType = ReturnTypeIfFunction<NotFunctionType>; // Type is never
+
+    // To demonstrate, we describe what the type is
+    console.log(`  Return type of a function: Type is 'boolean' (actual value might be true/false)`);
+    console.log(`  Return type of non-function: Type is 'never'`);
+
+    // Example 3: Distributive Conditional Types
+    // When a conditional type acts on a union type, it distributes over the union.
+    type ToArray<T> = T extends any ? T[] : never;
+
+    type ResultUnion = ToArray<string | number>; // Becomes string[] | number[]
+    // string extends any ? string[] : never  => string[]
+    // number extends any ? number[] : never  => number[]
+    // Result: string[] | number[]
+
+    console.log(`  Distributive conditional type result: Type is 'string[] | number[]'`);
+    const exampleDistributive: ResultUnion = ["test", "string"]; // Valid
+    const exampleDistributive2: ResultUnion = [10, 20];      // Valid
+    console.log(`  Example: [${exampleDistributive.join(", ")}] or [${exampleDistributive2.join(", ")}]`);
 
     console.log("-------------------------------------------------\n");
 }
