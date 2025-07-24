@@ -8,6 +8,7 @@ export function demonstrateAdvancedTypes(): void {
     console.log("=================================================\n");
 
     demonstrateIntersectionTypes();
+    demonstrateTemplateLiteralTypes();
 
     console.log("--- END OF STEP 9 DEMONSTRATIONS ----------------\n");
 }
@@ -73,6 +74,69 @@ function demonstrateIntersectionTypes(): void {
     // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
     // const impossible: ConflictingIntersection = { value: "hello" }; // Error: Type 'string' is not assignable to type 'never'.
     // const impossible2: ConflictingIntersection = { value: 123 }; // Error: Type 'number' is not assignable to type 'never'.
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Template Literal Types.
+ * These allow you to create new string literal types by concatenating string literals
+ * and union types with template string syntax.
+ */
+function demonstrateTemplateLiteralTypes(): void {
+    console.log("--- Exploring Template Literal Types ------------");
+
+    type Direction = "left" | "right" | "up" | "down";
+    type ButtonPrefix = "btn_";
+
+    // Combines a prefix with a direction to create new literal strings.
+    type ButtonId = `${ButtonPrefix}${Direction}`;
+
+    const saveButton: ButtonId = "btn_left";
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const invalidButton: ButtonId = "btn_forward"; // Error: Type '"btn_forward"' is not assignable to type 'ButtonId'.
+
+    console.log(`  Button ID: ${saveButton}`);
+
+    // More complex example: creating event names
+    type EventName = "click" | "hover" | "focus";
+    type Element = "button" | "input" | "div";
+
+    type DomEvent = `${Element}_${EventName}`;
+
+    let myDomEvent: DomEvent = "button_click";
+    console.log(`  DOM Event: ${myDomEvent}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // let invalidDomEvent: DomEvent = "span_click"; // Error: Type '"span_click"' is not assignable to type 'DomEvent'.
+
+    // This type extracts everything before the SECOND underscore.
+    // We match the pattern: (anything)_ (anything else)_ (rest of string)
+    // And we infer the part before the second underscore.
+    type GetPrefixBeforeSecondUnderscore<S extends string> =
+        S extends `${infer PrefixA}_${infer PrefixB}_${string}` ? `${PrefixA}_${PrefixB}` : never;
+
+    // Example 1: String with multiple underscores
+    type ExtractedPrefix2 = GetPrefixBeforeSecondUnderscore<"my_long_string_value">; // Type is "my_long"
+    const actualPrefix2: ExtractedPrefix2 = "my_long";
+    console.log(`  Extracted prefix (before second underscore - Example 1): ${actualPrefix2}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const wrongPrefix2: ExtractedPrefix2 = "my_wrong"; // Error: Type '"my_wrong"' is not assignable to type '"my_long"'.
+
+    // Example 2: String with only one underscore (should result in never)
+    type ExtractedPrefixWithSingleUnderscore = GetPrefixBeforeSecondUnderscore<"single_value">; // Type is never
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const shouldBeNever: ExtractedPrefixWithSingleUnderscore = "single"; // Error: Type '"single"' is not assignable to type 'never'.
+    console.log(`  Extracted prefix (from single_value): ${"This will be 'never' type" as ExtractedPrefixWithSingleUnderscore}`);
+
+
+    // Example 3: String with no underscore (should result in never)
+    type ExtractedPrefixNoUnderscore = GetPrefixBeforeSecondUnderscore<"no_underscore_here">; // Type is never
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const shouldBeNeverAgain: ExtractedPrefixNoUnderscore = "no"; // Error: Type '"no"' is not assignable to type 'never'.
+    console.log(`  Extracted prefix (from no_underscore_here): ${"This will also be 'never' type" as ExtractedPrefixNoUnderscore}`);
+
 
     console.log("-------------------------------------------------\n");
 }
