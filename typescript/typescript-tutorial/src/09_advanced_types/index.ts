@@ -11,6 +11,7 @@ export function demonstrateAdvancedTypes(): void {
     demonstrateTemplateLiteralTypes();
     demonstrateConditionalTypes();
     demonstrateMappedTypes();
+    demonstrateKeyofOperator();
 
     console.log("--- END OF STEP 9 DEMONSTRATIONS ----------------\n");
 }
@@ -249,6 +250,64 @@ function demonstrateMappedTypes(): void {
     type NullableUserProfile = Nullable<UserProfile>;
     const nullableUser: NullableUserProfile = { id: "u4", name: "Paul", email: null, age: null };
     console.log(`  Nullable user: ${JSON.stringify(nullableUser)}`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates the 'keyof' type operator.
+ * `keyof` takes an object type and produces a string or string literal union
+ * of its keys (property names). It's often used with generics to ensure
+ * type safety when accessing properties by name.
+ */
+function demonstrateKeyofOperator(): void {
+    console.log("--- Exploring `keyof` Operator ------------------");
+
+    interface Product {
+        id: string;
+        name: string;
+        price: number;
+        category: "electronics" | "books" | "clothes";
+    }
+
+    // `keyof Product` will be "id" | "name" | "price" | "category"
+    type ProductKeys = keyof Product;
+    let key1: ProductKeys = "name";
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // let key2: ProductKeys = "description"; // Error: Type '"description"' is not assignable to type 'ProductKeys'.
+
+    console.log(`  Valid product key: ${key1}`);
+
+    // Using `keyof` with a generic function to safely access object properties.
+    function getPropertyValue<T, K extends keyof T>(obj: T, key: K): T[K] {
+        return obj[key];
+    }
+
+    const myProduct: Product = {
+        id: "P001",
+        name: "Wireless Mouse",
+        price: 25.99,
+        category: "electronics"
+    };
+
+    const productName = getPropertyValue(myProduct, "name"); // Type inferred as string
+    console.log(`  Product name: ${productName}`);
+
+    const productPrice = getPropertyValue(myProduct, "price"); // Type inferred as number
+    console.log(`  Product price: ${productPrice}`);
+
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const invalidProp = getPropertyValue(myProduct, "weight"); // Error: Argument of type '"weight"' is not assignable to parameter of type 'ProductKeys'.
+
+    // You can also use typeof with keyof for variables:
+    const userSettings = {
+        theme: "dark",
+        notifications: true,
+        language: "en"
+    };
+    type SettingKeys = keyof typeof userSettings; // "theme" | "notifications" | "language"
+    let setting: SettingKeys = "notifications";
+    console.log(`  Valid setting key: ${setting}`);
 
     console.log("-------------------------------------------------\n");
 }
