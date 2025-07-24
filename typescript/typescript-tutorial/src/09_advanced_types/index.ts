@@ -10,6 +10,7 @@ export function demonstrateAdvancedTypes(): void {
     demonstrateIntersectionTypes();
     demonstrateTemplateLiteralTypes();
     demonstrateConditionalTypes();
+    demonstrateMappedTypes();
 
     console.log("--- END OF STEP 9 DEMONSTRATIONS ----------------\n");
 }
@@ -194,6 +195,60 @@ function demonstrateConditionalTypes(): void {
     const exampleDistributive: ResultUnion = ["test", "string"]; // Valid
     const exampleDistributive2: ResultUnion = [10, 20];      // Valid
     console.log(`  Example: [${exampleDistributive.join(", ")}] or [${exampleDistributive2.join(", ")}]`);
+
+    console.log("-------------------------------------------------\n");
+}
+
+/**
+ * Demonstrates Mapped Types.
+ * Mapped types allow you to take an existing type and transform each of its
+ * properties based on a new set of property modifiers.
+ * They are often used to create variations of existing types.
+ */
+function demonstrateMappedTypes(): void {
+    console.log("--- Exploring Mapped Types ----------------------");
+
+    interface UserProfile {
+        id: string;
+        name: string;
+        email: string;
+        age?: number; // Optional
+    }
+
+    // 1. Partial<T>: Makes all properties in T optional.
+    type PartialUserProfile = Partial<UserProfile>;
+    const partialUser: PartialUserProfile = { name: "Jane" }; // Only 'name' is needed
+    console.log(`  Partial user: ${JSON.stringify(partialUser)}`);
+
+    // 2. Required<T>: Makes all properties in T required.
+    type RequiredUserProfile = Required<UserProfile>;
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // const requiredUser: RequiredUserProfile = { id: "u1", name: "John", email: "john@ex.com" }; // Error: Property 'age' is missing
+    const requiredUser: RequiredUserProfile = { id: "u1", name: "John", email: "john@ex.com", age: 40 };
+    console.log(`  Required user: ${JSON.stringify(requiredUser)}`);
+
+    // 3. Readonly<T>: Makes all properties in T readonly.
+    type ReadonlyUserProfile = Readonly<UserProfile>;
+    const readonlyUser: ReadonlyUserProfile = { id: "u2", name: "Mark", email: "mark@ex.com", age: 25 };
+    // 💡 EXPERIMENT: Uncomment the line below to see a compile-time error.
+    // readonlyUser.name = "Marcus"; // Error: Cannot assign to 'name' because it is a read-only property.
+    console.log(`  Readonly user: ${JSON.stringify(readonlyUser)}`);
+
+    // 4. Pick<T, K>: Constructs a type by picking the set of properties K from T.
+    type UserSummary = Pick<UserProfile, "id" | "name">;
+    const userSummary: UserSummary = { id: "u3", name: "Sarah" };
+    console.log(`  User summary (picked): ${JSON.stringify(userSummary)}`);
+
+    // 5. Omit<T, K>: Constructs a type by omitting the set of properties K from T.
+    type UserWithoutIdAndEmail = Omit<UserProfile, "id" | "email">;
+    const userOmitted: UserWithoutIdAndEmail = { name: "Peter", age: 50 };
+    console.log(`  User (omitted id/email): ${JSON.stringify(userOmitted)}`);
+
+    // Custom Mapped Type Example: making properties nullable
+    type Nullable<T> = { [P in keyof T]: T[P] | null; };
+    type NullableUserProfile = Nullable<UserProfile>;
+    const nullableUser: NullableUserProfile = { id: "u4", name: "Paul", email: null, age: null };
+    console.log(`  Nullable user: ${JSON.stringify(nullableUser)}`);
 
     console.log("-------------------------------------------------\n");
 }
