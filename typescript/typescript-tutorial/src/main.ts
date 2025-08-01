@@ -7,7 +7,7 @@ import { demonstrateUnionAndLiteralTypes } from './06_union_literal_types';
 import { demonstrateClasses } from './07_classes';
 import { demonstrateGenerics } from './08_generics';
 import { demonstrateAdvancedTypes } from './09_advanced_types';
-
+import { demonstrateModules } from './10_modules';
 
 /**
  * This is the main entry point for the TypeScript tutorial.
@@ -44,6 +44,9 @@ function runTutorial(): void {
 
     // --- 09 Advanced Types ---
     demonstrateAdvancedTypes();
+
+    // --- 10 Modules ---
+    demonstrateModules();
 
     console.log("=================================================");
     console.log("          TYPESCRIPT TUTORIAL COMPLETED          ");
