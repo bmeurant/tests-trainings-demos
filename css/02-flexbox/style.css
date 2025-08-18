@@ -135,3 +135,35 @@ h2 {
 .grow-2 {
     flex-grow: 2; /* This item will take up 2/4 of the available space */
 }
+
+/* =========================================================================
+ * 2.4: Flexbox Wrap
+ * `flex-wrap` controls whether flex items wrap onto multiple lines.
+ * `flex-flow` is a shorthand for `flex-direction` and `flex-wrap`.
+ * ========================================================================= */
+.step-2-4 .flex-container {
+    display: flex;
+    border: 2px solid #3498db;
+    padding: 1rem;
+    background-color: #ecf0f1;
+    margin-bottom: 1rem;
+    width: 300px; /* A fixed width to demonstrate the wrap effect */
+}
+
+.step-2-4 .flex-item {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: 1px solid #2980b9;
+    text-align: center;
+    width: 100px; /* Setting a fixed width to force wrapping */
+    flex-shrink: 0; /* Prevents items from shrinking */
+}
+
+.nowrap {
+    flex-wrap: nowrap; /* Default behavior, items will overflow if needed */
+}
+
+.wrap {
+    flex-wrap: wrap; /* Items will wrap to the next line */
+}
