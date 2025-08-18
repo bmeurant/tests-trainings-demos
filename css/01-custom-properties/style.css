@@ -65,13 +65,54 @@ h2 {
 }
 
 .card-highlight {
-    --highlight-color: #e74c3c; /* A nice red */
-    --primary-color: var(--highlight-color); /* We override the global primary color */
+    --highlight-color: #e74c3c;
+    --primary-color: var(--highlight-color);
     border: 1px solid var(--primary-color);
     padding: var(--spacing-unit);
     margin-top: var(--spacing-unit);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-unit);
 }
 
 .card-highlight p {
     color: var(--primary-color);
+}
+
+/* =========================================================================
+ * 1.3: Dynamic Variables with JavaScript
+ * The HTML and CSS for this section are now much simpler.
+ * ========================================================================= */
+.step-1-3 {
+    padding: 2rem;
+    border-top: 2px solid var(--primary-color);
+}
+
+.step-1-3 p {
+    margin-bottom: 0.5rem;
+}
+
+/* We define a base style for all buttons to avoid repetition. */
+button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* The global button uses the global variable. */
+#changeGlobalColorBtn {
+    background-color: var(--primary-color);
+}
+
+/* The local button now uses the local variable defined in its parent. */
+#changeLocalColorBtn {
+    background-color: var(--primary-color);
+}
+
+button:hover {
+    filter: brightness(1.2);
 }
