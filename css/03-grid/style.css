@@ -41,3 +41,48 @@ h2 {
     border: 1px solid #2980b9;
     text-align: center;
 }
+
+/* =========================================================================
+ * 3.2: Sizing and Item Placement
+ * ========================================================================= */
+.step-3-2 .grid-container {
+    display: grid;
+    border: 2px solid #3498db;
+    padding: 1rem;
+    background-color: #ecf0f1;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.step-3-2 .grid-item {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: 1px solid #2980b9;
+    text-align: center;
+}
+
+/* --- Flexible Sizing with fr --- */
+.fr-sizing {
+    grid-template-columns: auto 1fr 2fr;
+}
+
+/* --- Item Placement --- */
+.item-placement {
+    /* We define a 3x3 grid for this example */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    height: 300px;
+}
+
+.item-1 {
+    /* Starts at column line 1, spans 3 columns */
+    grid-column: 1 / span 3;
+}
+
+.item-2 {
+    /* Starts at column line 2, spans 2 columns */
+    grid-column: 2 / span 2;
+    /* Starts at row line 2, spans 2 rows */
+    grid-row: 2 / span 2;
+}
