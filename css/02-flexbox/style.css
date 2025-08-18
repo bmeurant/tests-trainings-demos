@@ -39,3 +39,36 @@ h2 {
     border: 1px solid #2980b9;
     text-align: center;
 }
+
+/* =========================================================================
+ * 2.2: Alignment and Space Distribution
+ * `justify-content` aligns items along the main axis.
+ * The default main axis is horizontal.
+ * ========================================================================= */
+.step-2-2 .flex-container {
+    display: flex;
+    border: 2px solid #3498db;
+    padding: 1rem;
+    background-color: #ecf0f1;
+    margin-bottom: 1rem;
+}
+
+.step-2-2 .flex-item {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: 1px solid #2980b9;
+    text-align: center;
+}
+
+.justify-start {
+    justify-content: flex-start; /* Default value, aligns items to the start of the container */
+}
+
+.justify-center {
+    justify-content: center; /* Aligns items to the center */
+}
+
+.justify-between {
+    justify-content: space-between; /* Distributes space evenly between items */
+}
