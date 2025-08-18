@@ -86,3 +86,64 @@ h2 {
     /* Starts at row line 2, spans 2 rows */
     grid-row: 2 / span 2;
 }
+
+/* =========================================================================
+ * 3.3: Responsive Layout with Media Queries
+ * We create a single column layout by default (for mobile-first approach).
+ * On larger screens, we use `grid-template-areas` to create a multi-column layout.
+ * ========================================================================= */
+.step-3-3 .page-layout {
+    display: grid;
+    /* On mobile, the sidebar appears before the main content. */
+    grid-template-areas:
+        "header"
+        "sidebar"
+        "main"
+        "footer";
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #ecf0f1;
+}
+
+/* We assign each element to its named area */
+.header {
+    grid-area: header;
+    background-color: #34495e;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.main {
+    grid-area: main;
+    background-color: #7f8c8d;
+    color: white;
+    padding: 1rem;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background-color: #95a5a6;
+    color: white;
+    padding: 1rem;
+}
+
+.footer {
+    grid-area: footer;
+    background-color: #34495e;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* On screens larger than 768px, we change the layout */
+@media (min-width: 768px) {
+    .step-3-3 .page-layout {
+        /* We change the template to a two-column layout */
+        grid-template-columns: 3fr 1fr;
+        grid-template-areas:
+            "header  header"
+            "main    sidebar"
+            "footer  footer";
+    }
+}
