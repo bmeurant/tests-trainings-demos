@@ -1,0 +1,47 @@
+/*
+ * Step 1: CSS Custom Properties (Variables)
+ * This stylesheet is built progressively.
+ * Each section corresponds to a step in the tutorial.
+ */
+
+/* =========================================================================
+ * Global Definitions
+ * These variables are declared on the :root pseudo-class,
+ * making them available throughout the entire document.
+ * ========================================================================= */
+:root {
+    --primary-color: #3498db;
+    --background-color: #ecf0f1;
+    --text-color: #34495e;
+    --font-size-base: 16px;
+    --spacing-unit: 1rem;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    margin: 0;
+    padding: var(--spacing-unit);
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+}
+
+/* =========================================================================
+ * 1.1: Basic Declaration and Usage
+ * This section demonstrates how to use global variables.
+ * ========================================================================= */
+.step-1-1 {
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 2rem;
+}
