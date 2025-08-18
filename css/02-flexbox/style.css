@@ -72,3 +72,66 @@ h2 {
 .justify-between {
     justify-content: space-between; /* Distributes space evenly between items */
 }
+
+/* =========================================================================
+ * 2.3: Vertical Alignment and Sizing
+ * `align-items` aligns items along the cross axis (vertical).
+ * The Flexbox container needs a height to see the effect.
+ * ========================================================================= */
+.step-2-3 .flex-container {
+    display: flex;
+    border: 2px solid #3498db;
+    padding: 1rem;
+    background-color: #ecf0f1;
+    margin-bottom: 1rem;
+    height: 150px; /* Added height to see vertical alignment effects */
+}
+
+.step-2-3 .flex-item {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: 1px solid #2980b9;
+    text-align: center;
+}
+
+.small {
+    height: 60px;
+}
+
+.tall {
+    height: 90px;
+}
+
+.align-start {
+    align-items: flex-start; /* Aligns items to the top of the container */
+}
+
+.align-center {
+    align-items: center; /* Aligns items to the vertical center */
+}
+
+.align-stretch {
+    align-items: stretch; /* Stretches items to fill the container (default) */
+}
+
+/* =========================================================================
+ * flex-grow & flex-shrink
+ * `flex-grow` defines the ability for a flex item to grow if necessary.
+ * `flex-shrink` defines the ability for a flex item to shrink if necessary.
+ * ========================================================================= */
+.grow-shrink-example {
+    width: 600px; /* Setting a specific width to demonstrate resizing */
+}
+
+.grow-shrink-example .flex-item {
+    width: 100px;
+}
+
+.grow-1 {
+    flex-grow: 1; /* This item will take up 1/4 of the available space */
+}
+
+.grow-2 {
+    flex-grow: 2; /* This item will take up 2/4 of the available space */
+}
