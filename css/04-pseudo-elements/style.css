@@ -58,3 +58,81 @@ h2 {
     background-color: #2ecc71;
     border-radius: 50%;
 }
+
+/* =========================================================================
+ * 4.2: Hover Effects
+ * Pseudo-elements are perfect for creating clean, animated effects on hover.
+ * We use `transform` and `transition` for smooth animations.
+ * ========================================================================= */
+.step-4-2 {
+    margin-top: 2rem;
+}
+
+.step-4-2 .card {
+    text-align: center;
+}
+
+.button {
+    position: relative;
+    display: inline-block;
+    padding: 1rem 2rem;
+    margin: 1rem;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* --- Button 1: Underline effect on hover --- */
+.button-1 {
+    background-color: #3498db;
+}
+
+.button-1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    transform: scaleX(0); /* Initially hidden */
+    transform-origin: bottom left; /* Animation starts from the left */
+    transition: transform 0.3s ease;
+}
+
+.button-1:hover::after {
+    transform: scaleX(1); /* Stretches to full width on hover */
+}
+
+/* --- Button 2: Fade-in background on hover --- */
+.button-2 {
+    background-color: #e74c3c;
+    border: 2px solid #e74c3c;
+    color: white;
+}
+
+.button-2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.button-2:hover::before {
+    opacity: 1; /* Fades in on hover */
+}
+
+/* Make sure the text is on top of the pseudo-element */
+.button-2 span {
+    position: relative;
+    z-index: 1;
+}
