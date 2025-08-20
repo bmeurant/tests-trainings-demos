@@ -1,0 +1,47 @@
+/*
+ * Step 5: SVG
+ * This stylesheet is built progressively.
+ */
+body {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    /* We define the colors for the SVG and the container at the root level */
+    --base-color: #3498db;
+    --svg-color: #2c3e50;
+    --svg-border-color: var(--base-color);
+    --container-border-color: var(--base-color);
+    --container-bg-color: #ecf0f1;
+}
+
+h1 {
+    text-align: center;
+    color: var(--container-border-color);
+}
+
+h2 {
+    color: var(--svg-color);
+    margin-top: 2rem;
+}
+
+/* =========================================================================
+ * 5.1: Basic SVG Integration with CSS Variables
+ * This version uses CSS variables for better maintainability and reusability.
+ * ========================================================================= */
+.step-5-1 .icon-container {
+    text-align: center;
+    margin: 2rem;
+    padding: 1rem;
+    border: 2px solid var(--container-border-color);
+    background-color: var(--container-bg-color);
+    /* We can also define local variables for specific components */
+    --icon-size: 100px;
+}
+
+.star-icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    /* We use the CSS variable to fill the SVG path */
+    fill: var(--svg-color);
+    stroke: var(--svg-border-color);
+    stroke-width: 2rem;
+}
