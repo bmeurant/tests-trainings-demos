@@ -1,0 +1,175 @@
+:root {
+    --bg-color: #ecf0f1;
+    --text-color: #34495e;
+    --sidebar-bg: #2c3e50;
+    --sidebar-text: #ecf0f1;
+    --card-bg: white;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --featured-card-bg: #f1c40f;
+    --featured-card-text: #2c3e50;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.5s;
+}
+
+/* =========================================================================
+ * Layout with CSS Grid and Flexbox - Mobile First
+ * ========================================================================= */
+.dashboard-layout {
+    display: grid;
+    min-height: 100vh;
+    grid-template-areas:
+        "sidebar"
+        "main-content";
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .dashboard-layout {
+        grid-template-areas: "sidebar main-content";
+        grid-template-columns: 250px 1fr;
+    }
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 2rem 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-item:is(:hover, :focus) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item--active {
+    background-color: #3498db;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.main-content {
+    grid-area: main-content;
+    padding: 2rem;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.main-title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin: 0;
+}
+
+.theme-toggle {
+    background-color: transparent;
+    border: 2px solid var(--text-color);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--card-shadow);
+    transition: transform 0.3s, background-color 0.3s, color 0.3s;
+}
+
+.card:has(.card-value:hover) {
+    transform: translateY(-5px);
+}
+
+.card--featured {
+    background-color: var(--featured-card-bg);
+    color: var(--featured-card-text);
+}
+
+.card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+}
+
+.card-value::after {
+    content: '';
+    display: block;
+    width: 25%;
+    height: 3px;
+    background-color: var(--text-color);
+    margin-top: 0.5rem;
+    transition: width 0.3s;
+}
+
+.card:is(.card:hover, .card--featured) .card-value::after {
+    width: 50%;
+}
+
+/* Dark Theme */
+body.dark-theme {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --sidebar-bg: #34495e;
+    --sidebar-text: #ecf0f1;
+    --card-bg: #34495e;
+    --card-shadow: rgba(0, 0, 0, 0.4);
+    --featured-card-bg: #f1c40f;
+    --featured-card-text: #2c3e50;
+}
