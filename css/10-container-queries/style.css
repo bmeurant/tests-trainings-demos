@@ -1,0 +1,71 @@
+/*
+ * Step 10: CSS Container Queries
+ */
+body {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    color: #3498db;
+}
+
+/* We use CSS Grid for the overall page layout */
+.page-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    background-color: white;
+}
+
+.main-content, .sidebar-content {
+    padding: 1rem;
+    border: 2px dashed #95a5a6;
+}
+
+/* 1. We define the parent as a container */
+.card-container {
+    container-type: inline-size;
+    container-name: card;
+}
+
+/* Default card styles (for large containers) */
+.product-card {
+    display: flex;
+    gap: 1.5rem;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.product-card img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 2. We use @container to apply styles based on the container size */
+@container card (max-width: 400px) {
+    .product-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .product-card img {
+        max-width: 100%;
+    }
+
+    .product-card button {
+        width: 100%;
+    }
+}
