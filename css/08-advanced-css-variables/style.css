@@ -1,0 +1,38 @@
+:root {
+    --bg-color: #f4f4f4;
+    --text-color: #333;
+    --card-bg-color: white;
+    --card-border-color: #ccc;
+    --padding-size: 2rem;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 1rem;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.theme-switcher {
+    padding: var(--padding-size);
+    text-align: center;
+}
+
+.card {
+    margin: var(--padding-size) auto;
+    padding: var(--padding-size);
+    border: 1px solid var(--card-border-color);
+    background-color: var(--card-bg-color);
+    border-radius: 8px;
+    width: calc(300px + var(--padding-size));
+    transition: background-color 0.5s, border-color 0.5s;
+}
+
+body.dark-theme {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --card-bg-color: #34495e;
+    --card-border-color: #7f8c8d;
+    --padding-size: 3rem;
+}
