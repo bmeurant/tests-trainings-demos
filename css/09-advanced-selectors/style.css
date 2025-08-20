@@ -58,3 +58,32 @@ h1 {
 .card-list :is(.card--primary, .card--secondary):hover h3 {
     text-decoration: underline;
 }
+
+/* =========================================================================
+ * 9.2: The `:has()` Selector
+ * `has()` is a "relative" pseudo-class. It selects a parent based on its content.
+ * ========================================================================= */
+.has-container {
+    padding: 1.5rem;
+    border: 2px solid #ccc;
+    margin: 1rem auto;
+    width: 300px;
+    background-color: white;
+}
+
+.has-container p {
+    font-weight: normal;
+    color: #333;
+}
+
+/* `:has(img)` selects `.has-container` only if it contains an `img` element. */
+.has-container:has(img) {
+    background-color: #f1c40f;
+    border-color: #e67e22;
+}
+
+/* `:has(img)` lets us style the child of the parent. */
+.has-container:has(img) p {
+    font-weight: bold;
+    color: #e67e22;
+}
