@@ -33,3 +33,28 @@ h2 {
     margin: auto;
     text-align: center;
 }
+
+/* =========================================================================
+ * 7.2: `clamp()` Demo
+ * We apply `clamp()` to the font-size and width of elements.
+ * ========================================================================= */
+.step-7-2 {
+    padding: 2rem;
+    background-color: #f0f3f4;
+}
+
+.step-7-2 p {
+    text-align: center;
+    /* `clamp()` for responsive font sizing */
+    font-size: clamp(1rem, 5vw, 2.5rem);
+}
+
+.clamp-box {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem auto;
+    /* `clamp()` for responsive width sizing */
+    width: clamp(200px, 80%, 600px);
+}
