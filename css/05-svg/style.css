@@ -45,3 +45,40 @@ h2 {
     stroke: var(--svg-border-color);
     stroke-width: 2rem;
 }
+
+/* =========================================================================
+ * 5.2: Stroke Animation
+ * We use `stroke-dasharray` and `stroke-dashoffset` to create a drawing effect.
+ * ========================================================================= */
+.step-5-2 .icon-container {
+    text-align: center;
+    margin: 2rem;
+    padding: 1rem;
+    border: 2px solid var(--container-border-color);
+    background-color: var(--container-bg-color);
+    /* We can also define local variables for specific components */
+    --icon-size: 100px;
+}
+
+.stroke-container {
+    padding: 1rem;
+    background-color: transparent;
+    border: none;
+}
+
+.stroke-star-icon {
+    /* We now use `stroke` to define the line's color instead of `fill` */
+    stroke: var(--svg-color);
+    stroke-width: 25; /* A thicker stroke for better visibility */
+    fill: none; /* We remove the fill so only the line is visible */
+
+    /* This is the key part of the animation */
+    stroke-dasharray: 1000; /* Set a large value to create one long dash */
+    stroke-dashoffset: 1000; /* Hide the dash off-screen */
+    transition: stroke-dashoffset 2s ease-in-out; /* Add a smooth transition */
+}
+
+/* On hover, we move the dash to 0, making the path visible */
+.stroke-container:hover .stroke-star-icon {
+    stroke-dashoffset: 0;
+}
