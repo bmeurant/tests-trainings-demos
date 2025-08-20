@@ -1,0 +1,35 @@
+/*
+ * Step 7: `calc()` and `clamp()`
+ */
+body {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+}
+
+h1 {
+    text-align: center;
+    color: #3498db;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-top: 2rem;
+}
+
+/* =========================================================================
+ * 7.1: `calc()` Demo
+ * We use `calc()` to set the width to be the full viewport width minus a fixed padding.
+ * ========================================================================= */
+.step-7-1 {
+    padding: 2rem;
+    background-color: #ecf0f1;
+}
+
+.calc-box {
+    background-color: #3498db;
+    color: white;
+    padding: 2rem;
+    width: calc(100% - 4rem); /* 100% of the parent width minus the left and right padding of the parent */
+    margin: auto;
+    text-align: center;
+}
