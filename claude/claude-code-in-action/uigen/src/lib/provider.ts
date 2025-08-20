@@ -71,7 +71,7 @@ export class MockLanguageModel implements LanguageModelV1 {
       componentName = "ContactForm";
     } else if (promptLower.includes("card")) {
       componentType = "card";
-      componentName = "Card";
+      componentName = "PricingCard";
     }
 
     // Step 1: Create component file
@@ -284,35 +284,65 @@ export default ContactForm;`;
       case "card":
         return `import React from 'react';
 
-const Card = ({ 
-  title = "Welcome to Our Service", 
-  description = "Discover amazing features and capabilities that will transform your experience.",
-  imageUrl,
-  actions 
+const PricingCard = ({ 
+  tier = "Pro", 
+  price = "$29",
+  period = "month",
+  description = "Perfect for growing teams",
+  features = ["Advanced Analytics", "Priority Support", "Custom Integrations", "24/7 Monitoring"],
+  isPopular = false,
+  buttonText = "Get Started"
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
+    <div className={
+      "relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-2 " +
+      (isPopular ? "border-blue-500 scale-105" : "border-gray-200 hover:border-blue-200")
+    }>
+      {isPopular && (
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-1 rounded-full text-sm font-medium shadow-lg">
+            Most Popular
+          </span>
+        </div>
       )}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
-        {actions && (
-          <div className="mt-4">
-            {actions}
+      
+      <div className="p-8">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier}</h3>
+          <div className="mb-4">
+            <span className="text-4xl font-bold text-gray-900">{price}</span>
+            <span className="text-gray-600 ml-1">/{period}</span>
           </div>
-        )}
+          <p className="text-gray-600 text-lg">{description}</p>
+        </div>
+        
+        <ul className="space-y-4 mb-8">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-center">
+              <svg className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+              </svg>
+              <span className="text-gray-700">{feature}</span>
+            </li>
+          ))}
+        </ul>
+        
+        <button 
+          className={
+            "w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-opacity-50 " +
+            (isPopular 
+              ? "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-300" 
+              : "bg-gray-100 hover:bg-gray-200 text-gray-800 focus:ring-gray-300")
+          }
+        >
+          {buttonText}
+        </button>
       </div>
     </div>
   );
 };
 
-export default Card;`;
+export default PricingCard;`;
 
       default:
         return `import { useState } from 'react';
@@ -387,22 +417,49 @@ export default Counter;`;
   }
 
   private getAppCode(componentName: string): string {
-    if (componentName === "Card") {
-      return `import Card from '@/components/Card';
+    if (componentName === "PricingCard") {
+      return `import PricingCard from '@/components/PricingCard';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <Card 
-          title="Amazing Product"
-          description="This is a fantastic product that will change your life. Experience the difference today!"
-          actions={
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Learn More
-            </button>
-          }
-        />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h1>
+          <p className="text-xl text-gray-600">Select the perfect plan for your needs</p>
+        </div>
+        
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <PricingCard 
+            tier="Basic"
+            price="$9"
+            period="month"
+            description="Perfect for getting started"
+            features={["5 Projects", "Basic Support", "10GB Storage", "Community Access"]}
+            isPopular={false}
+            buttonText="Get Started"
+          />
+          
+          <PricingCard 
+            tier="Pro"
+            price="$29"
+            period="month"
+            description="Perfect for growing teams"
+            features={["25 Projects", "Priority Support", "100GB Storage", "Advanced Analytics", "Custom Integrations"]}
+            isPopular={true}
+            buttonText="Start Free Trial"
+          />
+          
+          <PricingCard 
+            tier="Enterprise"
+            price="$99"
+            period="month"
+            description="For large organizations"
+            features={["Unlimited Projects", "24/7 Phone Support", "1TB Storage", "Advanced Security", "Custom Onboarding", "SLA Guarantee"]}
+            isPopular={false}
+            buttonText="Contact Sales"
+          />
+        </div>
       </div>
     </div>
   );
