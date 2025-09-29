@@ -1,0 +1,45 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Compilation Page</title>
+</head>
+
+<body>
+    <main>
+        <h1>SOLID Principles</h1>
+        <p>The SOLID principles are a set of five design guidelines for software development that, when applied, help to create systems that are more maintainable, flexible, and scalable.</p>
+        <section>
+            <h2>Becoming a better developer by using the SOLID design principles</h2>
+            <p>In this conference from Laracon EU, Katerina Trajchevska explains how SOLID principles can help you become a better developer by focusing on building clean and flexible software designs.</p>
+            <iframe height="200" width="300"
+                title="Becoming a better developer by using the SOLID design principles" 
+                src="https://www.youtube.com/watch?v=rtmFCcjEgEw">
+                </iframe>
+        </section>
+        <section>
+            <h2>SOLID Object-Oriented Design</h2>
+            <p>In this conference, Sandi Metz covers all the SOLID principles with a particular focus on how they improve code and simplify testing. It’s an excellent resource for anyone looking for a practical approach.</p>
+            <iframe height="200" width="300"
+                title="SOLID Object-Oriented Design" 
+                src="https://www.youtube.com/watch?v=v-2yFMzxqwU">
+                </iframe>
+        </section>
+        <section>
+            <h2>SOLID Object-Oriented Design</h2>
+            <p>In this conference, Sandi Metz covers all the SOLID principles with a particular focus on how they improve code and simplify testing. It’s an excellent resource for anyone looking for a practical approach.</p>
+            <iframe height="200" width="300"
+                title="SOLID Object-Oriented Design" 
+                src="https://www.youtube.com/watch?v=v-2yFMzxqwU">
+                </iframe>
+        </section>
+    </main>
+</body>
+
+</html>
+
+** end of index.html **
+
