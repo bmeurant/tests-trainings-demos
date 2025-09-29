@@ -11,7 +11,10 @@ public class Java25 {
         System.out.println("\n--- Java 25: Compact Source Files and Instance Main Methods (JEP 512) ---\n");
         System.out.println("Run CompactMain file:  java -classpath target/classes CompactMain \"Hello\"");
 
-        System.out.println("\n--- Java 25: FlexibleConstructorBodies (JEP 513) ---\n");
+        System.out.println("\n--- Java 25: Flexible Constructor Bodies (JEP 513) ---\n");
         FlexibleConstructorBodies.main(args);
+
+        System.out.println("\n--- Java 25: Key Derivation Function API (JEP 510) ---\n");
+        KeyDerivationFunctionAPI.main(args);
     }
 }
