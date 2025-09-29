@@ -1,0 +1,34 @@
+** start of index.html **
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Quiche lorraine</title>
+  </head>
+  <body>
+    <h1>Quiche lorraine</h1>
+    <p>Richly flavored with Gruyère cheese and smoky bacon, quiche Lorraine is one of the most satisfying dishes imaginable.</p>
+    <h2>Ingredients</h2>
+    <ul>
+      <li>Thick-cut bacon</li>
+      <li>Shallots</li>
+      <li>Eggs</li>
+      <li>Heavy cream</li>
+    </ul>
+    <h2>Instructions</h2>
+    <ol>
+      <li>Dice the bacon. Place the diced bacon in a medium nonstick sauté pan over medium heat. Cook, stirring occasionally, until crisp, about 10 minutes.</li>
+      <li>In a medium bowl, whisk the eggs, and then the heavy cream, salt, cayenne pepper, and nutmeg.</li>
+      <li>Spread the shallots evenly over the bottom of the cooked crust.</li>
+      <li>Top with half of the bacon.</li>
+      <li>Then all of the Gruyère.</li>
+      <li>Pour the egg/cream mixture over top.</li>
+    </ol>
+    <img src="https://www.onceuponachef.com/images/2022/03/quiche-lorraine-1-1-1120x1449.jpg" alt="Quiche lorraine">
+  </body>
+</html>
+
+** end of index.html **
+
