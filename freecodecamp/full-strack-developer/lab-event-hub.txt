@@ -1,0 +1,56 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Event Hub</title>
+</head>
+
+<body>
+    <header>
+        <h1>Event Hub</h1>
+        <nav>
+            <ul>
+                <li><a href="#upcoming-events">Upcoming Events</a></li>
+                <li><a href="#past-events">Past Events</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="upcoming-events">
+            <h2>Upcoming Events</h2>
+            <article>
+                <h3>First event</h3>
+                <p>This is the first event that will take place the <time datetime="2025-09-30">30 September 2025</time>
+                </p>
+            </article>
+            <article>
+                <h3>Second event</h3>
+                <p>This is the second event that will take place the <time datetime="2025-10-01">01 October 2025</time>
+                </p>
+            </article>
+        </section>
+        <section id="past-events">
+            <h2>Past Events</h2>
+            <article>
+                <h3>Previous event</h3>
+                <p>This is the previous event that took place the <time datetime="2025-08-15">15 August 2025</time>
+                </p>
+                <img src="https://cdn.freecodecamp.org/curriculum/labs/past-event1.jpg" alt="Computer"/>
+            </article>
+            <article>
+                <h3>First event</h3>
+                <p>This is the first event that took place the <time datetime="2025-06-24">24 June 2025</time>
+                </p>
+                <img src="https://cdn.freecodecamp.org/curriculum/labs/past-event2.jpg" alt="Cubes"/>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>
+
+** end of index.html **
+
