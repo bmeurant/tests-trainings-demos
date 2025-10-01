@@ -1,0 +1,64 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Survey Form</title>
+  </head>
+
+  <body>
+    <h1 id="title">Survey</h1>
+  </body>
+  <p id="description">Description</p>
+  <form id="survey-form">
+    <fieldset>
+      <legend>Informations</legend>
+      <label id="name-label" for="name">Name:</label>
+      <input id="name" type="text" required placeholder="Name"/><br/>
+      <label id="email-label" for="email">Email:</label>
+      <input id="email" type="email" required placeholder="name@email.com"/><br/>
+      <label id="number-label" for="number">Age:</label>
+      <input id="number" type="number" min="1" max="100" placeholder="Age"/>
+      <br/><br/>
+      <label for="dropdown">What is your current situation?</label>
+      <select id="dropdown">
+        <option value="" disabled selected>Select situation</option>
+        <option value="student">Student</option>
+        <option value="full-time">Full time employee</option>
+        <option value="part-time">Part time employee</option>
+        <option value="retired">Retired</option>
+        <option value="other">Other</option>
+      </select>
+    </fieldset>
+    <br/>
+    <fieldset>
+      <legend>Would you recommand us?</legend>
+      <input type="radio" id="recommand-radio" name="recommand" value="yes" checked />
+      <label for="radio-yes">Yes</label>
+      <input type="radio" id="radio-yes" name="recommand" value="yes" />
+      <label for="radio-maybe">Maybe</label>
+      <input type="radio" id="radio-maybe" name="recommand" value="maybe" />
+      <label for="radio-no">No</label>
+      <input type="radio" id="radio-no" name="recommand" value="no" />
+    </fieldset>
+    <br/>
+    <fieldset>
+      <legend>What animal do you prefer?</legend>
+      <input type="checkbox" id="cats" name="prefered-animal" value="cats" />
+      <label for="cats">Cats</label>
+      <input type="checkbox" id="dogs" name="prefered-animal" value="dogs" />
+      <label for="dogs">Dogs</label>
+    </fieldset>
+    <br/>
+    <fieldset>
+      <legend>Additional comments</legend>
+      <textarea cols="50" rows="10"></textarea>
+    </fieldset>
+    <br/>
+    <input id="submit" type="submit" value="Submit"></input>
+  </form>
+</html>
+
+** end of index.html **
+
