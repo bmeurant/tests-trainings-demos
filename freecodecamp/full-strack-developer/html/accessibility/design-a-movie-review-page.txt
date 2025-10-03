@@ -1,0 +1,29 @@
+** start of index.html **
+
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Movie Review</title>
+ </head>
+
+<body>
+    <main>
+        <h1>Rise Beyond</h1>
+        <img src="https://cdn.freecodecamp.org/curriculum/labs/rise-beyond-2.png" alt="Rise Beyond movie poster"/>
+        <p>Rise Beyond is an uplifting, inspirational drama that tells the story of Ethan Carter, a young man from a small town who dreams big. Facing financial hardships and personal self-doubt, Ethan embarks on a journey of resilience. He is guided by his mentor, Professor Adams, and his childhood friend, Lena Mitchell. The narrative focuses on his setbacks, failures, and moments of triumph, serving as a reminder that our greatest potential lies beyond our fears.</p>
+        <p><strong>Movie Rating: </strong><span aria-hidden="true">⭐☆☆☆☆☆☆☆☆☆</span> (1.2/10)</p>
+        <h2>Cast Members</h2>
+        <ul>
+            <li><strong>James Holloway</strong> as Ethan Carter</li>
+            <li><strong>[Unspecified Actor]</strong> as Professor Adams (Ethan's mentor)</li>
+  <li><strong>[Unspecified Actor]</strong> as Lena Mitchell (Ethan's childhood friend)</li>
+        </ul>
+    </main>
+</body>
+
+</html>
+
+** end of index.html **
+
