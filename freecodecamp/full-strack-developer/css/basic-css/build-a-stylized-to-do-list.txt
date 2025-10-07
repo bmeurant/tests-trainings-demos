@@ -1,0 +1,80 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css"/>
+    <title>Styled To-Do List</title>
+</head>
+
+<body>
+    <ul class="todo-list">
+        <li>
+            <input type ="checkbox" id="todo1"/>
+            <label for="todo1">Todo 1</label>
+            <ul class="sub-item">
+                <li>
+                    <a class="sub-item-link" href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input/checkbox" target="_blank">Todo 1 Sub</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <input type ="checkbox" id="todo2"/>
+            <label for="todo2">Todo 2</label>
+            <ul class="sub-item">
+                <li>
+                    <a class="sub-item-link" href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input/checkbox" target="_blank">Todo 2 Sub</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <input type ="checkbox" id="todo3"/>
+            <label for="todo3">Todo 3</label>
+            <ul class="sub-item">
+                <li>
+                    <a class="sub-item-link" href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input/checkbox" target="_blank">Todo 3 Sub</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <input type ="checkbox" id="todo4"/>
+            <label for="todo4">Todo 4</label>
+            <ul class="sub-item">
+                <li>
+                    <a class="sub-item-link" href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input/checkbox" target="_blank">Todo 4 Sub</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  color: black;
+}
+
+a:visited {
+  color: black;
+}
+
+a:active {
+  color: black;
+}
+
+a:focus {
+  outline: solid;
+}
+
+** end of styles.css **
+
