@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Gatherer;
-import java.util.stream.Gatherers;
 
 public class StreamGatherers {
     public static void main(String[] args) {
