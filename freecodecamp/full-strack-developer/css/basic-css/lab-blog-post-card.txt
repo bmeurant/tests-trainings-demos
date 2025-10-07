@@ -1,0 +1,62 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"/>
+    <title>Blog Post Card</title>
+</head>
+<body>
+    <div class="blog-post-card">
+        <img class="post-img" src="https://cdn.freecodecamp.org/curriculum/labs/cover-photo.jpg" alt="Cover"/>
+        <div class="post-content">
+            <h2 class="post-title">Post Title</h2>
+            <p class="post-excerpt">This is a summary of the post content.</p>
+            <a class="read-more" href="">Read More</a>
+        </div>
+    </div>
+</body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+.blog-post-card {
+  background-color: white;
+  border-radius: 10px;
+  width: 500px;
+  text-align: justify;
+}
+
+.post-img {
+  width: 100%;
+  border: 2px solid grey;
+}
+
+.post-content {
+  padding: 10px;
+}
+
+.post-title, .post-excerpt {
+  color: purple;
+  margin: 10px;
+}
+
+.read-more {
+  color: white;
+  background-color: grey;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.read-more:hover {
+  background-color: black;
+}
+
+** end of styles.css **
+
