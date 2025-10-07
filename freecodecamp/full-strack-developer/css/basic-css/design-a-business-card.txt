@@ -1,0 +1,66 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css"/>
+    <title>Business Card</title>
+</head>
+
+<body>
+    <div class="business-card">
+        <img class= "profile-image" src="https://cdn.freecodecamp.org/curriculum/labs/flower.jpg" alt="Profile picture"/>
+        <p class="full-name">Baptiste Meurant</p>
+        <p class="designation">Technical Director</p>
+        <p class="company">Worldline</p>
+        <hr>
+        <p>name@email.com</p>
+        <p>0102030405</p>
+        <a class="portfolio-link" href="https://github.com/bmeurant">Portfolio</a>
+        <hr>
+        <div class="social-media">
+        <h2>Connect with me</h2>
+        <a href="https://bsky.app/">Twitter</a>
+        <a href="https://www.linkedin.com/in/baptistemeurant/">LinkedIn</a>
+        <a href="https://github.com/bmeurant">GitHub</a>
+    </div>
+    </div>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+body {
+  background-color: rosybrown;
+  font-family: Arial, sans-serif;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.business-card {
+  width: 300px;
+  background-color: white;
+  padding: 20px;
+  margin: 100px auto auto;
+  font-size: 16px;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+.profile-image {
+  max-width: 100%;
+}
+
+** end of styles.css **
+
