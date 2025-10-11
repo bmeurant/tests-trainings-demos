@@ -1,0 +1,50 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css"/>
+  <title>Confidential Email</title>
+</head>
+
+<body>
+  <main id="email">
+    <div id="confidential">CONFIDENTIAL</div>
+    <div id="top-secret">TOP SECRET</div>
+    <p><span class="blurred">One</span></p>
+    <p><span class="blurred">Two</span></p>
+    <p><span class="blurred">Three</span></p>
+  </main>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+#email {
+  padding: 50px;
+  margin-top: 50px;
+  width: 500px;
+  border: 2px;
+  box-sizing: border-box;
+}
+
+#confidential, #top-secret {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 10px;
+  border: 2px solid black;
+  transform: rotate(3.5deg);
+}
+
+.blurred {
+  filter: blur(3px);
+}
+
+** end of styles.css **
+
