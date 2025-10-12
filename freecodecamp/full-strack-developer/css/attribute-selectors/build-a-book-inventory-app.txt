@@ -1,0 +1,115 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Book Inventory</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <h1>Book Inventory</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="read">
+        <td>Title 1</td>
+        <td>Author 1</td>
+        <td>Category 1</td>
+        <td><span class="status">Read</span></td>
+        <td><span class="rate two"><span></span><span></span><span></span></span></td>
+      </tr>
+      <tr class="to-read">
+        <td>Title 2</td>
+        <td>Author 2</td>
+        <td>Category 2</td>
+        <td><span class="status">To Read</span></td>
+        <td><span class="rate"><span></span><span></span><span></span></span></td>
+      </tr>
+      <tr class="in-progress">
+        <td>Title 3</td>
+        <td>Author 3</td>
+        <td>Category 3</td>
+        <td><span class="status">In Progress</span></td>
+        <td><span class="rate"><span></span><span></span><span></span></span></td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+tr[class="read"] {
+  background-image: linear-gradient(#48ac59, #ecedf1);
+}
+
+tr[class="to-read"] {
+  background-image: linear-gradient(#dcb447, #ecedf1);
+}
+
+tr[class="in-progress"] {
+  background-image: linear-gradient(#8679c0, #ecedf1);
+}
+
+span {
+  display: inline-block;
+}
+
+tr[class="read"] span[class="status"] {
+  border: 1px solid #48ac59;
+  background-image: linear-gradient(#48ac59, #ecedf1);
+}
+
+tr[class="to-read"] span[class="status"] {
+  border: 1px solid #dcb447;
+  background-image: linear-gradient(#dcb447, #ecedf1);
+}
+
+tr[class="in-progress"] span[class="status"] {
+  border: 1px solid #8679c0;
+  background-image: linear-gradient(#8679c0, #ecedf1);
+}
+
+span[class="status"], span[class^="rate"] {
+  height: 20px;
+  width: 100%;
+  padding: 0.2rem; 
+}
+
+span[class^="rate"] > span {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 2px;
+  height: 2px;
+  width: 2px;
+  background-color: red;
+}
+
+span[class~="one"] span:first-child {
+  background-image: linear-gradient(#d14836, #ecedf1);
+}
+
+span[class~="two"] span:first-child, span[class~="two"] span:nth-child(2) {
+  background-image: linear-gradient(#d14836, #ecedf1);
+}
+
+span[class~="three"] > span {
+  background-image: linear-gradient(#d14836, #ecedf1);
+}
+
+** end of styles.css **
+
