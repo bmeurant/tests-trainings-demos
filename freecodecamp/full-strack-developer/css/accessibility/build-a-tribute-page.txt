@@ -1,0 +1,36 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Tribute Page</title>
+  </head>
+
+  <body>
+    <main id="main">
+      <h1 id="title">Dr Norman Borlaug</h1>
+      <figure id="img-div">
+        <img id="image" href=""/>
+        <figcaption id="img-caption">This is the caption</figcaption>
+      </figure>
+      <p id="tribute-info">This is the Tribute info</p>
+      <a id="tribute-link" href="www.google.com" target = "_blank">link</a>
+    </main>
+  </body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+#image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+** end of styles.css **
+
