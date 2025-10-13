@@ -1,0 +1,132 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Availability Table</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <table>
+        <tr>
+            <th></th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+        <tr class="sharp">
+            <th class="time">9:00 AM</th>
+            <td class="available-2"></td>
+            <td class="available-3"></td>
+            <td class="available-1"></td>
+            <td class="available-4"></td>
+            <td class="available-5"></td>
+        </tr>
+        <tr class="half">
+            <th class="time">10:00 AM</th>
+            <td class="available-1"></td>
+            <td class="available-0"></td>
+            <td class="available-5"></td>
+            <td class="available-3"></td>
+            <td class="available-2"></td>
+        </tr>
+        <tr class="sharp">
+            <th class="time">11:00 AM</th>
+            <td class="available-4"></td>
+            <td class="available-2"></td>
+            <td class="available-3"></td>
+            <td class="available-1"></td>
+            <td class="available-0"></td>
+        </tr>
+        <tr class="half">
+            <th class="time">12:00 PM</th>
+            <td class="available-5"></td>
+            <td class="available-4"></td>
+            <td class="available-2"></td>
+            <td class="available-0"></td>
+            <td class="available-3"></td>
+        </tr>
+        <tr class="sharp">
+            <th class="time">1:00 PM</th>
+            <td class="available-3"></td>
+            <td class="available-1"></td>
+            <td class="available-4"></td>
+            <td class="available-5"></td>
+            <td class="available-2"></td>
+        </tr>
+    </table>
+    <div id="legend">
+        <span>Availability</span>
+        <div id="legend-gradient"></div>
+    </div>
+</body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+:root {
+  --color0: #8256bb49;
+  --color1: #8256bb82;
+  --color2: #8256bb9b;
+  --color3: #8256bbb8;
+  --color4: #8256bbd1;
+  --color5: #8256bbf0;
+  --color6: #8256bb;
+  --solid-border: 2px solid var(--color6);
+  --dashed-border: 2px dashed var(--color6);
+}
+
+.available-0 {
+  background-color: var(--color0);
+}
+
+.available-1 {
+  background-color: var(--color1);
+}
+
+.available-2 {
+  background-color: var(--color2);
+}
+
+.available-3 {
+  background-color: var(--color3);
+}
+
+.available-4 {
+  background-color: var(--color4);
+}
+
+.available-5 {
+  background-color: var(--color5);
+}
+
+.sharp td {
+  border-bottom: var(--solid-border);
+}
+
+.half td {
+  border-bottom: var(--dashed-border);
+}
+
+#legend {
+  margin-top: 2em;
+  display: inline-block;
+  height: 20px;
+}
+
+#legend-gradient {
+  background-image: linear-gradient(90deg, var(--color0) 0% 16%, var(--color1) 16% 33%, var(--color2) 33% 50%, var(--color3) 50% 67%, var(--color4) 67% 84%, var(--color5) 84% 100%);
+  width: 200px;
+  height: 100%;
+  display: inline-block;
+  margin-left: 2em;
+}
+
+** end of styles.css **
+
