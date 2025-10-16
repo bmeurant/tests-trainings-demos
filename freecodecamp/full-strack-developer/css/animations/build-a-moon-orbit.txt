@@ -1,0 +1,80 @@
+** start of index.html **
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Moon Orbit</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="space">
+        <div class="earth"></div>
+        <div class="orbit">
+            <div class="moon"></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.space {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+.earth {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: rgb(139, 139, 230);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.orbit {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: orbit 5s linear infinite;
+}
+
+.moon {
+  width: 30px;
+  height: 30px;
+  background-color: rgb(238, 235, 235);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+  100% {
+    transform: rotate(360deg) translate(-50%, -50%);
+  }
+}
+
+** end of styles.css **
+
