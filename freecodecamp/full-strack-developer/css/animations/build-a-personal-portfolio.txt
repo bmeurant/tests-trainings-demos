@@ -1,0 +1,133 @@
+** start of index.html **
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Personal Portfolio</title>
+    <link rel="stylesshet" href="styles.css"/>
+  </head>
+  <body>
+    <section id="welcome-section">
+      <h1>Personal Portfolio</h1>
+      <nav id="navbar">
+        <a href="#welcome-section">Home</a>
+        <a href="#project-section">Projects</a>
+        <a id="profile-link" href="https://bmeurant.github.io/" target="_blank">Profile</a>
+    </nav>
+    <img id="profile-img" src="https://1.gravatar.com/avatar/74fc3f4a92da92178c6d9831999c1d5bb0589b60c4d4f0dd81e4a7a1686ccf4c?size=256" alt="Profile Image"/>
+    <p id="profile-description">With a background as a full-stack developer and experienced software architect. I currently serve as a unit Technical Director at Worldline. I support teams, projects, and organizations in defining and executing their technical strategy and transformation. Strongly committed to software craftsmanship principles, I thrive in roles that combine technical leadership and hands-on expertise to drive innovative projects and contribute to the growth of an organization.</p>
+    </section>
+    <section id="project-section">
+      <div class="project-tile">
+        <h2>CNRS, <a href="https://aramis.resinfo.org/doku.php?id=ateliers:ecosystemjs-23032017" target="_blank">JavaScript ecosystem presentation</a></h2>
+        <p>A 2-hour presentation on the JavaScript ecosystem for the CNRS ARAMIS network in Lyon.</p>
+      </div>
+      <div class="project-tile">
+        <h2>Contributor, leader <a href="https://github.com/resthub" target="_blank">RESTHub</a></h2>
+        <p>Open source stack to build Modern Web Applications based on Spring, Backbone, Hibernate. Discontinued.</p>
+      </div>
+      <div class="project-tile">
+        <h2>Technical Translations</h2>
+        <p>Contribution to the french translation of Git probook v2.
+Translation of an article about emberjs in enterprise on InfoQ</p>
+      </div>
+      <div class="project-tile">
+        <h2><a href="https://bmeurant.github.io/ember-training" target="_blank">Ember Training</a></h2>
+        <p>An in-depth introduction to ember. Can be followed as an autonomous tutorial but also to serve as a tool for training.</p>
+      </div>
+      <div class="project-tile">
+        <h2><a href="https://bmeurant.github.io/ember-training" target="_blank">OpenSource contributions</a></h2>
+        <p>Modest OpenSource contributions on ember framework, creation of an ember addon, etc.</p>
+      </div>
+      <div class="project-tile">
+        <h2>Articles & Tutorials</h2>
+        <p>Spring, Tapestry & Hibernate tutorials (in french), translated by the Apache Tapestry team, articles about ember(in french) and SPA. Some contributions on Worldline Tech Blog</p>
+      </div>
+    </section>
+  </body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+:root {
+  --primary-color: #f8f8f8;
+  --secondary-color: #027e80;
+  --ternary-color: #a9d5d6;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 1.5rem;
+  background-color: var(--ternary-color);
+  padding: 0.5rem;
+  border-bottom: 10px solid var(--primary-color);
+}
+
+#navbar a {
+  color: var(--secondary-color);
+  padding: 0 0.1rem;
+  height: 100%;
+  vertical-align: middle;
+}
+
+#navbar a:hover {
+  color: var(--primary-color);
+}
+
+body {
+  margin:0;
+  margin-top: calc(1.5em + 10px);
+  font-family: Roboto, sans-serif;
+  font-size: 18px;
+  background-color: var(--primary-color);
+}
+
+#welcome-section {
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+#profile-img {
+  border-radius: 50%;
+  border: 10px solid var(--primary-color);
+}
+
+#profile-description {
+  text-align: justify;
+}
+
+h2 {
+  color: var(--secondary-color);
+  font-size: 1.5rem
+}
+
+a {
+  color: var(--secondary-color);
+}
+
+#project-section {
+  padding: 0 1rem;
+}
+
+.project-tile {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+@media (min-width: 768px) {
+  #navbar {
+    text-align: left;
+  }
+}
+
+** end of styles.css **
+
