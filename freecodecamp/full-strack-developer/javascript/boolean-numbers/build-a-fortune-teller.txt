@@ -1,0 +1,17 @@
+** start of script.js **
+
+const fortune1 = "Your cat will look very cuddly today.";
+const fortune2 = "The weather will be nice tomorrow.";
+const fortune3 = "Be cautious of your new neighbors.";
+const fortune4 = "You will find a new hobby soon.";
+const fortune5 = "It would be wise to avoid the color red today.";
+
+const min = 1;
+const max = 5;
+const randomNumber = Math.round(Math.random() * (max - min) + min);
+
+const selectedFortune = eval(`fortune${randomNumber}`);
+console.log(selectedFortune);
+
+** end of script.js **
+
