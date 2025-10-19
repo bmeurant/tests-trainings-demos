@@ -1,0 +1,19 @@
+** start of script.js **
+
+let year = 1900;
+
+function isLeapYear(year) {
+  if (year % 4 === 0) {
+    if (year % 100 === 0 && year % 400 !== 0) {
+      return `${year} is not a leap year.`
+    }
+    return `${year} is a leap year.`
+  }
+  return `${year} is not a leap year.`
+}
+
+let result = isLeapYear(year);
+console.log(result)
+
+** end of script.js **
+
