@@ -1,0 +1,23 @@
+** start of script.js **
+
+let email = "myValidEmail@domain.org";
+
+const maskEmail = (email) => {
+  const domainIdx = email.indexOf("@");
+  const localPart = email.substring(0, domainIdx);
+  const domainPart = email.substring(domainIdx + 1);
+  const firstLetter = localPart[0];
+  const lastLetter = localPart[localPart.length - 1];
+  const maskedLength = localPart.length - 2;
+  const maskedMiddle = '*'.repeat(maskedLength);
+  return `${firstLetter}${maskedMiddle}${lastLetter}@${domainPart}`;
+}
+
+console.log(maskEmail("apple.pie@example.com"));
+console.log(maskEmail("freecodecamp@example.com"));
+console.log(maskEmail("info@test.dev"));
+console.log(maskEmail("user@domain.org"));
+console.log(maskEmail(email));
+
+** end of script.js **
+
