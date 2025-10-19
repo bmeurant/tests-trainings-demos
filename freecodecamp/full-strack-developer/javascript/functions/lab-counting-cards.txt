@@ -1,0 +1,18 @@
+** start of script.js **
+
+let count = 0;
+
+function cc(card) {
+  const heads = [10, "J", "Q", "K", "A"];
+
+  if (typeof card === "number" && card >= 2 && card <= 6) {
+    count +=1;
+  } else if (heads.includes(card)) {
+    count -=1;
+  }
+
+  return count + (count > 0 ? " Bet" : " Hold");
+}
+
+** end of script.js **
+
