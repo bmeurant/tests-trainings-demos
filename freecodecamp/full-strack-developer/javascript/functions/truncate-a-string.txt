@@ -1,0 +1,10 @@
+** start of script.js **
+
+function truncateString(text, length) {
+  return text.length - length > 0 ? 
+    `${text.slice(0, length)}...`:
+    text;
+}
+
+** end of script.js **
+
