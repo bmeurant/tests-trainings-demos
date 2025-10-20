@@ -1,0 +1,10 @@
+** start of script.js **
+
+function confirmEnding(text, endString) {
+  let strIdx = text.lastIndexOf(endString);
+  return strIdx >= 0 && text.length === strIdx + endString.length;
+}
+
+
+** end of script.js **
+
