@@ -1,0 +1,56 @@
+** start of script.js **
+
+const questions = [
+    {
+      category: "Java/Spring",
+      question: "Which Spring annotation is used to mark a class as a service component in the business layer?",
+      choices: ["@Controller", "@Component", "@Service"],
+      answer: "@Service"
+    },
+    {
+      category: "JavaScript",
+      question: "Which keyword is used to declare a block-scoped variable in modern JavaScript (ES6+)?",
+      choices: ["var", "const", "let"],
+      answer: "let"
+    },
+    {
+      category: "REST API",
+      question: "Which HTTP method is typically idempotent and used to update an entire resource?",
+      choices: ["POST", "PATCH", "PUT"],
+      answer: "PUT"
+    },
+    {
+      category: "Cloud/GCP",
+      question: "What is the primary serverless compute platform for running event-driven functions on Google Cloud Platform (GCP)?",
+      choices: ["App Engine Standard", "Cloud Functions", "Cloud Run"],
+      answer: "Cloud Functions"
+    },
+    {
+      category: "Web Frontend (CSS/HTML)",
+      question: "Which CSS property is used to change the color of text?",
+      choices: ["font-color", "color", "background-color"],
+      answer: "color"
+    },
+    {
+      category: "Infrastructure",
+      question: "In the context of containerization, what is a YAML file typically used for with Kubernetes?",
+      choices: ["Defining firewall rules", "Storing database backups", "Defining resource configurations (Deployment, Service, etc.)"],
+      answer: "Defining resource configurations (Deployment, Service, etc.)"
+    }];
+
+function getRandomComputerChoice(choices) {
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+function getRandomQuestion(questions) {
+  return questions[Math.floor(Math.random() * questions.length)];
+}
+
+function getResults(question, computerChoice) {
+  return computerChoice === question.answer ? 
+    "The computer's choice is correct!":
+    `The computer's choice is wrong. The correct answer is: ${question.answer}`;
+}
+
+** end of script.js **
+
