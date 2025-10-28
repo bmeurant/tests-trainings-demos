@@ -1,0 +1,21 @@
+** start of script.js **
+
+function findLongestWordLength(sentence) {
+  if (!sentence || typeof sentence !== 'string' || sentence.trim().length === 0) {
+    return 0;
+  }
+
+  const words = sentence.trim().split(/\s+/);
+  let maxLength = 0; 
+
+  for (const word of words) {
+    if (word.length > maxLength) {
+      maxLength = word.length;
+    }
+  }
+
+  return maxLength;
+}
+
+** end of script.js **
+
