@@ -1,0 +1,16 @@
+** start of script.js **
+
+function mutation(array) {
+  if (!array || array.length < 2 || typeof array[0] !== "string" || typeof array[1] !== "string") return false;
+  let isMutation = true;
+  const firstStr = array[0].toLowerCase();
+  for (let char of array[1].toLowerCase()) {
+    if (!firstStr.includes(char)) {
+      return false;
+    }
+  }
+  return isMutation;
+}
+
+** end of script.js **
+
