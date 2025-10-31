@@ -1,0 +1,11 @@
+** start of script.js **
+
+function findElement(arr, func) {
+  for (let elem of arr) {
+    if (func(elem)) return elem;
+  }
+  return undefined;
+}
+
+** end of script.js **
+
