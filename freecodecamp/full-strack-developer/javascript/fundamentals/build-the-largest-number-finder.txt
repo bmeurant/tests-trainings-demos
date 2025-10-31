@@ -1,0 +1,10 @@
+** start of script.js **
+
+function largestOfAll(arr) {
+  return arr.map((subArray) => {
+    return Math.max(...subArray);
+  });
+}
+
+** end of script.js **
+
