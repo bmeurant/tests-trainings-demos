@@ -1,0 +1,18 @@
+** start of script.js **
+
+function pyramid(char, rows, down) {
+  const maxLength = rows * 2 - 1;
+  let output = "\n";
+  for (let i = 0 ; i < rows; i++) {
+    const lineIndex = down ? rows - 1 - i : i;
+    const charCount = 2 * lineIndex + 1;
+    const spaceCount = (maxLength - charCount) / 2;
+    const spaces = " ".repeat(spaceCount);
+    const chars = char.repeat(charCount);
+    output += `${spaces}${chars}\n`;
+  }
+  return output;
+}
+
+** end of script.js **
+
