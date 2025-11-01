@@ -1,0 +1,8 @@
+** start of script.js **
+
+function bouncer(arr) {
+  return arr.filter(element => element);
+}
+
+** end of script.js **
+
