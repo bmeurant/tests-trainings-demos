@@ -1,0 +1,10 @@
+** start of script.js **
+
+function uniteUnique(first, ...others) {
+  const flatArray = [].concat(first, ...others);
+  const uniqueSet = new Set(flatArray);
+  return Array.from(uniqueSet);
+}
+
+** end of script.js **
+
