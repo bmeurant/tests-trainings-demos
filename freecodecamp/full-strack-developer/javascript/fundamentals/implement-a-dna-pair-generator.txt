@@ -1,0 +1,19 @@
+** start of script.js **
+
+function pairElement(str) {
+  const basePairs = {
+    "A": "T",
+    "T": "A",
+    "C": "G",
+    "G": "C"
+  };
+
+  return Array.from(str).map(base => {
+    const complementaryBase = basePairs[base];
+    return [base, complementaryBase];
+  });
+
+}
+
+** end of script.js **
+
