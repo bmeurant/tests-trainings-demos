@@ -1,0 +1,25 @@
+** start of script.js **
+
+function getNextFib(fib, currIdx) {
+  return fib[currIdx-2]+fib[currIdx-1];
+}
+
+function isOdd(num) {
+  return num % 2;
+}
+
+function sumFibs(num) {
+  const fib = [0,1];
+  let i = 2;
+  let next = getNextFib(fib, i);
+  while (next <= num) {
+    fib.push(next);
+    next = getNextFib(fib, ++i);
+  }
+  return fib.reduce((sum, curr) => {
+    return sum += isOdd(curr) ? curr : 0;
+  });
+}
+
+** end of script.js **
+
