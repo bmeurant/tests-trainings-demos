@@ -1,0 +1,10 @@
+** start of script.js **
+
+function dropElements(arr, func) {
+  const firstAcceptableIdx = arr.findIndex(func);
+  const foundIdx = firstAcceptableIdx !== -1;
+  return foundIdx ? arr.slice(firstAcceptableIdx) : [];
+}
+
+** end of script.js **
+
