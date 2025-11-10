@@ -1,0 +1,15 @@
+** start of script.js **
+
+function addTogether(a, b) {
+  if (typeof a != "number") return undefined;
+  if (arguments.length === 2) {
+    return typeof b === "number" ? a + b : undefined;
+  } else {
+    return (b2) => {
+       return b2 && typeof b2 === "number" ? a + b2 : undefined;
+    }
+  }
+}
+
+** end of script.js **
+
