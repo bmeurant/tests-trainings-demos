@@ -1,0 +1,11 @@
+** start of script.js **
+
+function getIndexToIns(arr, num) {
+  arr.sort((a, b) => a - b);
+  const index = arr.findIndex(e => e >= num);
+  
+  return index != -1 ? index : arr.length;
+}
+
+** end of script.js **
+
