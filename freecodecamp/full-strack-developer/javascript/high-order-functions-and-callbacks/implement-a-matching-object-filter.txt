@@ -1,0 +1,15 @@
+** start of script.js **
+
+function whatIsInAName(arr, source) {
+  if (!source) return [];
+  const keys = Object.keys(source);
+  if (keys.length === 0) return [];
+  return arr.filter(item => {
+    return keys.every(key => 
+      item.hasOwnProperty(key) && item[key] === source[key]
+    );
+  });
+}
+
+** end of script.js **
+
